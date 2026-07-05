@@ -1,0 +1,35 @@
+name: Build M360 Core Plugin ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare package
+        run: |
+          VERSION=${GITHUB_REF_NAME:-manual}
+          PACKAGE="m360-core-${VERSION}"
+          mkdir -p build/${PACKAGE}
+          if [ -d plugin ]; then
+            rsync -av --exclude='.git' plugin/ build/${PACKAGE}/
+          else
+            mkdir -p build/${PACKAGE}
+            cp README.md CHANGELOG.md ROADMAP.md build/${PACKAGE}/ || true
+          fi
+          cd build
+          zip -r ${PACKAGE}.zip ${PACKAGE}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: m360-core-zip
+          path: build/*.zip
