@@ -1,0 +1,55 @@
+name: Build M360 Core Artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-plugin:
+    name: Build WordPress plugin ZIP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          VERSION="manual"
+          if [ -f VERSION.md ]; then
+            FOUND=$(grep -E '^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?$' VERSION.md | head -n 1 || true)
+            if [ -n "$FOUND" ]; then
+              VERSION="$FOUND"
+            fi
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Validate plugin directory
+        shell: bash
+        run: |
+          test -d plugin
+          if [ ! -f plugin/m360-core.php ]; then
+            echo "Aviso: plugin/m360-core.php ainda nao existe. Gerando pacote placeholder com documentacao atual."
+          fi
+
+      - name: Build ZIP
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PACKAGE="m360-core-v${VERSION}"
+          mkdir -p build/${PACKAGE}
+          rsync -av --exclude='.git' --exclude='.DS_Store' plugin/ build/${PACKAGE}/
+          cp README.md CHANGELOG.md ROADMAP.md VERSION.md build/${PACKAGE}/ 2>/dev/null || true
+          cd build
+          zip -r ${PACKAGE}.zip ${PACKAGE}
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: m360-core-plugin-zip
+          path: build/*.zip
+          retention-days: 14
