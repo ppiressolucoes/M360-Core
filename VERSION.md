@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.3.4
+0.3.5
 ```
 
 ## Status
 
 ```text
-Foundation delivered in GitHub
+Urgent production shortcode recovery
 ```
 
 ## Current sprint
 
 ```text
-Sprint 10.4 - M360 View Engine Foundation
+Sprint 10.5 - Navigation Shortcode Recovery
 ```
 
 ## Next planned version
 
 ```text
-0.3.5
+0.3.6
 ```
 
 ## Target environment
@@ -35,9 +35,10 @@ Sprint 10.4 - M360 View Engine Foundation
 ## Versioning rule
 
 - `0.3.2`: stable baseline migrated to GitHub.
-- `0.3.4-rc1`: installable plugin packaging foundation.
 - `0.3.4`: View Engine Foundation.
-- `0.3.5`: Dynamic View Migration.
+- `0.3.4.1`: plugin upgrade pipeline fix.
+- `0.3.5`: restore production navigation shortcodes.
+- `0.3.6`: Dynamic View Migration.
 
 ## Package source
 
