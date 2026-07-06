@@ -26,19 +26,15 @@ final class M360_Navigation_Shortcodes
             'menu' => '',
         ], $atts, 'm360_main_navigation');
 
-        $locale = function_exists('get_locale') ? get_locale() : 'pt_BR';
-        $menu = (string) $atts['menu'];
+        $is_en = self::is_en();
+        $menu = self::resolve_main_menu($atts, $is_en);
 
-        if ($menu === '') {
-            $menu = str_starts_with($locale, 'en') ? (string) $atts['menu_en'] : (string) $atts['menu_pt'];
-        }
-
-        if ($menu === '') {
-            $menu = str_starts_with($locale, 'en') ? 'main-menu-en' : 'main-menu-pt';
+        if ($menu === null) {
+            return '';
         }
 
         $html = wp_nav_menu([
-            'menu' => $menu,
+            'menu' => $menu->term_id,
             'container' => 'nav',
             'container_class' => 'm360-main-navigation',
             'menu_class' => 'm360-main-navigation__menu',
@@ -123,6 +119,41 @@ final class M360_Navigation_Shortcodes
         }
 
         return '<nav class="m360-section-navigation"><strong>' . esc_html($title) . '</strong><ul><li>' . implode('</li><li>', $items) . '</li></ul></nav>';
+    }
+
+    private static function resolve_main_menu(array $atts, bool $is_en): ?WP_Term
+    {
+        $candidates = [];
+
+        if ((string) $atts['menu'] !== '') {
+            $candidates[] = (string) $atts['menu'];
+        }
+
+        if ($is_en) {
+            $candidates[] = 'primary menu English';
+            $candidates[] = 'Primary Menu English';
+            $candidates[] = 'primary-menu-english';
+            $candidates[] = 'main-menu-en';
+            if ((string) $atts['menu_en'] !== '') {
+                $candidates[] = (string) $atts['menu_en'];
+            }
+        } else {
+            if ((string) $atts['menu_pt'] !== '') {
+                $candidates[] = (string) $atts['menu_pt'];
+            }
+            $candidates[] = 'main-menu-pt';
+            $candidates[] = 'Primary Menu';
+            $candidates[] = 'primary-menu';
+        }
+
+        foreach (array_unique(array_filter($candidates)) as $candidate) {
+            $menu = wp_get_nav_menu_object($candidate);
+            if ($menu instanceof WP_Term) {
+                return $menu;
+            }
+        }
+
+        return null;
     }
 
     private static function enqueue_assets(): void
