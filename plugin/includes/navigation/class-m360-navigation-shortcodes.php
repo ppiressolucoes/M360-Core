@@ -41,28 +41,50 @@ final class M360_Navigation_Shortcodes
     {
         self::enqueue_assets();
         $atts = shortcode_atts(['menu'=>'','menu_pt'=>'','menu_en'=>''], $atts, 'm360_section_navigation');
+
+        $items = self::institutional_items();
+        if (!empty($items)) {
+            return '<nav class="m360-section-navigation m360-section-navigation--index"><ul><li>' . implode('</li><li>', $items) . '</li></ul></nav>';
+        }
+
         $menu_name = self::section_menu_name($atts);
         if ($menu_name !== '') {
             $html = wp_nav_menu(['menu'=>$menu_name,'container'=>false,'menu_class'=>'m360-section-navigation__menu','echo'=>false,'fallback_cb'=>false,'depth'=>2]);
             if (is_string($html) && $html !== '') { return '<nav class="m360-section-navigation m360-section-navigation--index">' . $html . '</nav>'; }
         }
-        $items = self::is_page_index_items();
-        if (empty($items) && is_singular()) {
+
+        if (is_singular()) {
             foreach (array_slice(get_the_category(), 0, 5) as $cat) { $items[] = '<a href="' . esc_url(get_category_link($cat)) . '">' . esc_html($cat->name) . '</a>'; }
         }
         return empty($items) ? '' : '<nav class="m360-section-navigation m360-section-navigation--index"><ul><li>' . implode('</li><li>', $items) . '</li></ul></nav>';
     }
 
-    private static function is_page_index_items(): array
+    private static function institutional_items(): array
     {
         if (!is_page()) { return []; }
+        $current = trailingslashit(parse_url((string) $_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '');
         $map = self::is_en() ? [
-            'About Us'=>'/en/about-us/','Masthead'=>'/en/masthead/','Advertising'=>'/en/advertising/','Editorial Policy'=>'/en/editorial-policy/','Contact'=>'/en/contact/'
+            'About Us'=>'/en/about-us/',
+            'Masthead'=>'/en/masthead/',
+            'Advertising'=>'/en/advertising/',
+            'Editorial Policy'=>'/en/editorial-policy/',
+            'Privacy Policy'=>'/en/privacy-policy/',
+            'Terms of Use'=>'/en/terms-of-use/',
+            'Contact'=>'/en/contact/'
         ] : [
-            'Quem Somos'=>'/quem-somos/','Expediente'=>'/expediente/','Publicidades'=>'/publicidades/','Política Editorial'=>'/politica-editorial/','Contato'=>'/contato/'
+            'Quem Somos'=>'/quem-somos/',
+            'Expediente'=>'/expediente/',
+            'Publicidades'=>'/publicidades/',
+            'Política Editorial'=>'/politica-editorial/',
+            'Política de Privacidade'=>'/politica-de-privacidade/',
+            'Termos de Uso'=>'/termos-de-uso/',
+            'Contato'=>'/contato/'
         ];
         $items = [];
-        foreach ($map as $label=>$path) { $items[] = '<a href="' . esc_url(home_url($path)) . '">' . esc_html($label) . '</a>'; }
+        foreach ($map as $label=>$path) {
+            $active = trailingslashit($path) === $current;
+            $items[] = '<a href="' . esc_url(home_url($path)) . '"' . ($active ? ' aria-current="page"' : '') . '>' . esc_html($label) . '</a>';
+        }
         return $items;
     }
 
