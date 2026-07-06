@@ -7,9 +7,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php';
+require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
+require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
+
 final class M360_Core
 {
     private static ?M360_Core $instance = null;
+    private ?M360_View_Registry $view_registry = null;
+    private ?M360_View_Renderer $view_renderer = null;
 
     public static function instance(): M360_Core
     {
@@ -39,8 +45,21 @@ final class M360_Core
     {
         load_plugin_textdomain('m360-core', false, dirname(plugin_basename(M360_CORE_FILE)) . '/languages');
 
+        $this->init_view_engine();
+
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
+    }
+
+    private function init_view_engine(): void
+    {
+        $loader = new M360_View_Loader();
+        $this->view_registry = new M360_View_Registry();
+        $this->view_renderer = new M360_View_Renderer($loader);
+
+        $this->view_registry->register('status', ['template' => 'status', 'public' => false]);
+        $this->view_registry->register('latest', ['template' => 'latest', 'public' => true]);
+        $this->view_registry->register('author', ['template' => 'author', 'public' => true]);
     }
 
     public function register_assets(): void
@@ -56,7 +75,7 @@ final class M360_Core
     public function register_shortcodes(): void
     {
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
-        add_shortcode('m360_view', [$this, 'render_view_placeholder']);
+        add_shortcode('m360_view', [$this, 'render_view_shortcode']);
     }
 
     public function render_status_shortcode(): string
@@ -65,25 +84,36 @@ final class M360_Core
             return '';
         }
 
-        return sprintf(
-            '<div class="m360-core-status"><strong>M360 Core</strong><br>Version: %s<br>Status: GitHub packaging foundation active.</div>',
-            esc_html(M360_CORE_VERSION)
-        );
+        return $this->render_registered_view('status');
     }
 
-    public function render_view_placeholder(array $atts = []): string
+    public function render_view_shortcode(array $atts = []): string
     {
         $atts = shortcode_atts([
-            'view' => 'default',
+            'view' => 'status',
         ], $atts, 'm360_view');
+
+        $view = sanitize_key((string) $atts['view']);
 
         if (!current_user_can('manage_options')) {
             return '';
         }
 
-        return sprintf(
-            '<div class="m360-core-placeholder">M360 View Engine placeholder: <code>%s</code></div>',
-            esc_html((string) $atts['view'])
-        );
+        return $this->render_registered_view($view);
+    }
+
+    private function render_registered_view(string $view): string
+    {
+        if (!$this->view_registry || !$this->view_renderer) {
+            return '';
+        }
+
+        $definition = $this->view_registry->get($view);
+        $template = $definition['template'] ?? $view;
+
+        return $this->view_renderer->render((string) $template, [
+            'view_name' => $view,
+            'definition' => $definition,
+        ]);
     }
 }
