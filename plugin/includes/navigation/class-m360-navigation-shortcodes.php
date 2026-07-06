@@ -18,6 +18,8 @@ final class M360_Navigation_Shortcodes
 
     public static function main_navigation(array $atts = []): string
     {
+        self::enqueue_assets();
+
         $atts = shortcode_atts([
             'menu_pt' => '',
             'menu_en' => '',
@@ -50,6 +52,8 @@ final class M360_Navigation_Shortcodes
 
     public static function breadcrumb(array $atts = []): string
     {
+        self::enqueue_assets();
+
         $items = [];
         $home_label = self::is_en() ? 'Home' : 'Início';
         $items[] = '<a href="' . esc_url(home_url('/')) . '">' . esc_html($home_label) . '</a>';
@@ -77,6 +81,8 @@ final class M360_Navigation_Shortcodes
 
     public static function section_navigation(array $atts = []): string
     {
+        self::enqueue_assets();
+
         $atts = shortcode_atts([
             'menu' => '',
             'title' => '',
@@ -117,6 +123,13 @@ final class M360_Navigation_Shortcodes
         }
 
         return '<nav class="m360-section-navigation"><strong>' . esc_html($title) . '</strong><ul><li>' . implode('</li><li>', $items) . '</li></ul></nav>';
+    }
+
+    private static function enqueue_assets(): void
+    {
+        if (wp_style_is('m360-core-foundation', 'registered')) {
+            wp_enqueue_style('m360-core-foundation');
+        }
     }
 
     private static function is_en(): bool
