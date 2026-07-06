@@ -3,7 +3,7 @@
  * Plugin Name: M360 Core
  * Plugin URI: https://github.com/ppiressolucoes/M360-Core
  * Description: Framework oficial de interface do Projeto Mengão 360 / DW Esportivo.
- * Version: 0.3.5.1
+ * Version: 0.3.5.2
  * Author: Mengão 360 | DW Esportivo
  * Text Domain: m360-core
  * Domain Path: /languages
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('M360_CORE_VERSION')) {
-    define('M360_CORE_VERSION', '0.3.5.1');
+    define('M360_CORE_VERSION', '0.3.5.2');
 }
 
 if (!defined('M360_CORE_FILE')) {
