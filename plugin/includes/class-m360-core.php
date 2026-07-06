@@ -11,13 +11,13 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php'
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
 
-final class M360_Core
+final class M360_Core_Runtime_034
 {
-    private static ?M360_Core $instance = null;
+    private static ?M360_Core_Runtime_034 $instance = null;
     private ?M360_View_Registry $view_registry = null;
     private ?M360_View_Renderer $view_renderer = null;
 
-    public static function instance(): M360_Core
+    public static function instance(): M360_Core_Runtime_034
     {
         if (self::$instance === null) {
             self::$instance = new self();
