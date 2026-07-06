@@ -3,25 +3,25 @@
 ## Versão atual
 
 ```text
-0.3.2
+0.3.4-rc1
 ```
 
 ## Status
 
 ```text
-Stable baseline
+Release Candidate
 ```
 
 ## Sprint atual
 
 ```text
-Sprint 0 — GitHub Build Foundation
+Sprint 0.1 — Plugin Packaging Foundation
 ```
 
 ## Próxima versão planejada
 
 ```text
-0.3.4-rc1
+0.3.4
 ```
 
 ## Ambiente alvo
@@ -35,8 +35,8 @@ Sprint 0 — GitHub Build Foundation
 ## Regra de versionamento
 
 - `0.3.2`: baseline estável migrada para GitHub.
-- `0.3.4-rc1`: primeira release candidate do View Engine.
-- `0.3.4`: View Engine estável.
+- `0.3.4-rc1`: plugin packaging foundation instalável.
+- `0.3.4`: View Engine foundation.
 
 ## Fonte do pacote
 
