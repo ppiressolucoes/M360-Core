@@ -2,6 +2,35 @@
 
 Todas as mudanças relevantes do M360 Core serão registradas neste arquivo.
 
+## [v0.3.5] — Navigation Shortcode Recovery
+
+Status: atualização urgente para produção.
+
+### Corrigido
+
+- Restaura o registro dos shortcodes de produção:
+  - `[m360_main_navigation]`
+  - `[m360_breadcrumb]`
+  - `[m360_section_navigation]`
+- Corrige shortcodes renderizados literalmente após a v0.3.4.1.
+- Mantém compatibilidade com a fundação do View Engine.
+
+### Observações
+
+- Entrega focada em correção emergencial.
+- O pipeline segue com pasta raiz fixa `m360-core/`.
+- Próxima evolução funcional permanece planejada para Dynamic View Migration.
+
+## [v0.3.4.1] — Plugin Upgrade Pipeline Fix
+
+Status: homologada.
+
+### Corrigido
+
+- ZIP passa a usar pasta raiz fixa `m360-core/`.
+- Proteção de constantes para evitar conflito em instalação paralela.
+- Runtime isolado para evitar colisão com versão antiga.
+
 ## [v0.3.4] — View Engine Foundation
 
 Status: entregue no GitHub para geração de artifact ZIP.
@@ -21,18 +50,6 @@ Status: entregue no GitHub para geração de artifact ZIP.
 - Entrega estrutural sem alteração visual pública.
 - Conteúdo de diagnóstico permanece restrito a usuários com `manage_options`.
 - Base preparada para a Sprint 10.5 — Dynamic View Migration.
-
-## [v0.3.4-rc1] — Plugin Packaging Foundation
-
-Status: artifact ZIP instalável preparado.
-
-### Adicionado
-
-- `plugin/m360-core.php`.
-- `plugin/includes/class-m360-core.php`.
-- `plugin/assets/css/m360-core.css`.
-- `plugin/uninstall.php`.
-- GitHub Actions para geração de ZIP a partir de `plugin/`.
 
 ## [v0.3.2] — Layout Foundation
 
