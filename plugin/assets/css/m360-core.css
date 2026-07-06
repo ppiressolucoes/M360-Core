@@ -1,0 +1,14 @@
+.m360-core-status,
+.m360-core-placeholder {
+    border-left: 4px solid #d71920;
+    background: #fff;
+    color: #333;
+    padding: 12px 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.m360-core-placeholder code {
+    color: #d71920;
+    font-weight: 700;
+}
