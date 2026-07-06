@@ -141,6 +141,18 @@
     font-weight: 600;
 }
 
+.m360-section-navigation a:hover,
+.m360-section-navigation a[aria-current="page"],
+.m360-section-navigation .is-active > a {
+    background: #d71920;
+    border-color: #d71920;
+    color: #fff !important;
+}
+
+.m360-section-navigation--index ul {
+    align-items: flex-start;
+}
+
 @media (max-width: 768px) {
     .m360-main-navigation__menu {
         display: block !important;
