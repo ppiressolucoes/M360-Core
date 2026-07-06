@@ -10,6 +10,7 @@ if (!defined('ABSPATH')) {
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 
 final class M360_Core_Runtime_034
 {
@@ -74,6 +75,8 @@ final class M360_Core_Runtime_034
 
     public function register_shortcodes(): void
     {
+        M360_Navigation_Shortcodes::register();
+
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
     }
