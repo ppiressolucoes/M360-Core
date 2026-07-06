@@ -1,30 +1,30 @@
-# M360 Core — Version Manifest
+# M360 Core Version Manifest
 
-## Versão atual
-
-```text
-0.3.4-rc1
-```
-
-## Status
-
-```text
-Release Candidate
-```
-
-## Sprint atual
-
-```text
-Sprint 0.1 — Plugin Packaging Foundation
-```
-
-## Próxima versão planejada
+## Current version
 
 ```text
 0.3.4
 ```
 
-## Ambiente alvo
+## Status
+
+```text
+Foundation delivered in GitHub
+```
+
+## Current sprint
+
+```text
+Sprint 10.4 - M360 View Engine Foundation
+```
+
+## Next planned version
+
+```text
+0.3.5
+```
+
+## Target environment
 
 - WordPress 6.8+
 - PHP 8+
@@ -32,22 +32,23 @@ Sprint 0.1 — Plugin Packaging Foundation
 - Polylang
 - Yoast SEO
 
-## Regra de versionamento
+## Versioning rule
 
-- `0.3.2`: baseline estável migrada para GitHub.
-- `0.3.4-rc1`: plugin packaging foundation instalável.
-- `0.3.4`: View Engine foundation.
+- `0.3.2`: stable baseline migrated to GitHub.
+- `0.3.4-rc1`: installable plugin packaging foundation.
+- `0.3.4`: View Engine Foundation.
+- `0.3.5`: Dynamic View Migration.
 
-## Fonte do pacote
+## Package source
 
-O ZIP instalável do WordPress deve ser gerado sempre a partir do diretório:
+The installable WordPress ZIP must always be generated from:
 
 ```text
 plugin/
 ```
 
-## Fluxo de implantação
+## Deployment flow
 
 ```text
-main → GitHub Actions → ZIP artifact → WordPress
+main -> GitHub Actions -> ZIP artifact -> WordPress
 ```
