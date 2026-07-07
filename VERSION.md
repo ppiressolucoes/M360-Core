@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.4.0.0
+0.4.1.0
 ```
 
 ## Status
 
 ```text
-Sprint 10.6 Tag Engine ready for workflow build
+Sprint 10.7 Visual Refinement ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 10.6 - Dynamic View Engine / Tag Engine
+Sprint 10.7 - Visual Refinement and Plugin Compatibility
 ```
 
 ## Next planned version
 
 ```text
-0.4.1.0
+0.4.1.1
 ```
 
 ## Target environment
@@ -32,15 +32,17 @@ Sprint 10.6 - Dynamic View Engine / Tag Engine
 - Polylang
 - Yoast SEO
 - LiteSpeed Cache
+- Mengão 360 Bolão
+- M360 Home Editorial
+- M360 Semantic Relations
 
 ## Versioning rule
 
-- `0.3.4`: View Engine Foundation.
-- `0.3.6.2`: Navigation responsive hotfix homologated.
 - `0.3.7.4`: Search Engine dynamic view homologated.
 - `0.3.8.2`: Author Engine homologated.
 - `0.3.9.0`: Category Engine homologated.
-- `0.4.0.0`: Tag Engine dynamic view.
+- `0.4.0.0`: Tag Engine homologated.
+- `0.4.1.0`: Navigation and Dynamic Views Visual Refinement.
 
 ## Package source
 
