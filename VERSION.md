@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.2.0
+0.4.2.1
 ```
 
 ## Status
 
 ```text
-Sprint 11 UI Components Foundation ready for workflow build
+Sprint 11 Navigation UI Components Polish ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11 - UI Components Foundation
+Sprint 11 - UI Components Foundation / Navigation Polish
 ```
 
 ## Next planned version
@@ -44,6 +44,7 @@ Sprint 11 - UI Components Foundation
 - `0.4.0.0`: Tag Engine homologated.
 - `0.4.1.3`: Home Editorial compatibility hotfix with scoped UI polish.
 - `0.4.2.0`: M360 UI Components Foundation.
+- `0.4.2.1`: Scoped Navigation UI Components Polish.
 
 ## Package source
 
