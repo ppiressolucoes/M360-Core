@@ -64,10 +64,11 @@ final class M360_Core_Runtime_034
     public function register_assets(): void
     {
         wp_register_style('m360-core-foundation', M360_CORE_URL . 'assets/css/m360-core.css', [], M360_CORE_VERSION);
-        wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-foundation'], M360_CORE_VERSION);
-        wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-foundation'], M360_CORE_VERSION);
-        wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-foundation'], M360_CORE_VERSION);
-        wp_register_style('m360-core-tag', M360_CORE_URL . 'assets/css/tag.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-ui-polish', M360_CORE_URL . 'assets/css/m360-ui-polish.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-ui-polish'], M360_CORE_VERSION);
+        wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-ui-polish'], M360_CORE_VERSION);
+        wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-ui-polish'], M360_CORE_VERSION);
+        wp_register_style('m360-core-tag', M360_CORE_URL . 'assets/css/tag.css', ['m360-core-ui-polish'], M360_CORE_VERSION);
     }
 
     public function register_shortcodes(): void
