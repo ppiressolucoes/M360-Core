@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.4.2.3
+0.4.2.4-docs
 ```
 
 ## Status
 
 ```text
-Sprint 11.1 Latest News Component ready for workflow build
+M360 Ads Database Design documented for review
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.1 - M360 Latest News Component
+Sprint 11.2 - M360 Ads Database Design
 ```
 
 ## Next planned version
 
 ```text
-0.4.3.0
+0.4.2.4
 ```
 
 ## Target environment
@@ -46,6 +46,20 @@ Sprint 11.1 - M360 Latest News Component
 - `0.4.2.1`: Scoped Navigation UI Components Polish.
 - `0.4.2.2`: PT-BR theme menu hotfix.
 - `0.4.2.3`: M360 Latest News Component.
+- `0.4.2.4-docs`: M360 Ads Database Design and SQL reference scripts.
+
+## Documentation source
+
+```text
+docs/02-architecture/M360_Ads_Database_Design.md
+```
+
+## SQL reference scripts
+
+```text
+database/migrations/2026_07_08_m360_ads_schema.sql
+database/seeds/2026_07_08_m360_ads_default_slots.sql
+```
 
 ## Package source
 
