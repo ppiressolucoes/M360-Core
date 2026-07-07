@@ -29,10 +29,13 @@
 .m360-section-navigation li { list-style: none !important; margin: 0 !important; padding: 0 !important; }
 
 .m360-main-navigation__menu { display: flex !important; flex-wrap: wrap; align-items: center; gap: 0; }
-.m360-main-navigation__menu > li { position: relative; display: block; }
+.m360-main-navigation__menu > li { position: relative; display: block; border-left: 1px solid rgba(255,255,255,.16); }
+.m360-main-navigation__menu > li:last-child { border-right: 1px solid rgba(255,255,255,.16); }
 
 .m360-main-navigation__menu > li > a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 16px 18px;
     color: #fff !important;
     text-decoration: none !important;
@@ -42,10 +45,26 @@
     transition: background .18s ease, transform .18s ease;
 }
 
+.m360-main-navigation__menu > li:first-child > a::before {
+    content: '⌂';
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.m360-main-navigation__menu > li.menu-item-has-children > a::after,
+.m360-main-navigation__menu > li.page_item_has_children > a::after {
+    content: '⌄';
+    font-size: 15px;
+    font-weight: 900;
+    margin-left: 2px;
+    transform: translateY(-1px);
+}
+
 .m360-main-navigation__menu > li > a:hover,
 .m360-main-navigation__menu > li.current-menu-item > a,
 .m360-main-navigation__menu > li.current-menu-ancestor > a {
-    background: rgba(0, 0, 0, 0.16);
+    background: rgba(0, 0, 0, 0.18);
     color: #fff !important;
 }
 
@@ -70,6 +89,7 @@
     text-decoration: none !important;
     white-space: nowrap;
     font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,.16);
 }
 
 .m360-main-navigation__menu .sub-menu a:hover { background: rgba(0, 0, 0, 0.18); }
@@ -93,10 +113,17 @@
 .m360-breadcrumb a {
     color: #d71920 !important;
     text-decoration: none !important;
-    font-weight: 700;
+    font-weight: 800;
 }
 
-.m360-breadcrumb span[aria-current="page"] { color: #222; font-weight: 500; }
+.m360-breadcrumb span[aria-current="page"] {
+    color: #111;
+    font-weight: 800;
+    background: rgba(215,25,32,.08);
+    border: 1px solid rgba(215,25,32,.18);
+    border-radius: 999px;
+    padding: 3px 10px;
+}
 
 .m360-section-navigation { margin: 18px 0; }
 .m360-section-navigation ul { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -123,11 +150,7 @@
 
 .m360-section-navigation--index ul { align-items: flex-start; }
 
-.m360-dynamic-view__container {
-    width: min(1200px, calc(100% - 64px));
-    margin-left: auto;
-    margin-right: auto;
-}
+.m360-dynamic-view__container { width: min(1200px, calc(100% - 64px)); margin-left: auto; margin-right: auto; }
 
 .m360-search-card,
 .m360-author-card,
@@ -136,14 +159,87 @@
 .m360-search-view__header,
 .m360-author-hero,
 .m360-category-hero,
-.m360-tag-hero {
-    border: 1px solid rgba(0,0,0,.035);
-}
+.m360-tag-hero { border: 1px solid rgba(0,0,0,.035); }
 
 .m360-search-card h2 a:hover,
 .m360-author-card h2 a:hover,
 .m360-category-card h2 a:hover,
 .m360-tag-card h2 a:hover { color: #d71920 !important; }
+
+/* Compatibility polish for Elementor/theme menus used in PT-BR and EN-US header templates. */
+.elementor-location-header nav ul.menu > li,
+.elementor-location-header .elementor-nav-menu > li,
+.site-header nav ul.menu > li,
+.main-navigation ul.menu > li,
+#site-navigation ul.menu > li {
+    border-left: 1px solid rgba(255,255,255,.16);
+}
+
+.elementor-location-header nav ul.menu > li:last-child,
+.elementor-location-header .elementor-nav-menu > li:last-child,
+.site-header nav ul.menu > li:last-child,
+.main-navigation ul.menu > li:last-child,
+#site-navigation ul.menu > li:last-child {
+    border-right: 1px solid rgba(255,255,255,.16);
+}
+
+.elementor-location-header nav ul.menu > li:first-child > a::before,
+.elementor-location-header .elementor-nav-menu > li:first-child > a::before,
+.site-header nav ul.menu > li:first-child > a::before,
+.main-navigation ul.menu > li:first-child > a::before,
+#site-navigation ul.menu > li:first-child > a::before {
+    content: '⌂';
+    display: inline-block;
+    margin-right: 7px;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.elementor-location-header nav ul.menu > li.menu-item-has-children > a::after,
+.elementor-location-header .elementor-nav-menu > li.menu-item-has-children > a::after,
+.site-header nav ul.menu > li.menu-item-has-children > a::after,
+.main-navigation ul.menu > li.menu-item-has-children > a::after,
+#site-navigation ul.menu > li.menu-item-has-children > a::after {
+    content: '⌄';
+    display: inline-block;
+    margin-left: 7px;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+/* Compatibility polish for common theme breadcrumbs when M360 breadcrumb is not used directly. */
+.breadcrumbs,
+.breadcrumb,
+.trail-items,
+.rank-math-breadcrumb,
+.yoast-breadcrumb {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.breadcrumbs a,
+.breadcrumb a,
+.trail-items a,
+.rank-math-breadcrumb a,
+.yoast-breadcrumb a {
+    color: #d71920 !important;
+    font-weight: 800;
+    text-decoration: none !important;
+}
+
+.breadcrumbs .current,
+.breadcrumb .current,
+.trail-items .trail-end,
+.rank-math-breadcrumb .last,
+.yoast-breadcrumb span:last-child {
+    color: #111 !important;
+    font-weight: 800;
+    background: rgba(215,25,32,.08);
+    border: 1px solid rgba(215,25,32,.18);
+    border-radius: 999px;
+    padding: 3px 10px;
+}
 
 @media (max-width: 1024px) {
     .m360-mobile-nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
@@ -152,6 +248,7 @@
     .m360-main-navigation { display: none !important; width: 100%; }
     .m360-mobile-nav-toggle:checked ~ .m360-main-navigation { display: block !important; }
     .m360-main-navigation__menu { display: block !important; width: 100%; background: #d71920; }
+    .m360-main-navigation__menu > li { border-left: 0; border-right: 0; }
     .m360-main-navigation__menu > li > a { padding: 15px 22px; border-top: 1px solid rgba(255,255,255,0.10); }
     .m360-main-navigation__menu .sub-menu { position: static; display: none !important; box-shadow: none; padding-left: 18px !important; background: rgba(0, 0, 0, 0.08); }
     .m360-main-navigation__menu li:hover > .sub-menu,
