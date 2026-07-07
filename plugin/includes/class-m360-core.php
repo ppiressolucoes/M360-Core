@@ -10,6 +10,7 @@ require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
 require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-admin.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
@@ -45,9 +46,11 @@ final class M360_Core_Runtime_034
     {
         load_plugin_textdomain('m360-core', false, dirname(plugin_basename(M360_CORE_FILE)) . '/languages');
         M360_Ads_DB::maybe_upgrade();
+        M360_Ads_Admin::register();
         $this->init_view_engine();
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'register_admin_assets']);
         add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
         add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
         add_filter('template_include', ['M360_Category_Controller', 'template_include'], 32);
@@ -79,6 +82,13 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-tag', M360_CORE_URL . 'assets/css/tag.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
+    }
+
+    public function register_admin_assets(string $hook = ''): void
+    {
+        if (str_contains($hook, 'm360-ads')) {
+            wp_enqueue_style('m360-core-ads-admin', M360_CORE_URL . 'assets/css/m360-ads-admin.css', [], M360_CORE_VERSION);
+        }
     }
 
     public function register_shortcodes(): void
