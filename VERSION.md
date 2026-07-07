@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.3.7.0
+0.3.8.0
 ```
 
 ## Status
 
 ```text
-Sprint 10.6 Search Engine ready for workflow build
+Sprint 10.6 Author Engine ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 10.6 - Dynamic View Engine / Search Engine
+Sprint 10.6 - Dynamic View Engine / Author Engine
 ```
 
 ## Next planned version
 
 ```text
-0.3.7.1
+0.3.9.0
 ```
 
 ## Target environment
@@ -37,9 +37,10 @@ Sprint 10.6 - Dynamic View Engine / Search Engine
 
 - `0.3.4`: View Engine Foundation.
 - `0.3.6.2`: Navigation responsive hotfix homologated.
-- `0.3.7.0`: Search Engine dynamic view.
-- `0.3.7.1`: Author Engine.
-- `0.3.7.2`: Category and Tag Engine.
+- `0.3.7.4`: Search Engine dynamic view homologated.
+- `0.3.8.0`: Author Engine dynamic view.
+- `0.3.9.0`: Category Engine.
+- `0.4.0.0`: Tag Engine.
 
 ## Package source
 
