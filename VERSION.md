@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.2.4
+0.4.2.5
 ```
 
 ## Status
 
 ```text
-Sprint 11.2 Ads Slots Foundation ready for workflow build
+Sprint 11.3 Ads Manager ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.2 - M360 Ads Slots Foundation
+Sprint 11.3 - M360 Ads Manager
 ```
 
 ## Next planned version
@@ -46,13 +46,23 @@ Sprint 11.2 - M360 Ads Slots Foundation
 - `0.4.2.1`: Scoped Navigation UI Components Polish.
 - `0.4.2.2`: PT-BR theme menu hotfix.
 - `0.4.2.3`: M360 Latest News Component.
-- `0.4.2.4-docs`: M360 Ads Database Design and SQL reference scripts.
 - `0.4.2.4`: M360 Ads Slots Foundation with dbDelta, seed, shortcode and PHP API.
+- `0.4.2.5`: M360 Ads Manager admin panel.
 
 ## Ads DB schema version
 
 ```text
 0.4.2.4
+```
+
+## Ads Manager admin menu
+
+```text
+M360 Ads
+- Dashboard
+- Slots
+- Campanhas
+- Nova Campanha
 ```
 
 ## Ads shortcode
