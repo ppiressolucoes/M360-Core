@@ -19,7 +19,7 @@ final class M360_Navigation_Shortcodes
         $menu_id = 'm360-mobile-nav-' . wp_rand(1000, 999999);
         $html = wp_nav_menu(['menu'=>$menu->term_id,'container'=>'nav','container_class'=>'m360-main-navigation','menu_class'=>'m360-main-navigation__menu','echo'=>false,'fallback_cb'=>false,'depth'=>3]);
         if (!is_string($html) || $html === '') { return ''; }
-        return '<div class="m360-navigation-shell">'
+        return '<div class="m360-navigation-shell m360-ui-nav">'
             . '<input class="m360-mobile-nav-toggle" id="' . esc_attr($menu_id) . '" type="checkbox" aria-hidden="true">'
             . '<label class="m360-mobile-nav-button" for="' . esc_attr($menu_id) . '" aria-label="Menu"><span></span><span></span><span></span></label>'
             . $html
@@ -52,7 +52,7 @@ final class M360_Navigation_Shortcodes
         } elseif (is_page()) {
             $items[] = '<span aria-current="page">' . esc_html(get_the_title()) . '</span>';
         }
-        return '<nav class="m360-breadcrumb" aria-label="Breadcrumb"><ol><li>' . implode('</li><li>', $items) . '</li></ol></nav>';
+        return '<nav class="m360-breadcrumb m360-ui-breadcrumb-nav" aria-label="Breadcrumb"><ol><li>' . implode('</li><li>', $items) . '</li></ol></nav>';
     }
 
     public static function section_navigation(array $atts = []): string
@@ -100,6 +100,10 @@ final class M360_Navigation_Shortcodes
         return null;
     }
 
-    private static function enqueue_assets(): void { if (wp_style_is('m360-core-foundation','registered')) { wp_enqueue_style('m360-core-foundation'); } }
+    private static function enqueue_assets(): void
+    {
+        if (wp_style_is('m360-core-foundation','registered')) { wp_enqueue_style('m360-core-foundation'); }
+        if (wp_style_is('m360-core-navigation-components','registered')) { wp_enqueue_style('m360-core-navigation-components'); }
+    }
     private static function is_en(): bool { return str_starts_with((string)get_locale(), 'en'); }
 }
