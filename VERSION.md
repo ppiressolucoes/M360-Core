@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.4.2.4-docs
+0.4.2.4
 ```
 
 ## Status
 
 ```text
-M360 Ads Database Design documented for review
+Sprint 11.2 Ads Slots Foundation ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.2 - M360 Ads Database Design
+Sprint 11.2 - M360 Ads Slots Foundation
 ```
 
 ## Next planned version
 
 ```text
-0.4.2.4
+0.4.3.0
 ```
 
 ## Target environment
@@ -47,18 +47,24 @@ Sprint 11.2 - M360 Ads Database Design
 - `0.4.2.2`: PT-BR theme menu hotfix.
 - `0.4.2.3`: M360 Latest News Component.
 - `0.4.2.4-docs`: M360 Ads Database Design and SQL reference scripts.
+- `0.4.2.4`: M360 Ads Slots Foundation with dbDelta, seed, shortcode and PHP API.
 
-## Documentation source
+## Ads DB schema version
 
 ```text
-docs/02-architecture/M360_Ads_Database_Design.md
+0.4.2.4
 ```
 
-## SQL reference scripts
+## Ads shortcode
 
 ```text
-database/migrations/2026_07_08_m360_ads_schema.sql
-database/seeds/2026_07_08_m360_ads_default_slots.sql
+[m360_ad_slot id="article-top"]
+```
+
+## Ads PHP API
+
+```php
+m360_ad_slot('article-top');
 ```
 
 ## Package source
