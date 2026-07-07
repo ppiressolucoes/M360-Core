@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.3.5
+0.3.7.0
 ```
 
 ## Status
 
 ```text
-Urgent production shortcode recovery
+Sprint 10.6 Search Engine ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 10.5 - Navigation Shortcode Recovery
+Sprint 10.6 - Dynamic View Engine / Search Engine
 ```
 
 ## Next planned version
 
 ```text
-0.3.6
+0.3.7.1
 ```
 
 ## Target environment
@@ -31,14 +31,15 @@ Sprint 10.5 - Navigation Shortcode Recovery
 - Elementor
 - Polylang
 - Yoast SEO
+- LiteSpeed Cache
 
 ## Versioning rule
 
-- `0.3.2`: stable baseline migrated to GitHub.
 - `0.3.4`: View Engine Foundation.
-- `0.3.4.1`: plugin upgrade pipeline fix.
-- `0.3.5`: restore production navigation shortcodes.
-- `0.3.6`: Dynamic View Migration.
+- `0.3.6.2`: Navigation responsive hotfix homologated.
+- `0.3.7.0`: Search Engine dynamic view.
+- `0.3.7.1`: Author Engine.
+- `0.3.7.2`: Category and Tag Engine.
 
 ## Package source
 
