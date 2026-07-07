@@ -32,8 +32,15 @@ final class M360_Navigation_Shortcodes
     {
         self::enqueue_assets();
         $items = [];
-        $items[] = '<a href="' . esc_url(home_url('/')) . '">' . esc_html(self::is_en() ? 'Home' : 'Início') . '</a>';
-        if (is_singular()) {
+        $items[] = '<a href="' . esc_url(home_url(self::is_en() ? '/en/' : '/')) . '">' . esc_html(self::is_en() ? 'Home' : 'Início') . '</a>';
+
+        if (is_author()) {
+            $author = get_queried_object();
+            $label = self::is_en() ? 'Author' : 'Autor';
+            $name = ($author instanceof WP_User) ? $author->display_name : '';
+            $items[] = '<span>' . esc_html($label) . '</span>';
+            if ($name !== '') { $items[] = '<span aria-current="page">' . esc_html($name) . '</span>'; }
+        } elseif (is_singular()) {
             $cats = get_the_category();
             if (!empty($cats)) { $items[] = '<a href="' . esc_url(get_category_link($cats[0])) . '">' . esc_html($cats[0]->name) . '</a>'; }
             $items[] = '<span aria-current="page">' . esc_html(get_the_title()) . '</span>';
