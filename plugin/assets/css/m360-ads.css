@@ -1,0 +1,48 @@
+/* M360 Ads Slots Foundation - v0.4.2.4
+ * Scope: only .m360-ad and children.
+ */
+
+.m360-ad,
+.m360-ad * { box-sizing: border-box; }
+
+.m360-ad-slot {
+    display: block;
+    width: 100%;
+    margin: 18px auto;
+    text-align: center;
+}
+
+.m360-ad__link {
+    display: inline-block;
+    max-width: 100%;
+    text-decoration: none !important;
+}
+
+.m360-ad__image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 0;
+    border-radius: 10px;
+}
+
+.m360-ad__html,
+.m360-ad__script {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.m360-ad-slot--fallback {
+    min-height: 64px;
+    padding: 14px;
+    border: 1px dashed rgba(0,0,0,.16);
+    border-radius: 12px;
+    color: #6b7280;
+    background: #f8f9fb;
+}
+
+@media (max-width: 640px) {
+    .m360-ad-slot { margin: 14px auto; }
+    .m360-ad__image { border-radius: 8px; }
+}
