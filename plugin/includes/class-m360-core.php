@@ -8,6 +8,8 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php'
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
 require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-component.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
@@ -31,6 +33,7 @@ final class M360_Core_Runtime_034
     {
         update_option('m360_core_version', M360_CORE_VERSION, false);
         update_option('m360_core_activated_at', current_time('mysql'), false);
+        M360_Ads_DB::install();
     }
 
     public static function deactivate(): void
@@ -41,6 +44,7 @@ final class M360_Core_Runtime_034
     public function boot(): void
     {
         load_plugin_textdomain('m360-core', false, dirname(plugin_basename(M360_CORE_FILE)) . '/languages');
+        M360_Ads_DB::maybe_upgrade();
         $this->init_view_engine();
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
@@ -70,6 +74,7 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-ui-components', M360_CORE_URL . 'assets/css/m360-ui-components.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-navigation-components', M360_CORE_URL . 'assets/css/m360-navigation-components.css', ['m360-core-foundation', 'm360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-latest-news', M360_CORE_URL . 'assets/css/m360-latest-news.css', ['m360-core-ui-components'], M360_CORE_VERSION);
+        wp_register_style('m360-core-ads', M360_CORE_URL . 'assets/css/m360-ads.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
@@ -81,6 +86,7 @@ final class M360_Core_Runtime_034
         M360_Navigation_Shortcodes::register();
         M360_UI_Components::register_shortcodes();
         M360_Latest_News_Component::register_shortcodes();
+        M360_Ad_Slot_Component::register_shortcodes();
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
     }
