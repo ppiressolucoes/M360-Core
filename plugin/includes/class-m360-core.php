@@ -8,6 +8,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php'
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
+require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
 
 final class M360_Core_Runtime_034
 {
@@ -42,6 +43,7 @@ final class M360_Core_Runtime_034
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
         add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
         add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
+        add_filter('template_include', ['M360_Category_Controller', 'template_include'], 32);
     }
 
     private function init_view_engine(): void
@@ -53,6 +55,7 @@ final class M360_Core_Runtime_034
         $this->view_registry->register('latest', ['template' => 'latest', 'public' => true]);
         $this->view_registry->register('author', ['template' => 'author', 'public' => true]);
         $this->view_registry->register('search', ['template' => 'search', 'public' => true]);
+        $this->view_registry->register('category', ['template' => 'category', 'public' => true]);
     }
 
     public function register_assets(): void
@@ -60,6 +63,7 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-foundation', M360_CORE_URL . 'assets/css/m360-core.css', [], M360_CORE_VERSION);
         wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-foundation'], M360_CORE_VERSION);
     }
 
     public function register_shortcodes(): void
