@@ -1,0 +1,171 @@
+/* M360 Navigation UI Components Polish - v0.4.2.1
+ * Scope: only M360-rendered navigation and breadcrumb.
+ * No theme, Elementor, Home Editorial, Bolao or Semantic Relations selectors.
+ */
+
+.m360-navigation-shell.m360-ui-nav,
+.m360-navigation-shell.m360-ui-nav * { box-sizing: border-box; }
+
+.m360-navigation-shell.m360-ui-nav {
+    width: 100%;
+    position: relative;
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu {
+    display: flex !important;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0;
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li {
+    position: relative;
+    border-left: 1px solid rgba(255,255,255,.10);
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li:last-child {
+    border-right: 1px solid rgba(255,255,255,.10);
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li > a {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    min-height: 54px;
+    padding: 15px 18px;
+    color: #fff !important;
+    font-weight: 800;
+    line-height: 1.15;
+    text-decoration: none !important;
+    transition: background .18s ease, color .18s ease;
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li > a:hover,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li.current-menu-item > a,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li.current-menu-ancestor > a {
+    background: rgba(0,0,0,.15);
+    color: #fff !important;
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li:first-child > a::before {
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: currentColor;
+    opacity: .96;
+    transform: translateY(-1px);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath d='M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H376c-22.1 0-40-17.9-40-40v-96c0-17.7-14.3-32-32-32h-32c-17.7 0-32 14.3-32 32v96c0 22.1-17.9 40-40 40H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9.1-2.8v-69.7H32c-18 0-32-14-32-32.1 0-9 3-17 10-24L266.4 8c7-5 15-8 22-8s15 3 21 8l256.4 223.5c8 7 10 15 10 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath d='M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H376c-22.1 0-40-17.9-40-40v-96c0-17.7-14.3-32-32-32h-32c-17.7 0-32 14.3-32 32v96c0 22.1-17.9 40-40 40H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9.1-2.8v-69.7H32c-18 0-32-14-32-32.1 0-9 3-17 10-24L266.4 8c7-5 15-8 22-8s15 3 21 8l256.4 223.5c8 7 10 15 10 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li.menu-item-has-children > a::after,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li.page_item_has_children > a::after {
+    content: '';
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-left: 5px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    opacity: .72;
+    transform: rotate(45deg) translateY(-3px);
+    transition: opacity .18s ease, transform .18s ease;
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li.menu-item-has-children:hover > a::after,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li.page_item_has_children:hover > a::after {
+    opacity: 1;
+    transform: rotate(45deg) translateY(-1px);
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu {
+    min-width: 230px;
+    background: #d71920;
+    box-shadow: 0 16px 30px rgba(0,0,0,.22);
+}
+
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a {
+    border-bottom: 1px solid rgba(255,255,255,.14);
+    font-weight: 700;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav {
+    margin: 24px 0 18px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav li {
+    display: inline-flex;
+    align-items: center;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav li + li::before {
+    content: '›';
+    color: #d71920;
+    font-weight: 900;
+    opacity: .48;
+    margin-right: 8px;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav a {
+    color: #d71920 !important;
+    font-weight: 800;
+    text-decoration: none !important;
+    transition: color .18s ease;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav a:hover {
+    color: #b81218 !important;
+}
+
+.m360-breadcrumb.m360-ui-breadcrumb-nav span[aria-current="page"] {
+    color: #222 !important;
+    font-size: 14px;
+    font-weight: 650 !important;
+    background: #fff8f8 !important;
+    border: 1px solid #f2bcbc !important;
+    border-radius: 14px !important;
+    padding: 4px 12px !important;
+}
+
+@media (max-width: 1024px) {
+    .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu {
+        display: block !important;
+    }
+
+    .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu > li > a {
+        min-height: 52px;
+        padding: 15px 22px;
+    }
+}
+
+@media (max-width: 640px) {
+    .m360-breadcrumb.m360-ui-breadcrumb-nav {
+        margin: 18px 0;
+        font-size: 13px;
+    }
+
+    .m360-breadcrumb.m360-ui-breadcrumb-nav span[aria-current="page"] {
+        padding: 3px 9px !important;
+    }
+}
