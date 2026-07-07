@@ -7,6 +7,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
+require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-component.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
@@ -68,6 +69,7 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-ui-polish', M360_CORE_URL . 'assets/css/m360-ui-polish.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-ui-components', M360_CORE_URL . 'assets/css/m360-ui-components.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-navigation-components', M360_CORE_URL . 'assets/css/m360-navigation-components.css', ['m360-core-foundation', 'm360-core-ui-components'], M360_CORE_VERSION);
+        wp_register_style('m360-core-latest-news', M360_CORE_URL . 'assets/css/m360-latest-news.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
@@ -78,6 +80,7 @@ final class M360_Core_Runtime_034
     {
         M360_Navigation_Shortcodes::register();
         M360_UI_Components::register_shortcodes();
+        M360_Latest_News_Component::register_shortcodes();
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
     }
