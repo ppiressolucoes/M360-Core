@@ -11,6 +11,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php'
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
+require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
 
 final class M360_Core_Runtime_034
 {
@@ -50,6 +51,7 @@ final class M360_Core_Runtime_034
 
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
+        add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
     }
 
     private function init_view_engine(): void
@@ -61,6 +63,7 @@ final class M360_Core_Runtime_034
         $this->view_registry->register('status', ['template' => 'status', 'public' => false]);
         $this->view_registry->register('latest', ['template' => 'latest', 'public' => true]);
         $this->view_registry->register('author', ['template' => 'author', 'public' => true]);
+        $this->view_registry->register('search', ['template' => 'search', 'public' => true]);
     }
 
     public function register_assets(): void
@@ -69,6 +72,13 @@ final class M360_Core_Runtime_034
             'm360-core-foundation',
             M360_CORE_URL . 'assets/css/m360-core.css',
             [],
+            M360_CORE_VERSION
+        );
+
+        wp_register_style(
+            'm360-core-search',
+            M360_CORE_URL . 'assets/css/search.css',
+            ['m360-core-foundation'],
             M360_CORE_VERSION
         );
     }
