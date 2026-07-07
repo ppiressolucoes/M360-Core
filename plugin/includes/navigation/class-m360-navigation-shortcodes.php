@@ -36,10 +36,12 @@ final class M360_Navigation_Shortcodes
 
         if (is_author()) {
             $author = get_queried_object();
-            $label = self::is_en() ? 'Author' : 'Autor';
-            $name = ($author instanceof WP_User) ? $author->display_name : '';
-            $items[] = '<span>' . esc_html($label) . '</span>';
-            if ($name !== '') { $items[] = '<span aria-current="page">' . esc_html($name) . '</span>'; }
+            $items[] = '<span>' . esc_html(self::is_en() ? 'Author' : 'Autor') . '</span>';
+            if ($author instanceof WP_User) { $items[] = '<span aria-current="page">' . esc_html($author->display_name) . '</span>'; }
+        } elseif (is_category()) {
+            $term = get_queried_object();
+            $items[] = '<span>' . esc_html(self::is_en() ? 'Category' : 'Categoria') . '</span>';
+            if ($term instanceof WP_Term) { $items[] = '<span aria-current="page">' . esc_html($term->name) . '</span>'; }
         } elseif (is_singular()) {
             $cats = get_the_category();
             if (!empty($cats)) { $items[] = '<a href="' . esc_url(get_category_link($cats[0])) . '">' . esc_html($cats[0]->name) . '</a>'; }
