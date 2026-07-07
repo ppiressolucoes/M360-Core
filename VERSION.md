@@ -3,13 +3,13 @@
 ## Current version
 
 ```text
-0.4.1.2
+0.4.1.3
 ```
 
 ## Status
 
 ```text
-Sprint 10.7 Final UI Polish ready for workflow build
+Sprint 10.7 Home Editorial compatibility hotfix ready for workflow build
 ```
 
 ## Current sprint
@@ -45,6 +45,7 @@ Sprint 10.7 - Visual Refinement and Plugin Compatibility
 - `0.4.1.0`: Navigation and Dynamic Views Visual Refinement.
 - `0.4.1.1`: Visible navigation polish.
 - `0.4.1.2`: Final UI polish stylesheet.
+- `0.4.1.3`: Home Editorial compatibility hotfix with scoped UI polish.
 
 ## Package source
 
