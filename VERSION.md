@@ -3,13 +3,13 @@
 ## Current version
 
 ```text
-0.4.1.0
+0.4.1.2
 ```
 
 ## Status
 
 ```text
-Sprint 10.7 Visual Refinement ready for workflow build
+Sprint 10.7 Final UI Polish ready for workflow build
 ```
 
 ## Current sprint
@@ -21,7 +21,7 @@ Sprint 10.7 - Visual Refinement and Plugin Compatibility
 ## Next planned version
 
 ```text
-0.4.1.1
+0.4.2.0
 ```
 
 ## Target environment
@@ -43,6 +43,8 @@ Sprint 10.7 - Visual Refinement and Plugin Compatibility
 - `0.3.9.0`: Category Engine homologated.
 - `0.4.0.0`: Tag Engine homologated.
 - `0.4.1.0`: Navigation and Dynamic Views Visual Refinement.
+- `0.4.1.1`: Visible navigation polish.
+- `0.4.1.2`: Final UI polish stylesheet.
 
 ## Package source
 
