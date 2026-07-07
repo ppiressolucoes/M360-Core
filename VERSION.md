@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.4.1.3
+0.4.2.0
 ```
 
 ## Status
 
 ```text
-Sprint 10.7 Home Editorial compatibility hotfix ready for workflow build
+Sprint 11 UI Components Foundation ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 10.7 - Visual Refinement and Plugin Compatibility
+Sprint 11 - UI Components Foundation
 ```
 
 ## Next planned version
 
 ```text
-0.4.2.0
+0.4.3.0
 ```
 
 ## Target environment
@@ -42,10 +42,8 @@ Sprint 10.7 - Visual Refinement and Plugin Compatibility
 - `0.3.8.2`: Author Engine homologated.
 - `0.3.9.0`: Category Engine homologated.
 - `0.4.0.0`: Tag Engine homologated.
-- `0.4.1.0`: Navigation and Dynamic Views Visual Refinement.
-- `0.4.1.1`: Visible navigation polish.
-- `0.4.1.2`: Final UI polish stylesheet.
 - `0.4.1.3`: Home Editorial compatibility hotfix with scoped UI polish.
+- `0.4.2.0`: M360 UI Components Foundation.
 
 ## Package source
 
