@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.3.3
+0.4.3.4
 ```
 
 ## Status
 
 ```text
-M360 Ads Renderer Stabilization ready for workflow build
+M360 Ads Trusted Markup Persistence ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.7.3 - M360 Ads Renderer Stabilization
+Sprint 11.7.4 - M360 Ads Trusted Markup Persistence
 ```
 
 ## Next planned version
@@ -48,6 +48,7 @@ Sprint 11.7.3 - M360 Ads Renderer Stabilization
 - `0.4.3.1`: Hotfix for widget shortcode support and slot-aware creative selection.
 - `0.4.3.2`: Stabilization for creative edit form, media picker assets and header banner alignment.
 - `0.4.3.3`: Renderer stabilization for slot-specific creatives and HTML payloads.
+- `0.4.3.4`: Trusted ad markup persistence for `<style>` and `<script>` payloads.
 
 ## Ads DB schema version
 
@@ -82,15 +83,14 @@ echo m360_ads_render_slot('sidebar-square');
 [m360_ad_slot id="sidebar-square"]
 ```
 
-## Renderer fixes
+## Trusted markup fixes
 
 ```text
-Slot-specific creative candidates
-sidebar-square resolves to m360-pilot-sidebar-mega-bolao
-sidebar-community resolves to m360-pilot-sidebar-whatsapp
-HTML payloads preserve style tags instead of printing CSS as text
-Shortcodes inside HTML payloads are executed
-Square fallback by aspect ratio
+HTML textarea preserves script tags for M360 Ads administrators
+HTML textarea preserves style tags
+WordPress slashes are removed before saving
+Renderer outputs trusted stored ad markup
+Renderer executes shortcodes inside trusted markup
 ```
 
 ## Ads Manager admin menu
