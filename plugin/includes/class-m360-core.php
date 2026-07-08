@@ -53,6 +53,9 @@ final class M360_Core_Runtime_034
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
         add_action('admin_enqueue_scripts', [$this, 'register_admin_assets']);
+        add_filter('widget_text', 'do_shortcode', 11);
+        add_filter('widget_text_content', 'do_shortcode', 11);
+        add_filter('widget_custom_html_content', 'do_shortcode', 11);
         add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
         add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
         add_filter('template_include', ['M360_Category_Controller', 'template_include'], 32);
