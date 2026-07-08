@@ -11,6 +11,7 @@ require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-compo
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-admin.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-creatives-admin.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
@@ -47,6 +48,7 @@ final class M360_Core_Runtime_034
         load_plugin_textdomain('m360-core', false, dirname(plugin_basename(M360_CORE_FILE)) . '/languages');
         M360_Ads_DB::maybe_upgrade();
         M360_Ads_Admin::register();
+        M360_Ads_Creatives_Admin::register();
         $this->init_view_engine();
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
