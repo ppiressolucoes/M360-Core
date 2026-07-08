@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.3.1
+0.4.3.2
 ```
 
 ## Status
 
 ```text
-M360 Ads Pilot hotfix ready for workflow build
+M360 Ads Pilot stabilization ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.7.1 - M360 Ads Pilot Hotfix
+Sprint 11.7.2 - M360 Ads Pilot Stabilization
 ```
 
 ## Next planned version
@@ -46,6 +46,7 @@ Sprint 11.7.1 - M360 Ads Pilot Hotfix
 - `0.4.2.8`: M360 Ads Creative Preview UX and media metadata panel.
 - `0.4.3.0`: M360 Ads Pilot Production Inventory.
 - `0.4.3.1`: Hotfix for widget shortcode support and slot-aware creative selection.
+- `0.4.3.2`: Stabilization for creative edit form, media picker assets and header banner alignment.
 
 ## Ads DB schema version
 
@@ -87,6 +88,16 @@ Text widget
 Custom HTML widget
 widget_text_content
 widget_custom_html_content
+```
+
+## Ads Manager fixes
+
+```text
+Creative edit form hardened
+Top save button added
+Media picker assets hardened
+728x140 and 300x300 presets added
+Header banner centered and normalized
 ```
 
 ## Ads Manager admin menu
