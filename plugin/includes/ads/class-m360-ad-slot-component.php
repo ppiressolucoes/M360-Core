@@ -63,22 +63,23 @@ final class M360_Ad_Slot_Component
         $language = self::language();
         $device = self::device();
 
-        $slug_like = 'm360-pilot-' . $wpdb->esc_like($slot_key) . '%';
-        $row = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table}
-             WHERE campaign_id = %d
-               AND status = 'active'
-               AND (language = %s OR language = 'all')
-               AND (device = %s OR device = 'all')
-               AND slug LIKE %s
-             ORDER BY id DESC
-             LIMIT 1",
-            $campaign_id,
-            $language,
-            $device,
-            $slug_like
-        ), ARRAY_A);
-        if (is_array($row)) { return $row; }
+        foreach (self::slot_slug_candidates($slot_key) as $slug) {
+            $row = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$table}
+                 WHERE campaign_id = %d
+                   AND status = 'active'
+                   AND (language = %s OR language = 'all')
+                   AND (device = %s OR device = 'all')
+                   AND slug = %s
+                 ORDER BY id DESC
+                 LIMIT 1",
+                $campaign_id,
+                $language,
+                $device,
+                $slug
+            ), ARRAY_A);
+            if (is_array($row)) { return $row; }
+        }
 
         $width = absint($slot['max_width'] ?? 0);
         $height = absint($slot['max_height'] ?? 0);
@@ -102,6 +103,23 @@ final class M360_Ad_Slot_Component
             if (is_array($row)) { return $row; }
         }
 
+        if ($width && $height && abs($width - $height) <= 2) {
+            $row = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$table}
+                 WHERE campaign_id = %d
+                   AND status = 'active'
+                   AND (language = %s OR language = 'all')
+                   AND (device = %s OR device = 'all')
+                   AND width = height
+                 ORDER BY id DESC
+                 LIMIT 1",
+                $campaign_id,
+                $language,
+                $device
+            ), ARRAY_A);
+            if (is_array($row)) { return $row; }
+        }
+
         $row = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table}
              WHERE campaign_id = %d
@@ -115,6 +133,18 @@ final class M360_Ad_Slot_Component
             $device
         ), ARRAY_A);
         return is_array($row) ? $row : null;
+    }
+
+    private static function slot_slug_candidates(string $slot_key): array
+    {
+        $map = [
+            'header-top' => ['m360-pilot-header-mega-bolao'],
+            'content-bottom' => ['m360-pilot-content-whatsapp'],
+            'sidebar-community' => ['m360-pilot-sidebar-whatsapp'],
+            'sidebar-square' => ['m360-pilot-sidebar-mega-bolao'],
+        ];
+        $base = ['m360-pilot-' . $slot_key, 'm360-pilot-' . str_replace('-', '_', $slot_key)];
+        return array_values(array_unique(array_merge($map[$slot_key] ?? [], $base)));
     }
 
     private static function render_creative(array $creative): string
@@ -148,7 +178,24 @@ final class M360_Ad_Slot_Component
 
     private static function render_html_payload(array $payload): string
     {
-        return '<div class="m360-ad__html">' . wp_kses_post((string) ($payload['html_code'] ?? '')) . '</div>';
+        $html = (string) ($payload['html_code'] ?? '');
+        if ($html === '') { return ''; }
+        return '<div class="m360-ad__html">' . do_shortcode(wp_kses($html, self::allowed_html())) . '</div>';
+    }
+
+    private static function allowed_html(): array
+    {
+        $allowed = wp_kses_allowed_html('post');
+        $allowed['style'] = ['type' => true, 'media' => true];
+        $allowed['div']['style'] = true;
+        $allowed['span']['style'] = true;
+        $allowed['p']['style'] = true;
+        $allowed['a']['style'] = true;
+        $allowed['a']['target'] = true;
+        $allowed['a']['rel'] = true;
+        $allowed['section'] = ['class' => true, 'id' => true, 'style' => true, 'data-*' => true];
+        $allowed['aside'] = ['class' => true, 'id' => true, 'style' => true, 'data-*' => true];
+        return $allowed;
     }
 
     private static function fallback(string $slot_key, array $args = [], ?array $slot = null): string
