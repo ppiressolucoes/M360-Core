@@ -3,25 +3,25 @@
 ## Current version
 
 ```text
-0.4.2.8
+0.4.3.0
 ```
 
 ## Status
 
 ```text
-Sprint 11.6 Ads Creative Preview UX ready for workflow build
+M360 Ads Pilot Production Inventory ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.6 - M360 Ads Creative Preview UX
+Sprint 11.7 - M360 Ads Pilot Production Inventory
 ```
 
 ## Next planned version
 
 ```text
-0.4.3.0
+0.5.0.0
 ```
 
 ## Target environment
@@ -44,11 +44,39 @@ Sprint 11.6 - M360 Ads Creative Preview UX
 - `0.4.2.6`: M360 Ads Creatives Library with dedicated creatives table and admin screens.
 - `0.4.2.7`: M360 Ads Creatives Media Picker and size presets.
 - `0.4.2.8`: M360 Ads Creative Preview UX and media metadata panel.
+- `0.4.3.0`: M360 Ads Pilot Production Inventory.
 
 ## Ads DB schema version
 
 ```text
-0.4.2.6
+0.4.3.0
+```
+
+## Production pilot slots
+
+```text
+header-top
+content-bottom
+sidebar-community
+sidebar-square
+```
+
+## Theme/API integration
+
+```php
+echo m360_ads_render_slot('header-top');
+echo m360_ads_render_slot('content-bottom');
+echo m360_ads_render_slot('sidebar-community');
+echo m360_ads_render_slot('sidebar-square');
+```
+
+## Ads shortcodes
+
+```text
+[m360_ad_slot id="header-top"]
+[m360_ad_slot id="content-bottom"]
+[m360_ad_slot id="sidebar-community"]
+[m360_ad_slot id="sidebar-square"]
 ```
 
 ## Ads Manager admin menu
@@ -56,51 +84,12 @@ Sprint 11.6 - M360 Ads Creative Preview UX
 ```text
 M360 Ads
 - Dashboard
+- Inventário Piloto
 - Slots
 - Campanhas
 - Criativos
 - Nova Campanha
 - Novo Criativo
-```
-
-## Creative UX
-
-```text
-Preview grande
-Metadados automáticos
-Detecção automática de preset
-Aviso de incompatibilidade de tamanho
-```
-
-## Creative size presets
-
-```text
-300x250
-728x90
-970x250
-1200x250
-320x100
-300x600
-Responsivo
-Personalizado
-```
-
-## Dedicated upload directory
-
-```text
-wp-content/uploads/m360-ads/
-```
-
-## Ads shortcode
-
-```text
-[m360_ad_slot id="article-top"]
-```
-
-## Ads PHP API
-
-```php
-m360_ad_slot('article-top');
 ```
 
 ## Package source
