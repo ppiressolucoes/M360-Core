@@ -3,14 +3,12 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_DB
 {
-    public const SCHEMA_VERSION = '0.4.2.6';
+    public const SCHEMA_VERSION = '0.4.3.0';
 
     public static function install(): void
     {
         global $wpdb;
-
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
         $charset_collate = $wpdb->get_charset_collate();
         $slots = self::table('ad_slots');
         $campaigns = self::table('ad_campaigns');
@@ -115,6 +113,7 @@ final class M360_Ads_DB
         ) {$charset_collate};");
 
         self::seed_default_slots();
+        self::seed_production_pilot();
         self::ensure_upload_dir();
         update_option('m360_ads_db_version', self::SCHEMA_VERSION, false);
     }
@@ -139,11 +138,18 @@ final class M360_Ads_DB
         return $base;
     }
 
+    public static function pilot_slots(): array
+    {
+        return [
+            'header-top' => 'Header Top 728x140',
+            'content-bottom' => 'Content Bottom WhatsApp',
+            'sidebar-community' => 'Sidebar Community CTA',
+            'sidebar-square' => 'Sidebar Square 1:1',
+        ];
+    }
+
     private static function seed_default_slots(): void
     {
-        global $wpdb;
-        $table = self::table('ad_slots');
-        $now = current_time('mysql');
         $slots = [
             ['header-banner', 'Header Banner', 'Banner principal no topo do portal.', 'header', 'global', 'all', 'desktop', 970, 250],
             ['header-mobile', 'Header Mobile', 'Banner principal no topo para mobile.', 'header', 'global', 'all', 'mobile', 320, 100],
@@ -163,13 +169,89 @@ final class M360_Ads_DB
             ['author-top', 'Author Top', 'Slot superior em paginas de autor.', 'top', 'author', 'all', 'all', 970, 250],
             ['search-top', 'Search Top', 'Slot superior em paginas de busca.', 'top', 'search', 'all', 'all', 970, 250],
             ['latest-news-inline', 'Latest News Inline', 'Slot associado ao componente de ultimas noticias.', 'inline', 'latest-news', 'all', 'all', 728, 90],
+            ['header-top', 'Header Top 728x140', 'Piloto de produção: banner horizontal Mega Bolão no cabeçalho.', 'header', 'global', 'all', 'all', 728, 140],
+            ['content-bottom', 'Content Bottom WhatsApp', 'Piloto de produção: CTA horizontal de comunidade antes do rodapé.', 'bottom', 'post', 'all', 'all', 1200, 250],
+            ['sidebar-community', 'Sidebar Community CTA', 'Piloto de produção: CTA responsivo de comunidade na sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 300],
+            ['sidebar-square', 'Sidebar Square 1:1', 'Piloto de produção: criativo quadrado Mega Bolão na sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 300],
         ];
+        foreach ($slots as $slot) { self::upsert_slot($slot); }
+    }
 
-        foreach ($slots as $slot) {
-            $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE slot_key = %s LIMIT 1", $slot[0]));
-            $data = ['slot_key'=>$slot[0],'name'=>$slot[1],'description'=>$slot[2],'position'=>$slot[3],'page_context'=>$slot[4],'language'=>$slot[5],'device'=>$slot[6],'max_width'=>$slot[7],'max_height'=>$slot[8],'is_active'=>1,'updated_at'=>$now];
-            if ($exists) { $wpdb->update($table, $data, ['id' => (int) $exists]); }
-            else { $data['created_at'] = $now; $wpdb->insert($table, $data); }
-        }
+    private static function upsert_slot(array $slot): void
+    {
+        global $wpdb;
+        $table = self::table('ad_slots');
+        $now = current_time('mysql');
+        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE slot_key = %s LIMIT 1", $slot[0]));
+        $data = ['slot_key'=>$slot[0],'name'=>$slot[1],'description'=>$slot[2],'position'=>$slot[3],'page_context'=>$slot[4],'language'=>$slot[5],'device'=>$slot[6],'max_width'=>$slot[7],'max_height'=>$slot[8],'is_active'=>1,'updated_at'=>$now];
+        if ($exists) { $wpdb->update($table, $data, ['id' => (int) $exists]); }
+        else { $data['created_at'] = $now; $wpdb->insert($table, $data); }
+    }
+
+    private static function seed_production_pilot(): void
+    {
+        $mega = self::upsert_campaign('m360-pilot-mega-bolao', 'M360 Pilot - Mega Bolão 360', 'Mega Bolão 360', 'house', 100);
+        $whatsapp = self::upsert_campaign('m360-pilot-whatsapp', 'M360 Pilot - Comunidade WhatsApp', 'Mengão 360', 'house', 90);
+        self::upsert_creative($mega, 'm360-pilot-header-mega-bolao', 'Header Mega Bolão 728x140', 'image', '/wp-content/uploads/2026/06/BANNER-HORIZONTAL-MEGA-BOLAO-360-728X140.jpg', '', '', 728, 140);
+        self::upsert_creative($mega, 'm360-pilot-sidebar-mega-bolao', 'Sidebar Mega Bolão 1:1', 'html', '', '', self::mega_square_html(), 300, 300);
+        self::upsert_creative($whatsapp, 'm360-pilot-content-whatsapp', 'Content Bottom Comunidade WhatsApp', 'html', '', '', self::whatsapp_horizontal_html(), 1200, 250);
+        self::upsert_creative($whatsapp, 'm360-pilot-sidebar-whatsapp', 'Sidebar Comunidade WhatsApp', 'html', '', '', self::whatsapp_sidebar_html(), 300, 300);
+        self::assign_slot('header-top', $mega, 100);
+        self::assign_slot('content-bottom', $whatsapp, 100);
+        self::assign_slot('sidebar-community', $whatsapp, 90);
+        self::assign_slot('sidebar-square', $mega, 80);
+    }
+
+    private static function upsert_campaign(string $slug, string $title, string $advertiser, string $type, int $priority): int
+    {
+        global $wpdb;
+        $table = self::table('ad_campaigns');
+        $now = current_time('mysql');
+        $id = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE title = %s LIMIT 1", $title));
+        $data = ['title'=>$title,'advertiser'=>$advertiser,'campaign_type'=>$type,'language'=>'all','device'=>'all','priority'=>$priority,'status'=>'active','updated_at'=>$now];
+        if ($id) { $wpdb->update($table, $data, ['id'=>$id]); return $id; }
+        $data['created_at'] = $now;
+        $wpdb->insert($table, $data);
+        return (int) $wpdb->insert_id;
+    }
+
+    private static function upsert_creative(int $campaign_id, string $slug, string $title, string $type, string $image_url, string $target_url, string $html, int $width, int $height): void
+    {
+        global $wpdb;
+        $table = self::table('ad_creatives');
+        $now = current_time('mysql');
+        $id = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE slug = %s LIMIT 1", $slug));
+        $data = ['campaign_id'=>$campaign_id,'title'=>$title,'slug'=>$slug,'creative_type'=>$type,'image_url'=>$image_url,'target_url'=>$target_url,'html_code'=>$html,'alt_text'=>$title,'language'=>'all','device'=>'all','width'=>$width,'height'=>$height,'mime'=>$type === 'image' ? 'image/jpeg' : 'text/html','status'=>'active','updated_at'=>$now];
+        if ($id) { $wpdb->update($table, $data, ['id'=>$id]); }
+        else { $data['created_at'] = $now; $wpdb->insert($table, $data); }
+    }
+
+    private static function assign_slot(string $slot_key, int $campaign_id, int $priority): void
+    {
+        global $wpdb;
+        $slots = self::table('ad_slots');
+        $relations = self::table('ad_slot_campaigns');
+        $now = current_time('mysql');
+        $slot_id = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$slots} WHERE slot_key = %s LIMIT 1", $slot_key));
+        if (!$slot_id || !$campaign_id) { return; }
+        $id = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$relations} WHERE slot_id = %d AND campaign_id = %d LIMIT 1", $slot_id, $campaign_id));
+        $data = ['slot_id'=>$slot_id,'campaign_id'=>$campaign_id,'priority'=>$priority,'weight'=>100,'is_active'=>1,'updated_at'=>$now];
+        if ($id) { $wpdb->update($relations, $data, ['id'=>$id]); }
+        else { $data['created_at'] = $now; $wpdb->insert($relations, $data); }
+    }
+
+    private static function whatsapp_horizontal_html(): string
+    {
+        return '<div class="m360-house-ad m360-house-ad--whatsapp-horizontal"><div class="m360-house-ad__icon">💬</div><div class="m360-house-ad__body"><span>COMUNIDADE OFICIAL</span><strong>Entre na comunidade Mega Bolão 360</strong><p>Novidades, notícias e atualizações das competições em um só lugar.</p></div><a href="#" class="m360-house-ad__button">WHATSAPP ›</a></div>';
+    }
+
+    private static function whatsapp_sidebar_html(): string
+    {
+        return '<div class="m360-house-ad m360-house-ad--whatsapp-card"><span>🏆 MEGA BOLÃO 360</span><strong>O maior torneio da história:</strong><p>Crie seu bolão grátis e acompanhe tudo em tempo real.</p><a href="#" class="m360-house-ad__button">Entrar na comunidade</a></div>';
+    }
+
+    private static function mega_square_html(): string
+    {
+        return '<div class="m360-house-ad m360-house-ad--mega-square"><span>MEGA BOLÃO 360</span><strong>Crie, convide e acompanhe</strong><p>Monte seu grupo e dispute rankings em tempo real.</p><a href="#" class="m360-house-ad__button">Criar bolão grátis</a></div>';
     }
 }
