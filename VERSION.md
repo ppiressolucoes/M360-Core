@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.2.7
+0.4.2.8
 ```
 
 ## Status
 
 ```text
-Sprint 11.5 Ads Creatives Media Picker ready for workflow build
+Sprint 11.6 Ads Creative Preview UX ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.5 - M360 Ads Creatives Media Picker
+Sprint 11.6 - M360 Ads Creative Preview UX
 ```
 
 ## Next planned version
@@ -43,6 +43,7 @@ Sprint 11.5 - M360 Ads Creatives Media Picker
 - `0.4.2.5`: M360 Ads Manager admin panel.
 - `0.4.2.6`: M360 Ads Creatives Library with dedicated creatives table and admin screens.
 - `0.4.2.7`: M360 Ads Creatives Media Picker and size presets.
+- `0.4.2.8`: M360 Ads Creative Preview UX and media metadata panel.
 
 ## Ads DB schema version
 
@@ -60,6 +61,15 @@ M360 Ads
 - Criativos
 - Nova Campanha
 - Novo Criativo
+```
+
+## Creative UX
+
+```text
+Preview grande
+Metadados automáticos
+Detecção automática de preset
+Aviso de incompatibilidade de tamanho
 ```
 
 ## Creative size presets
