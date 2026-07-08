@@ -90,6 +90,8 @@ final class M360_Core_Runtime_034
     {
         if (str_contains($hook, 'm360-ads')) {
             wp_enqueue_style('m360-core-ads-admin', M360_CORE_URL . 'assets/css/m360-ads-admin.css', [], M360_CORE_VERSION);
+            wp_enqueue_media();
+            wp_enqueue_script('m360-core-ads-admin', M360_CORE_URL . 'assets/js/m360-ads-admin.js', ['jquery'], M360_CORE_VERSION, true);
         }
     }
 
