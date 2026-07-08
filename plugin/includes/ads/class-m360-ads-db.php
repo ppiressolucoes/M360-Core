@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_DB
 {
-    public const SCHEMA_VERSION = '0.4.2.4';
+    public const SCHEMA_VERSION = '0.4.2.6';
 
     public static function install(): void
     {
@@ -15,6 +15,7 @@ final class M360_Ads_DB
         $slots = self::table('ad_slots');
         $campaigns = self::table('ad_campaigns');
         $relations = self::table('ad_slot_campaigns');
+        $creatives = self::table('ad_creatives');
 
         dbDelta("CREATE TABLE {$slots} (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -83,7 +84,38 @@ final class M360_Ads_DB
             KEY is_active (is_active)
         ) {$charset_collate};");
 
+        dbDelta("CREATE TABLE {$creatives} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            campaign_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            title VARCHAR(220) NOT NULL,
+            slug VARCHAR(180) NOT NULL,
+            creative_type VARCHAR(40) NOT NULL DEFAULT 'image',
+            image_url TEXT NULL,
+            target_url TEXT NULL,
+            html_code LONGTEXT NULL,
+            script_code LONGTEXT NULL,
+            alt_text VARCHAR(220) NULL,
+            language VARCHAR(10) NOT NULL DEFAULT 'all',
+            device VARCHAR(20) NOT NULL DEFAULT 'all',
+            width INT UNSIGNED NULL,
+            height INT UNSIGNED NULL,
+            mime VARCHAR(120) NULL,
+            filesize BIGINT UNSIGNED NULL,
+            checksum VARCHAR(80) NULL,
+            status VARCHAR(30) NOT NULL DEFAULT 'draft',
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            PRIMARY KEY  (id),
+            KEY campaign_id (campaign_id),
+            KEY slug (slug),
+            KEY creative_type (creative_type),
+            KEY language (language),
+            KEY device (device),
+            KEY status (status)
+        ) {$charset_collate};");
+
         self::seed_default_slots();
+        self::ensure_upload_dir();
         update_option('m360_ads_db_version', self::SCHEMA_VERSION, false);
     }
 
@@ -97,6 +129,14 @@ final class M360_Ads_DB
     {
         global $wpdb;
         return $wpdb->prefix . 'm360_' . $name;
+    }
+
+    public static function ensure_upload_dir(): string
+    {
+        $upload = wp_upload_dir();
+        $base = trailingslashit((string) ($upload['basedir'] ?? '')) . 'm360-ads';
+        if (!is_dir($base)) { wp_mkdir_p($base); }
+        return $base;
     }
 
     private static function seed_default_slots(): void
@@ -127,25 +167,9 @@ final class M360_Ads_DB
 
         foreach ($slots as $slot) {
             $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE slot_key = %s LIMIT 1", $slot[0]));
-            $data = [
-                'slot_key' => $slot[0],
-                'name' => $slot[1],
-                'description' => $slot[2],
-                'position' => $slot[3],
-                'page_context' => $slot[4],
-                'language' => $slot[5],
-                'device' => $slot[6],
-                'max_width' => $slot[7],
-                'max_height' => $slot[8],
-                'is_active' => 1,
-                'updated_at' => $now,
-            ];
-            if ($exists) {
-                $wpdb->update($table, $data, ['id' => (int) $exists]);
-            } else {
-                $data['created_at'] = $now;
-                $wpdb->insert($table, $data);
-            }
+            $data = ['slot_key'=>$slot[0],'name'=>$slot[1],'description'=>$slot[2],'position'=>$slot[3],'page_context'=>$slot[4],'language'=>$slot[5],'device'=>$slot[6],'max_width'=>$slot[7],'max_height'=>$slot[8],'is_active'=>1,'updated_at'=>$now];
+            if ($exists) { $wpdb->update($table, $data, ['id' => (int) $exists]); }
+            else { $data['created_at'] = $now; $wpdb->insert($table, $data); }
         }
     }
 }
