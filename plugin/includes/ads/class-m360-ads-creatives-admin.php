@@ -79,28 +79,30 @@ final class M360_Ads_Creatives_Admin
         global $wpdb;
         M360_Ads_DB::ensure_upload_dir();
         $id = absint($_POST['id'] ?? 0);
-        $title = sanitize_text_field((string) ($_POST['title'] ?? ''));
-        $slug = sanitize_title((string) ($_POST['slug'] ?? ''));
+        $title = sanitize_text_field(wp_unslash((string) ($_POST['title'] ?? '')));
+        $slug = sanitize_title(wp_unslash((string) ($_POST['slug'] ?? '')));
         if ($slug === '') { $slug = sanitize_title($title); }
         $now = current_time('mysql');
+        $raw_html = wp_unslash((string) ($_POST['html_code'] ?? ''));
+        $raw_script = wp_unslash((string) ($_POST['script_code'] ?? ''));
         $data = [
             'campaign_id' => absint($_POST['campaign_id'] ?? 0),
             'title' => $title !== '' ? $title : 'Criativo sem titulo',
             'slug' => $slug !== '' ? $slug : ('creative-' . time()),
-            'creative_type' => sanitize_key((string) ($_POST['creative_type'] ?? 'image')),
-            'image_url' => esc_url_raw((string) ($_POST['image_url'] ?? '')),
-            'target_url' => esc_url_raw((string) ($_POST['target_url'] ?? '')),
-            'html_code' => wp_kses_post((string) ($_POST['html_code'] ?? '')),
-            'script_code' => current_user_can('unfiltered_html') ? (string) ($_POST['script_code'] ?? '') : '',
-            'alt_text' => sanitize_text_field((string) ($_POST['alt_text'] ?? '')),
-            'language' => sanitize_key((string) ($_POST['language'] ?? 'all')),
-            'device' => sanitize_key((string) ($_POST['device'] ?? 'all')),
+            'creative_type' => sanitize_key(wp_unslash((string) ($_POST['creative_type'] ?? 'image'))),
+            'image_url' => esc_url_raw(wp_unslash((string) ($_POST['image_url'] ?? ''))),
+            'target_url' => esc_url_raw(wp_unslash((string) ($_POST['target_url'] ?? ''))),
+            'html_code' => self::sanitize_ad_markup($raw_html),
+            'script_code' => self::sanitize_ad_markup($raw_script),
+            'alt_text' => sanitize_text_field(wp_unslash((string) ($_POST['alt_text'] ?? ''))),
+            'language' => sanitize_key(wp_unslash((string) ($_POST['language'] ?? 'all'))),
+            'device' => sanitize_key(wp_unslash((string) ($_POST['device'] ?? 'all'))),
             'width' => absint($_POST['width'] ?? 0) ?: null,
             'height' => absint($_POST['height'] ?? 0) ?: null,
-            'mime' => sanitize_text_field((string) ($_POST['mime'] ?? '')),
+            'mime' => sanitize_text_field(wp_unslash((string) ($_POST['mime'] ?? ''))),
             'filesize' => absint($_POST['filesize'] ?? 0) ?: null,
-            'checksum' => sanitize_text_field((string) ($_POST['checksum'] ?? '')),
-            'status' => sanitize_key((string) ($_POST['status'] ?? 'draft')),
+            'checksum' => sanitize_text_field(wp_unslash((string) ($_POST['checksum'] ?? ''))),
+            'status' => sanitize_key(wp_unslash((string) ($_POST['status'] ?? 'draft'))),
             'updated_at' => $now,
         ];
         $table = M360_Ads_DB::table('ad_creatives');
@@ -122,6 +124,7 @@ final class M360_Ads_Creatives_Admin
     }
 
     private static function guard(): void { if (!current_user_can('manage_options')) { wp_die('Acesso negado.'); } }
+    private static function sanitize_ad_markup(string $markup): string { return current_user_can('manage_options') ? $markup : wp_kses_post($markup); }
     private static function input(string $label, string $name, string $value, bool $required = false): void { echo '<tr><th><label for="' . esc_attr($name) . '">' . esc_html($label) . '</label></th><td><input class="regular-text" id="' . esc_attr($name) . '" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '"' . ($required ? ' required' : '') . '></td></tr>'; }
     private static function media_input(string $label, string $name, array $row): void { $value = (string) ($row[$name] ?? ''); echo '<tr><th><label for="' . esc_attr($name) . '">' . esc_html($label) . '</label></th><td><input class="regular-text m360-ads-media-url" id="' . esc_attr($name) . '" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '"> <button type="button" class="button m360-ads-media-pick">Selecionar imagem</button><div class="m360-ads-media-preview">' . ($value ? '<img src="' . esc_url($value) . '" alt="">' : '') . '</div>' . self::media_meta_panel($row) . '</td></tr>'; }
     private static function media_meta_panel(array $row): string { $url = (string) ($row['image_url'] ?? ''); $path = $url !== '' ? (string) parse_url($url, PHP_URL_PATH) : ''; $file = $path !== '' ? basename($path) : '-'; $size = !empty($row['width']) && !empty($row['height']) ? ((string) $row['width']) . 'x' . ((string) $row['height']) : '-'; $filesize = !empty($row['filesize']) ? number_format_i18n((int) $row['filesize']) . ' bytes' : '-'; $mime = !empty($row['mime']) ? (string) $row['mime'] : '-'; return '<div class="m360-ads-media-meta"><strong>Dados do criativo</strong><dl><dt>Arquivo</dt><dd data-m360-media="file">' . esc_html($file) . '</dd><dt>Formato</dt><dd data-m360-media="size">' . esc_html($size) . '</dd><dt>Peso</dt><dd data-m360-media="filesize">' . esc_html($filesize) . '</dd><dt>Tipo</dt><dd data-m360-media="mime">' . esc_html($mime) . '</dd><dt>Origem</dt><dd>Media Library</dd></dl><p class="m360-ads-size-warning" hidden>Este criativo não corresponde ao formato selecionado.</p></div>'; }
