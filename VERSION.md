@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.2.6
+0.4.2.7
 ```
 
 ## Status
 
 ```text
-Sprint 11.4 Ads Creatives Library ready for workflow build
+Sprint 11.5 Ads Creatives Media Picker ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.4 - M360 Ads Creatives Library
+Sprint 11.5 - M360 Ads Creatives Media Picker
 ```
 
 ## Next planned version
@@ -42,6 +42,7 @@ Sprint 11.4 - M360 Ads Creatives Library
 - `0.4.2.4`: M360 Ads Slots Foundation with dbDelta, seed, shortcode and PHP API.
 - `0.4.2.5`: M360 Ads Manager admin panel.
 - `0.4.2.6`: M360 Ads Creatives Library with dedicated creatives table and admin screens.
+- `0.4.2.7`: M360 Ads Creatives Media Picker and size presets.
 
 ## Ads DB schema version
 
@@ -59,6 +60,19 @@ M360 Ads
 - Criativos
 - Nova Campanha
 - Novo Criativo
+```
+
+## Creative size presets
+
+```text
+300x250
+728x90
+970x250
+1200x250
+320x100
+300x600
+Responsivo
+Personalizado
 ```
 
 ## Dedicated upload directory
