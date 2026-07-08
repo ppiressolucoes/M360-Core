@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.3.2
+0.4.3.3
 ```
 
 ## Status
 
 ```text
-M360 Ads Pilot stabilization ready for workflow build
+M360 Ads Renderer Stabilization ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.7.2 - M360 Ads Pilot Stabilization
+Sprint 11.7.3 - M360 Ads Renderer Stabilization
 ```
 
 ## Next planned version
@@ -47,6 +47,7 @@ Sprint 11.7.2 - M360 Ads Pilot Stabilization
 - `0.4.3.0`: M360 Ads Pilot Production Inventory.
 - `0.4.3.1`: Hotfix for widget shortcode support and slot-aware creative selection.
 - `0.4.3.2`: Stabilization for creative edit form, media picker assets and header banner alignment.
+- `0.4.3.3`: Renderer stabilization for slot-specific creatives and HTML payloads.
 
 ## Ads DB schema version
 
@@ -81,23 +82,15 @@ echo m360_ads_render_slot('sidebar-square');
 [m360_ad_slot id="sidebar-square"]
 ```
 
-## Widget shortcode support
+## Renderer fixes
 
 ```text
-Text widget
-Custom HTML widget
-widget_text_content
-widget_custom_html_content
-```
-
-## Ads Manager fixes
-
-```text
-Creative edit form hardened
-Top save button added
-Media picker assets hardened
-728x140 and 300x300 presets added
-Header banner centered and normalized
+Slot-specific creative candidates
+sidebar-square resolves to m360-pilot-sidebar-mega-bolao
+sidebar-community resolves to m360-pilot-sidebar-whatsapp
+HTML payloads preserve style tags instead of printing CSS as text
+Shortcodes inside HTML payloads are executed
+Square fallback by aspect ratio
 ```
 
 ## Ads Manager admin menu
