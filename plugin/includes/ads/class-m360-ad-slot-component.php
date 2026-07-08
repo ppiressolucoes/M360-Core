@@ -3,7 +3,11 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ad_Slot_Component
 {
-    public static function register_shortcodes(): void { add_shortcode('m360_ad_slot', [self::class, 'shortcode']); }
+    public static function register_shortcodes(): void
+    {
+        add_shortcode('m360_ad_slot', [self::class, 'shortcode']);
+        add_shortcode('m360_ads_slot', [self::class, 'shortcode']);
+    }
 
     public static function shortcode(array $atts = []): string
     {
@@ -62,14 +66,12 @@ final class M360_Ad_Slot_Component
 
     private static function render_creative(array $creative): string
     {
-        $type = sanitize_key((string) ($creative['creative_type'] ?? 'image'));
-        return self::render_payload($type, $creative);
+        return self::render_payload(sanitize_key((string) ($creative['creative_type'] ?? 'image')), $creative);
     }
 
     private static function render_campaign(array $campaign): string
     {
-        $type = sanitize_key((string) ($campaign['campaign_type'] ?? 'image'));
-        return self::render_payload($type, $campaign);
+        return self::render_payload(sanitize_key((string) ($campaign['campaign_type'] ?? 'image')), $campaign);
     }
 
     private static function render_payload(string $type, array $payload): string
@@ -79,16 +81,21 @@ final class M360_Ad_Slot_Component
         $alt = (string) ($payload['alt_text'] ?? $title);
         if (in_array($type, ['image','house','sponsor','affiliate'], true)) {
             $image = (string) ($payload['image_url'] ?? '');
-            if ($image === '') { return ''; }
+            if ($image === '') { return self::render_html_payload($payload); }
             $img = '<img class="m360-ad__image" src="' . esc_url($image) . '" alt="' . esc_attr($alt) . '" loading="lazy">';
             return $target !== '' ? '<a class="m360-ad__link" href="' . esc_url($target) . '" target="_blank" rel="nofollow sponsored noopener">' . $img . '</a>' : $img;
         }
-        if ($type === 'html') { return '<div class="m360-ad__html">' . wp_kses_post((string) ($payload['html_code'] ?? '')) . '</div>'; }
+        if ($type === 'html') { return self::render_html_payload($payload); }
         if ($type === 'adsense' || $type === 'gam' || $type === 'script') {
             if (!current_user_can('unfiltered_html')) { return '<div class="m360-ad__script m360-ad__script--blocked"></div>'; }
             return '<div class="m360-ad__script m360-ad__script--' . esc_attr($type) . '">' . (string) ($payload['script_code'] ?? '') . '</div>';
         }
         return '';
+    }
+
+    private static function render_html_payload(array $payload): string
+    {
+        return '<div class="m360-ad__html">' . wp_kses_post((string) ($payload['html_code'] ?? '')) . '</div>';
     }
 
     private static function fallback(string $slot_key, array $args = [], ?array $slot = null): string
@@ -110,3 +117,4 @@ final class M360_Ad_Slot_Component
 }
 
 if (!function_exists('m360_ad_slot')) { function m360_ad_slot(string $slot_key, array $args = []): string { return M360_Ad_Slot_Component::render($slot_key, $args); } }
+if (!function_exists('m360_ads_render_slot')) { function m360_ads_render_slot(string $slot_key, array $args = []): string { return M360_Ad_Slot_Component::render($slot_key, $args); } }
