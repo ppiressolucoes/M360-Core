@@ -20,11 +20,14 @@ final class M360_Ad_Slot_Component
         self::enqueue_assets();
         $slot_key = sanitize_key($slot_key);
         if ($slot_key === '') { return ''; }
+
         $slot = self::find_slot($slot_key);
         if (!$slot) { return self::fallback($slot_key, $args); }
+
         $campaign = self::find_campaign((int) $slot['id']);
         if (!$campaign) { return self::fallback($slot_key, $args, $slot); }
-        $creative = self::find_creative((int) $campaign['id']);
+
+        $creative = self::find_creative((int) $campaign['id'], $slot_key, $slot);
         $classes = trim('m360-ad m360-ad-slot m360-ad-slot--' . sanitize_html_class($slot_key) . ' ' . sanitize_html_class((string) ($args['class'] ?? '')));
         $html = '<aside class="' . esc_attr($classes) . '" data-m360-ad-slot="' . esc_attr($slot_key) . '">';
         $html .= $creative ? self::render_creative($creative) : self::render_campaign($campaign);
@@ -53,14 +56,64 @@ final class M360_Ad_Slot_Component
         return is_array($row) ? $row : null;
     }
 
-    private static function find_creative(int $campaign_id): ?array
+    private static function find_creative(int $campaign_id, string $slot_key, array $slot): ?array
     {
         global $wpdb;
         $table = M360_Ads_DB::table('ad_creatives');
         $language = self::language();
         $device = self::device();
-        $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE campaign_id = %d AND status = 'active' AND (language = %s OR language = 'all') AND (device = %s OR device = 'all') ORDER BY id DESC LIMIT 1", $campaign_id, $language, $device);
-        $row = $wpdb->get_row($sql, ARRAY_A);
+
+        $slug_like = 'm360-pilot-' . $wpdb->esc_like($slot_key) . '%';
+        $row = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$table}
+             WHERE campaign_id = %d
+               AND status = 'active'
+               AND (language = %s OR language = 'all')
+               AND (device = %s OR device = 'all')
+               AND slug LIKE %s
+             ORDER BY id DESC
+             LIMIT 1",
+            $campaign_id,
+            $language,
+            $device,
+            $slug_like
+        ), ARRAY_A);
+        if (is_array($row)) { return $row; }
+
+        $width = absint($slot['max_width'] ?? 0);
+        $height = absint($slot['max_height'] ?? 0);
+        if ($width && $height) {
+            $row = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$table}
+                 WHERE campaign_id = %d
+                   AND status = 'active'
+                   AND (language = %s OR language = 'all')
+                   AND (device = %s OR device = 'all')
+                   AND width = %d
+                   AND height = %d
+                 ORDER BY id DESC
+                 LIMIT 1",
+                $campaign_id,
+                $language,
+                $device,
+                $width,
+                $height
+            ), ARRAY_A);
+            if (is_array($row)) { return $row; }
+        }
+
+        $row = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$table}
+             WHERE campaign_id = %d
+               AND status = 'active'
+               AND (language = %s OR language = 'all')
+               AND (device = %s OR device = 'all')
+             ORDER BY id ASC
+             LIMIT 1",
+            $campaign_id,
+            $language,
+            $device
+        ), ARRAY_A);
         return is_array($row) ? $row : null;
     }
 
