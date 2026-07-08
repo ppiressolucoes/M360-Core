@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.3.0
+0.4.3.1
 ```
 
 ## Status
 
 ```text
-M360 Ads Pilot Production Inventory ready for workflow build
+M360 Ads Pilot hotfix ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.7 - M360 Ads Pilot Production Inventory
+Sprint 11.7.1 - M360 Ads Pilot Hotfix
 ```
 
 ## Next planned version
@@ -45,6 +45,7 @@ Sprint 11.7 - M360 Ads Pilot Production Inventory
 - `0.4.2.7`: M360 Ads Creatives Media Picker and size presets.
 - `0.4.2.8`: M360 Ads Creative Preview UX and media metadata panel.
 - `0.4.3.0`: M360 Ads Pilot Production Inventory.
+- `0.4.3.1`: Hotfix for widget shortcode support and slot-aware creative selection.
 
 ## Ads DB schema version
 
@@ -77,6 +78,15 @@ echo m360_ads_render_slot('sidebar-square');
 [m360_ad_slot id="content-bottom"]
 [m360_ad_slot id="sidebar-community"]
 [m360_ad_slot id="sidebar-square"]
+```
+
+## Widget shortcode support
+
+```text
+Text widget
+Custom HTML widget
+widget_text_content
+widget_custom_html_content
 ```
 
 ## Ads Manager admin menu
