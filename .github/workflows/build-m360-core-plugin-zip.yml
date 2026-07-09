@@ -1,0 +1,72 @@
+name: Build M360 Core Plugin ZIP
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: 'Branch/tag/ref containing the plugin source code'
+        required: true
+        default: 'sprint/v0.4.4.0-adsense-ready'
+      version:
+        description: 'Plugin version to package, e.g. 0.4.4.3'
+        required: true
+        default: '0.4.4.3'
+
+jobs:
+  build-plugin-zip:
+    name: Build M360 Core plugin ZIP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.source_ref }}
+
+      - name: Validate plugin source
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          echo "Source ref: ${{ github.event.inputs.source_ref }}"
+          echo "Version: ${VERSION}"
+
+          test -f plugin/m360-core.php
+          test -d plugin/includes
+          test -d plugin/assets
+
+          grep -q "Version: ${VERSION}" plugin/m360-core.php
+          grep -q "M360_CORE_VERSION', '${VERSION}'" plugin/m360-core.php
+
+          php -l plugin/m360-core.php
+          find plugin/includes -name '*.php' -print0 | xargs -0 -n1 php -l
+
+          echo "Plugin source validated."
+
+      - name: Prepare package directory
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          PACKAGE_DIR="m360-core"
+          ZIP_NAME="m360-core-v${VERSION}.zip"
+
+          rm -rf dist "${PACKAGE_DIR}" "${ZIP_NAME}"
+          mkdir -p "${PACKAGE_DIR}" dist
+
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='docs' \
+            --exclude='tests' \
+            --exclude='releases' \
+            --exclude='*.zip' \
+            plugin/ "${PACKAGE_DIR}/"
+
+          zip -r "dist/${ZIP_NAME}" "${PACKAGE_DIR}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: dist/${{ env.ZIP_NAME }}
+          if-no-files-found: error
