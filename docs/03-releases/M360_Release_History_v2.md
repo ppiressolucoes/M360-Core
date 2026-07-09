@@ -202,29 +202,13 @@ Consolidar o primeiro motor funcional de inventário publicitário do Mengão 36
 | `sidebar-community` | HTML 300x300 | OK | OK | Homologado |
 | `sidebar-square` | Imagem 1:1 | OK | OK | Homologado |
 
-### Entregas consolidadas
-
-- Tabelas próprias para slots, campanhas, relações e criativos.
-- Painel `M360 Ads` no WordPress.
-- Cadastro e edição de campanhas.
-- Cadastro e edição de criativos.
-- Upload/seleção via Media Library.
-- Suporte a imagem, HTML, script/markup administrado, house ads, affiliate e sponsor.
-- Shortcode `[m360_ad_slot id="..."]`.
-- API PHP `m360_ads_render_slot()`.
-- Renderização em PT-BR e EN-US.
-- Fallback por idioma e formato.
-- Fallback por intenção do slot: horizontal vs. 1:1.
-- Renderização de HTML com CSS e scripts preservados para administradores.
-- Validação em widgets do tema/Elementor.
-
 ### Decisão histórica
 
 O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes da Plataforma Comercial completa, a próxima sprint será `v0.4.4.0 — M360 AdSense Ready`, com foco em padronização visual e semântica dos espaços publicitários, etiquetas, IDs, placeholders, comentários HTML e preparação para aprovação do Google AdSense.
 
-## 13. Release 2.4 — M360 AdSense Ready
+## 13. Release 2.4 — M360 AdSense Ready / Inventory Engine
 
-Status: implementação inicial em `M360 Core v0.4.4.0`.
+Status: implementação funcional inicial até `M360 Core v0.4.4.3`.
 
 Módulos principais:
 
@@ -241,6 +225,9 @@ Preparar os espaços publicitários do Mengão 360 para futura integração com 
 | Versão | Entrega | Status |
 |---|---|---|
 | `0.4.4.0` | M360 Ad Slot Component semântico, labels PT/EN, placeholders, CSS centralizado e checklist AdSense Ready | Implementação inicial |
+| `0.4.4.1` | M360 Inventory Library registry e Inventory Seeder oficial | Implementação inicial |
+| `0.4.4.2` | M360 Ads Context Renderer com shortcode e API por contexto | Implementação inicial |
+| `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Entrega funcional inicial |
 
 ### Entregas consolidadas
 
@@ -254,6 +241,10 @@ Preparar os espaços publicitários do Mengão 360 para futura integração com 
 - CSS unificado em `plugin/assets/css/m360-ads.css`.
 - Providers preparados: internal, AdSense, Google Ad Manager, house ads, affiliate e sponsor.
 - Tela administrativa `M360 Ads → AdSense Ready`.
+- M360 Inventory Library como documento mestre do inventário comercial.
+- Inventory Seeder com cadastro automático de slots oficiais.
+- Context Renderer para renderização por contexto lógico.
+- Inline Ads Engine com primeiro impacto visível no front-end de artigos.
 
 ### Fora do escopo confirmado
 
