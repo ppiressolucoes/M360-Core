@@ -8,6 +8,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php'
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
 require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-component.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-inventory-library.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-admin.php';
