@@ -11,6 +11,7 @@ require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-compo
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-inventory-library.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-context-renderer.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-admin.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-creatives-admin.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
@@ -106,6 +107,7 @@ final class M360_Core_Runtime_034
         M360_UI_Components::register_shortcodes();
         M360_Latest_News_Component::register_shortcodes();
         M360_Ad_Slot_Component::register_shortcodes();
+        M360_Ads_Context_Renderer::register_shortcodes();
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
     }
