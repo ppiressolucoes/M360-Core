@@ -1,0 +1,36 @@
+name: Build M360 Ads Inventory Library
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Inventory Library version'
+        required: true
+        default: '0.4.4.1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Inventory Library
+        run: |
+          test -f plugin/includes/ads/class-m360-ads-inventory-library.php
+          echo "Inventory Library detected"
+
+      - name: Build package
+        run: |
+          mkdir -p dist
+          zip -r dist/m360-ads-inventory-library-v${{ github.event.inputs.version }}.zip \
+            plugin/includes/ads/class-m360-ads-inventory-library.php \
+            docs/00-platform/M360_Inventory_Library_v1.md \
+            docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: m360-ads-inventory-library-v${{ github.event.inputs.version }}
+          path: dist/*.zip
