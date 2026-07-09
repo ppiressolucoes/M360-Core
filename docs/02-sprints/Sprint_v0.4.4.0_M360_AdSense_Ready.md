@@ -117,7 +117,35 @@ A tela valida conceitualmente:
 - providers preparados;
 - shortcode/API.
 
-## 4. Fora do escopo
+## 4. Primeira entrega de código — Inventory Seeder
+
+Versão técnica:
+
+```text
+M360 Core v0.4.4.1
+```
+
+Entrega:
+
+- criação da classe `M360_Ads_Inventory_Library`;
+- registro oficial dos slots da M360 Inventory Library no código;
+- integração da biblioteca ao runtime do M360 Core;
+- atualização do schema do Ads Manager para `0.4.4.1`;
+- sincronização automática dos slots durante instalação/upgrade;
+- preservação do estado `is_active` de slots já existentes;
+- criação automática de novos slots como ativos;
+- manutenção do inventário piloto e vínculos de campanha já homologados.
+
+Arquivos funcionais:
+
+```text
+plugin/includes/ads/class-m360-ads-inventory-library.php
+plugin/includes/ads/class-m360-ads-db.php
+plugin/includes/class-m360-core.php
+plugin/m360-core.php
+```
+
+## 5. Fora do escopo
 
 Permanecem fora desta sprint:
 
@@ -133,7 +161,7 @@ Permanecem fora desta sprint:
 
 Esses itens permanecem previstos para a Plataforma Comercial M360 v0.5.x.
 
-## 5. Critérios de aceite
+## 6. Critérios de aceite
 
 A sprint será considerada concluída quando:
 
@@ -143,11 +171,16 @@ A sprint será considerada concluída quando:
 - placeholders forem exibidos em slots vazios;
 - CSS dos anúncios estiver centralizado no Core;
 - checklist AdSense Ready estiver disponível no painel;
-- shortcodes e API PHP existentes continuarem compatíveis.
+- shortcodes e API PHP existentes continuarem compatíveis;
+- Inventory Seeder cadastrar todos os slots oficiais sem duplicidade;
+- slots desativados manualmente não forem reativados pelo upgrade.
 
-## 6. Arquivos alterados nesta etapa
+## 7. Arquivos alterados nesta etapa
 
 - `plugin/m360-core.php`;
+- `plugin/includes/class-m360-core.php`;
+- `plugin/includes/ads/class-m360-ads-inventory-library.php`;
+- `plugin/includes/ads/class-m360-ads-db.php`;
 - `plugin/includes/ads/class-m360-ad-slot-component.php`;
 - `plugin/includes/ads/class-m360-ads-admin.php`;
 - `plugin/assets/css/m360-ads.css`.
