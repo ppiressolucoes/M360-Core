@@ -1,6 +1,6 @@
 # Sprint v0.4.4.0 — M360 AdSense Ready
 
-Status: implementação inicial
+Status: implementação funcional inicial
 Projeto: Mengão 360 | DW Esportivo
 Produto: M360 Core
 Módulo: M360 Advertising
@@ -10,7 +10,7 @@ Subsistema: M360 Ads Manager
 
 Preparar a infraestrutura visual, semântica e técnica dos espaços publicitários do Mengão 360 para futura avaliação e integração com provedores externos, especialmente Google AdSense, sem alterar a arquitetura consolidada do M360 Ads Manager.
 
-Esta sprint não integra o Google AdSense. Ela apenas deixa o renderer de slots tecnicamente preparado para uma futura camada de monetização externa.
+Esta sprint não integra o Google AdSense. Ela deixa o renderer de slots tecnicamente preparado para uma futura camada de monetização externa e inicia a primeira entrega funcional visível no front-end.
 
 ## 2. Base arquitetural preservada
 
@@ -31,31 +31,12 @@ A sprint preserva:
 
 ### 3.1 M360 Ad Slot Component
 
-Cada slot passa a ser renderizado por um wrapper semântico único:
-
-```html
-<section
-  id="m360-ad-slot-header-top"
-  class="m360-ad m360-ad-slot m360-ad-slot--header-top"
-  data-m360-ad-slot="header-top"
-  data-m360-ad-provider="internal"
-  data-m360-ad-format="leaderboard"
-  data-m360-ad-lang="pt-br"
-  data-m360-ad-status="filled"
-  aria-label="PUBLICIDADE"
->
-  <!-- M360 ADS SLOT: header-top | provider: internal | format: leaderboard | lang: pt-br | status: filled -->
-  <span class="m360-ad-slot__label">PUBLICIDADE</span>
-  <div class="m360-ad-slot__content">...</div>
-</section>
-```
+Cada slot passa a ser renderizado por um wrapper semântico único com label, data attributes, provider, formato, idioma e status.
 
 ### 3.2 Labels automáticos
 
 - `PUBLICIDADE` para PT-BR;
 - `ADVERTISEMENT` para EN-US.
-
-As labels são neutras e não incentivam cliques.
 
 ### 3.3 Data attributes padronizados
 
@@ -75,47 +56,6 @@ As labels são neutras e não incentivam cliques.
 - `house`;
 - `affiliate`;
 - `sponsor`.
-
-### 3.5 Placeholders
-
-Quando não houver campanha ativa ou criativo elegível, o slot exibe placeholder visual discreto e preserva o layout.
-
-Mensagem PT-BR:
-
-```text
-Espaço publicitário disponível.
-```
-
-Mensagem EN-US:
-
-```text
-Advertising space available.
-```
-
-### 3.6 CSS unificado
-
-O CSS da camada publicitária fica centralizado em:
-
-```text
-plugin/assets/css/m360-ads.css
-```
-
-### 3.7 Checklist administrativo
-
-Foi adicionada a tela:
-
-```text
-M360 Ads → AdSense Ready
-```
-
-A tela valida conceitualmente:
-
-- ID DOM único;
-- labels PT/EN;
-- data attributes;
-- placeholders;
-- providers preparados;
-- shortcode/API.
 
 ## 4. Primeira entrega de código — Inventory Seeder
 
@@ -153,23 +93,38 @@ Entrega:
 - alias `[m360_ads_context]`;
 - API PHP `m360_ads_render_context()`;
 - API PHP `m360_ads_render_position()`;
-- renderização por posição dentro do contexto;
-- base pronta para futura injeção automática via hooks sem alterar templates.
+- renderização por posição dentro do contexto.
 
-Exemplos:
+## 6. Terceira entrega de código — Inline Ads Engine
+
+Versão técnica:
 
 ```text
-[m360_ad_context context="post"]
-[m360_ad_context context="search" position="top"]
-[m360_ad_context context="auto" limit="1"]
+M360 Core v0.4.4.3
 ```
 
-```php
-echo m360_ads_render_context('post');
-echo m360_ads_render_position('category', 'top');
+Entrega funcional visível:
+
+- criação da classe `M360_Ads_Inline_Engine`;
+- registro automático no filtro `the_content`;
+- inserção automática do slot `article-after-paragraph-2` após o 2º parágrafo de posts individuais;
+- execução apenas no loop principal, query principal e posts individuais;
+- proteção contra admin, feed, AJAX e REST;
+- filtro global `m360_ads_inline_enabled`;
+- filtro de placements `m360_ads_inline_article_placements`;
+- wrapper `.m360-inline-ad`;
+- CSS mínimo de espaçamento no `m360-ads.css`.
+
+Resultado esperado no front-end:
+
+```text
+Parágrafo 1
+Parágrafo 2
+[M360 Ad Slot: article-after-paragraph-2]
+Parágrafo 3
 ```
 
-## 6. Fora do escopo
+## 7. Fora do escopo
 
 Permanecem fora desta sprint:
 
@@ -181,12 +136,9 @@ Permanecem fora desta sprint:
 - priorização comercial;
 - Google Ad Manager operacional;
 - Dashboard Comercial;
-- Marketplace Comercial M360;
-- injeção automática em `the_content`, que será tratada no Inline Engine.
+- Marketplace Comercial M360.
 
-Esses itens permanecem previstos para a Plataforma Comercial M360 v0.5.x.
-
-## 7. Critérios de aceite
+## 8. Critérios de aceite
 
 A sprint será considerada concluída quando:
 
@@ -199,14 +151,16 @@ A sprint será considerada concluída quando:
 - shortcodes e API PHP existentes continuarem compatíveis;
 - Inventory Seeder cadastrar todos os slots oficiais sem duplicidade;
 - slots desativados manualmente não forem reativados pelo upgrade;
-- Context Renderer renderizar slots por contexto sem exigir alteração de templates.
+- Context Renderer renderizar slots por contexto sem exigir alteração de templates;
+- Inline Ads Engine inserir `article-after-paragraph-2` após o segundo parágrafo em posts individuais.
 
-## 8. Arquivos alterados nesta etapa
+## 9. Arquivos alterados nesta etapa
 
 - `plugin/m360-core.php`;
 - `plugin/includes/class-m360-core.php`;
 - `plugin/includes/ads/class-m360-ads-inventory-library.php`;
 - `plugin/includes/ads/class-m360-ads-context-renderer.php`;
+- `plugin/includes/ads/class-m360-ads-inline-engine.php`;
 - `plugin/includes/ads/class-m360-ads-db.php`;
 - `plugin/includes/ads/class-m360-ad-slot-component.php`;
 - `plugin/includes/ads/class-m360-ads-admin.php`;
