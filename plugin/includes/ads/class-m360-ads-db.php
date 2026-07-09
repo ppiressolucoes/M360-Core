@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_DB
 {
-    public const SCHEMA_VERSION = '0.4.3.0';
+    public const SCHEMA_VERSION = '0.4.4.1';
 
     public static function install(): void
     {
@@ -112,9 +112,11 @@ final class M360_Ads_DB
             KEY status (status)
         ) {$charset_collate};");
 
-        self::seed_default_slots();
+        self::seed_inventory_library();
         self::seed_production_pilot();
         self::ensure_upload_dir();
+        update_option('m360_ads_inventory_library_version', M360_Ads_Inventory_Library::VERSION, false);
+        update_option('m360_ads_inventory_seeded_at', current_time('mysql'), false);
         update_option('m360_ads_db_version', self::SCHEMA_VERSION, false);
     }
 
@@ -148,33 +150,19 @@ final class M360_Ads_DB
         ];
     }
 
-    private static function seed_default_slots(): void
+    public static function seed_inventory_library(): void
     {
-        $slots = [
-            ['header-banner', 'Header Banner', 'Banner principal no topo do portal.', 'header', 'global', 'all', 'desktop', 970, 250],
-            ['header-mobile', 'Header Mobile', 'Banner principal no topo para mobile.', 'header', 'global', 'all', 'mobile', 320, 100],
-            ['home-top', 'Home Top', 'Slot superior da home editorial.', 'top', 'home', 'all', 'all', 1200, 250],
-            ['home-middle', 'Home Middle', 'Slot intermediario da home editorial.', 'middle', 'home', 'all', 'all', 1200, 250],
-            ['home-bottom', 'Home Bottom', 'Slot inferior da home editorial.', 'bottom', 'home', 'all', 'all', 1200, 250],
-            ['article-top', 'Article Top', 'Slot no topo do artigo.', 'top', 'post', 'all', 'all', 970, 250],
-            ['article-inline-1', 'Article Inline 1', 'Primeiro slot interno do artigo.', 'inline', 'post', 'all', 'all', 728, 90],
-            ['article-inline-2', 'Article Inline 2', 'Segundo slot interno do artigo.', 'inline', 'post', 'all', 'all', 728, 90],
-            ['article-bottom', 'Article Bottom', 'Slot inferior do artigo.', 'bottom', 'post', 'all', 'all', 970, 250],
-            ['sidebar-top', 'Sidebar Top', 'Slot superior da sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 250],
-            ['sidebar-middle', 'Sidebar Middle', 'Slot intermediario da sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 250],
-            ['sidebar-bottom', 'Sidebar Bottom', 'Slot inferior da sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 600],
-            ['footer-banner', 'Footer Banner', 'Banner no rodape.', 'footer', 'global', 'all', 'all', 970, 250],
-            ['category-top', 'Category Top', 'Slot superior em paginas de categoria.', 'top', 'category', 'all', 'all', 970, 250],
-            ['tag-top', 'Tag Top', 'Slot superior em paginas de tag.', 'top', 'tag', 'all', 'all', 970, 250],
-            ['author-top', 'Author Top', 'Slot superior em paginas de autor.', 'top', 'author', 'all', 'all', 970, 250],
-            ['search-top', 'Search Top', 'Slot superior em paginas de busca.', 'top', 'search', 'all', 'all', 970, 250],
-            ['latest-news-inline', 'Latest News Inline', 'Slot associado ao componente de ultimas noticias.', 'inline', 'latest-news', 'all', 'all', 728, 90],
-            ['header-top', 'Header Top 728x140', 'Piloto de produção: banner horizontal Mega Bolão no cabeçalho.', 'header', 'global', 'all', 'all', 728, 140],
-            ['content-bottom', 'Content Bottom WhatsApp', 'Piloto de produção: CTA horizontal de comunidade antes do rodapé.', 'bottom', 'post', 'all', 'all', 1200, 250],
-            ['sidebar-community', 'Sidebar Community CTA', 'Piloto de produção: CTA responsivo de comunidade na sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 300],
-            ['sidebar-square', 'Sidebar Square 1:1', 'Piloto de produção: criativo quadrado Mega Bolão na sidebar.', 'sidebar', 'global', 'all', 'desktop', 300, 300],
-        ];
-        foreach ($slots as $slot) { self::upsert_slot($slot); }
+        foreach (M360_Ads_Inventory_Library::slots() as $slot) { self::upsert_slot($slot); }
+    }
+
+    public static function inventory_count(): int
+    {
+        return count(M360_Ads_Inventory_Library::slots());
+    }
+
+    public static function inventory_contexts(): array
+    {
+        return M360_Ads_Inventory_Library::contexts();
     }
 
     private static function upsert_slot(array $slot): void
@@ -183,7 +171,19 @@ final class M360_Ads_DB
         $table = self::table('ad_slots');
         $now = current_time('mysql');
         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE slot_key = %s LIMIT 1", $slot[0]));
-        $data = ['slot_key'=>$slot[0],'name'=>$slot[1],'description'=>$slot[2],'position'=>$slot[3],'page_context'=>$slot[4],'language'=>$slot[5],'device'=>$slot[6],'max_width'=>$slot[7],'max_height'=>$slot[8],'is_active'=>1,'updated_at'=>$now];
+        $data = [
+            'slot_key' => sanitize_key((string) $slot[0]),
+            'name' => sanitize_text_field((string) $slot[1]),
+            'description' => sanitize_textarea_field((string) $slot[2]),
+            'position' => sanitize_key((string) $slot[3]),
+            'page_context' => sanitize_key((string) $slot[4]),
+            'language' => sanitize_key((string) $slot[5]),
+            'device' => sanitize_key((string) $slot[6]),
+            'max_width' => absint($slot[7]),
+            'max_height' => absint($slot[8]),
+            'is_active' => 1,
+            'updated_at' => $now,
+        ];
         if ($exists) { $wpdb->update($table, $data, ['id' => (int) $exists]); }
         else { $data['created_at'] = $now; $wpdb->insert($table, $data); }
     }
