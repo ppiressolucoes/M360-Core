@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: M360 Core
- * Version: 0.4.3.4
+ * Version: 0.4.3.5
  * Author: Mengão 360 | DW Esportivo
  * Text Domain: m360-core
  * Requires at least: 6.0
@@ -10,7 +10,7 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-if (!defined('M360_CORE_VERSION')) { define('M360_CORE_VERSION', '0.4.3.4'); }
+if (!defined('M360_CORE_VERSION')) { define('M360_CORE_VERSION', '0.4.3.5'); }
 if (!defined('M360_CORE_FILE')) { define('M360_CORE_FILE', __FILE__); }
 if (!defined('M360_CORE_PATH')) { define('M360_CORE_PATH', plugin_dir_path(__FILE__)); }
 if (!defined('M360_CORE_URL')) { define('M360_CORE_URL', plugin_dir_url(__FILE__)); }
