@@ -136,16 +136,40 @@ Entrega:
 - criação automática de novos slots como ativos;
 - manutenção do inventário piloto e vínculos de campanha já homologados.
 
-Arquivos funcionais:
+## 5. Segunda entrega de código — Context Renderer
+
+Versão técnica:
 
 ```text
-plugin/includes/ads/class-m360-ads-inventory-library.php
-plugin/includes/ads/class-m360-ads-db.php
-plugin/includes/class-m360-core.php
-plugin/m360-core.php
+M360 Core v0.4.4.2
 ```
 
-## 5. Fora do escopo
+Entrega:
+
+- criação da classe `M360_Ads_Context_Renderer`;
+- renderização de slots por contexto lógico da Inventory Library;
+- detecção automática de contexto WordPress: home, post, search, category, tag, author e archive;
+- shortcode `[m360_ad_context]`;
+- alias `[m360_ads_context]`;
+- API PHP `m360_ads_render_context()`;
+- API PHP `m360_ads_render_position()`;
+- renderização por posição dentro do contexto;
+- base pronta para futura injeção automática via hooks sem alterar templates.
+
+Exemplos:
+
+```text
+[m360_ad_context context="post"]
+[m360_ad_context context="search" position="top"]
+[m360_ad_context context="auto" limit="1"]
+```
+
+```php
+echo m360_ads_render_context('post');
+echo m360_ads_render_position('category', 'top');
+```
+
+## 6. Fora do escopo
 
 Permanecem fora desta sprint:
 
@@ -157,11 +181,12 @@ Permanecem fora desta sprint:
 - priorização comercial;
 - Google Ad Manager operacional;
 - Dashboard Comercial;
-- Marketplace Comercial M360.
+- Marketplace Comercial M360;
+- injeção automática em `the_content`, que será tratada no Inline Engine.
 
 Esses itens permanecem previstos para a Plataforma Comercial M360 v0.5.x.
 
-## 6. Critérios de aceite
+## 7. Critérios de aceite
 
 A sprint será considerada concluída quando:
 
@@ -173,13 +198,15 @@ A sprint será considerada concluída quando:
 - checklist AdSense Ready estiver disponível no painel;
 - shortcodes e API PHP existentes continuarem compatíveis;
 - Inventory Seeder cadastrar todos os slots oficiais sem duplicidade;
-- slots desativados manualmente não forem reativados pelo upgrade.
+- slots desativados manualmente não forem reativados pelo upgrade;
+- Context Renderer renderizar slots por contexto sem exigir alteração de templates.
 
-## 7. Arquivos alterados nesta etapa
+## 8. Arquivos alterados nesta etapa
 
 - `plugin/m360-core.php`;
 - `plugin/includes/class-m360-core.php`;
 - `plugin/includes/ads/class-m360-ads-inventory-library.php`;
+- `plugin/includes/ads/class-m360-ads-context-renderer.php`;
 - `plugin/includes/ads/class-m360-ads-db.php`;
 - `plugin/includes/ads/class-m360-ad-slot-component.php`;
 - `plugin/includes/ads/class-m360-ads-admin.php`;
