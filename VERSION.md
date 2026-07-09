@@ -3,19 +3,19 @@
 ## Current version
 
 ```text
-0.4.3.4
+0.4.3.5
 ```
 
 ## Status
 
 ```text
-M360 Ads Trusted Markup Persistence ready for workflow build
+M360 Ads Slot Intent Fallback ready for workflow build
 ```
 
 ## Current sprint
 
 ```text
-Sprint 11.7.4 - M360 Ads Trusted Markup Persistence
+Sprint 11.7.5 - M360 Ads Slot Intent Fallback
 ```
 
 ## Next planned version
@@ -49,6 +49,7 @@ Sprint 11.7.4 - M360 Ads Trusted Markup Persistence
 - `0.4.3.2`: Stabilization for creative edit form, media picker assets and header banner alignment.
 - `0.4.3.3`: Renderer stabilization for slot-specific creatives and HTML payloads.
 - `0.4.3.4`: Trusted ad markup persistence for `<style>` and `<script>` payloads.
+- `0.4.3.5`: Slot intent fallback for multilingual wide/square creatives.
 
 ## Ads DB schema version
 
@@ -83,14 +84,15 @@ echo m360_ads_render_slot('sidebar-square');
 [m360_ad_slot id="sidebar-square"]
 ```
 
-## Trusted markup fixes
+## Renderer fixes
 
 ```text
-HTML textarea preserves script tags for M360 Ads administrators
-HTML textarea preserves style tags
-WordPress slashes are removed before saving
-Renderer outputs trusted stored ad markup
-Renderer executes shortcodes inside trusted markup
+Exact language creatives are preferred over all-language creatives
+content-bottom prefers wide creatives
+sidebar-community prefers square creatives
+sidebar-square prefers square creatives
+Known PT-BR and EN-US manual slugs added as candidates
+Campaign fallback remains only after slot-intent strategies fail
 ```
 
 ## Ads Manager admin menu
