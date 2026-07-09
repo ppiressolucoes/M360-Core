@@ -1,6 +1,8 @@
-/* M360 Ads Slots Foundation / AdSense Ready v0.4.4.0 */
+/* M360 Ads Slots Foundation / AdSense Ready v0.4.4.3 */
 .m360-ad,.m360-ad *{box-sizing:border-box}
 .m360-ad-slot{display:block;width:100%;max-width:100%;margin:18px auto;text-align:center;clear:both}
+.m360-inline-ad{display:block;width:100%;max-width:100%;margin:28px auto;clear:both}
+.m360-inline-ad .m360-ad-slot{margin:0 auto}
 .m360-ad-slot__label{display:block;margin:0 0 6px;color:#6b7280;font-size:10px;font-weight:800;line-height:1.2;letter-spacing:.12em;text-align:center;text-transform:uppercase}
 .m360-ad-slot__content{display:block;width:100%;max-width:100%;margin:0 auto}
 .m360-ad__link{display:inline-block;max-width:100%;text-decoration:none!important}
@@ -27,4 +29,4 @@
 .m360-house-ad--whatsapp-card strong,.m360-house-ad--mega-square strong{font-size:25px}
 .m360-house-ad--whatsapp-card .m360-house-ad__button,.m360-house-ad--mega-square .m360-house-ad__button{width:100%;margin-top:18px}
 .m360-house-ad--mega-square{background:linear-gradient(135deg,#111827 0%,#7f1d1d 100%)}
-@media (max-width:640px){.m360-ad-slot{margin:14px auto}.m360-ad-slot__label{font-size:9px}.m360-ad__image{border-radius:8px}.m360-house-ad{display:block;padding:22px 18px;border-radius:16px}.m360-house-ad__icon{width:70px;height:70px;font-size:30px;margin-bottom:16px}.m360-house-ad strong{font-size:22px}.m360-house-ad p{font-size:14px}.m360-house-ad__button{width:100%;margin-top:18px}.m360-house-ad--whatsapp-card,.m360-house-ad--mega-square{max-width:100%}}
+@media (max-width:640px){.m360-ad-slot{margin:14px auto}.m360-inline-ad{margin:22px auto}.m360-ad-slot__label{font-size:9px}.m360-ad__image{border-radius:8px}.m360-house-ad{display:block;padding:22px 18px;border-radius:16px}.m360-house-ad__icon{width:70px;height:70px;font-size:30px;margin-bottom:16px}.m360-house-ad strong{font-size:22px}.m360-house-ad p{font-size:14px}.m360-house-ad__button{width:100%;margin-top:18px}.m360-house-ad--whatsapp-card,.m360-house-ad--mega-square{max-width:100%}}
