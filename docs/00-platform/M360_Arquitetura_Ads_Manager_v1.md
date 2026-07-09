@@ -4,7 +4,7 @@ Status: oficial
 Projeto: Mengão 360 | DW Esportivo
 Módulo: M360 Advertising
 Subsistema: M360 Ads Manager
-Versão de referência: M360 Core v0.4.3.5
+Versão de referência: M360 Core v0.4.4.x
 
 ## 1. Visão geral
 
@@ -12,24 +12,44 @@ O M360 Ads Manager é o subsistema oficial de inventário publicitário do ecoss
 
 Ele foi criado para substituir gradualmente banners, scripts e HTMLs espalhados pelo tema News Portal, Elementor, widgets e customizações manuais, centralizando a gestão de publicidade em uma camada própria do M360 Core.
 
-Objetivo principal:
+Referência arquitetural obrigatória:
 
 ```text
-Transformar espaços publicitários manuais em slots governados por campanhas, criativos, idioma, dispositivo e renderer.
+docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
 ```
 
-## 2. Estado atual
+## 2. Dependência arquitetural
 
-Marco homologado:
+O Ads Manager não deve renderizar diretamente elementos dependentes do tema.
+
+Toda renderização publicitária deve passar por componentes do M360 Core:
+
+```text
+Inventory Library
+      ↓
+Ads Manager
+      ↓
+Ad Slot Component
+      ↓
+Context Renderer / Inline Engine / futuros renderers
+      ↓
+Front-end PT-BR / EN-US
+```
+
+O tema News Portal, o Elementor e widgets manuais podem chamar shortcodes ou APIs do M360 Core, mas não devem conter a lógica final da peça publicitária.
+
+## 3. Estado atual
+
+Marco homologado anterior:
 
 ```text
 M360 Core v0.4.3.5 — Ads Slot Intent Fallback
 ```
 
-Status:
+Marco em evolução:
 
 ```text
-Piloto funcional homologado em PT-BR e EN-US.
+M360 Core v0.4.4.x — AdSense Ready / Inventory Engine
 ```
 
 O piloto já valida:
@@ -49,7 +69,7 @@ O piloto já valida:
 - fallback por intenção do slot;
 - uso em tema/Elementor/widgets.
 
-## 3. Arquitetura conceitual
+## 4. Arquitetura conceitual
 
 Fluxo principal:
 
@@ -66,7 +86,7 @@ Filtro por dispositivo
   ↓
 Filtro por formato/intenção
   ↓
-Renderer
+M360 Ad Slot Component
   ↓
 Front-end
 ```
@@ -85,11 +105,11 @@ ou:
 echo m360_ads_render_slot('sidebar-community');
 ```
 
-## 4. Modelo de dados
+## 5. Modelo de dados
 
 O M360 Ads Manager utiliza tabelas próprias do WordPress.
 
-### 4.1 Slots
+### 5.1 Slots
 
 Tabela lógica:
 
@@ -100,30 +120,13 @@ m360_ad_slots
 Responsabilidade:
 
 - registrar espaços de inventário;
+- refletir a M360 Inventory Library;
 - definir chave única do slot;
 - indicar contexto de página;
 - registrar idioma/dispositivo quando aplicável;
 - definir tamanho esperado.
 
-Campos conceituais:
-
-```text
-id
-slot_key
-name
-description
-position
-page_context
-language
-device
-max_width
-max_height
-is_active
-created_at
-updated_at
-```
-
-### 4.2 Campanhas
+### 5.2 Campanhas
 
 Tabela lógica:
 
@@ -141,29 +144,7 @@ Responsabilidade:
 - controlar prioridade;
 - controlar status.
 
-Campos conceituais:
-
-```text
-id
-title
-advertiser
-campaign_type
-image_url
-target_url
-html_code
-script_code
-alt_text
-language
-device
-start_at
-end_at
-priority
-status
-created_at
-updated_at
-```
-
-### 4.3 Criativos
+### 5.3 Criativos
 
 Tabela lógica:
 
@@ -179,32 +160,7 @@ Responsabilidade:
 - armazenar imagem, HTML ou script;
 - integrar com Media Library.
 
-Campos conceituais:
-
-```text
-id
-campaign_id
-title
-slug
-creative_type
-image_url
-target_url
-html_code
-script_code
-alt_text
-language
-device
-width
-height
-mime
-filesize
-checksum
-status
-created_at
-updated_at
-```
-
-### 4.4 Relação Slot → Campanha
+### 5.4 Relação Slot → Campanha
 
 Tabela lógica:
 
@@ -219,20 +175,25 @@ Responsabilidade:
 - controlar peso;
 - controlar ativação.
 
-Campos conceituais:
+## 6. Inventory Library
+
+A partir da Sprint v0.4.4.x, o inventário oficial não deve ser tratado apenas como cadastro manual no banco.
+
+A fonte oficial dos slots é:
 
 ```text
-id
-slot_id
-campaign_id
-priority
-weight
-is_active
-created_at
-updated_at
+docs/00-platform/M360_Inventory_Library_v1.md
 ```
 
-## 5. Inventário piloto homologado
+O código-fonte correspondente é:
+
+```text
+plugin/includes/ads/class-m360-ads-inventory-library.php
+```
+
+O banco é sincronizado pelo Inventory Seeder durante instalação/upgrade.
+
+## 7. Inventário piloto homologado
 
 | Slot | Uso | Formato | PT-BR | EN-US | Status |
 |---|---|---|---:|---:|---|
@@ -241,9 +202,29 @@ updated_at
 | `sidebar-community` | CTA/HTML da comunidade na sidebar | 300x300 | OK | OK | Homologado |
 | `sidebar-square` | Banner 1:1 na sidebar | 1:1 | OK | OK | Homologado |
 
-## 6. Tipos de criativos suportados
+## 8. Evolução v0.4.4.x
 
-Tipos funcionais no piloto:
+Entregas em evolução:
+
+- M360 Ad Slot Component;
+- labels `PUBLICIDADE` / `ADVERTISEMENT`;
+- data attributes;
+- placeholders;
+- CSS centralizado;
+- Inventory Seeder;
+- Context Renderer;
+- Inline Ads Engine;
+- workflow de build completo do plugin.
+
+Primeiro impacto visual:
+
+```text
+article-after-paragraph-2
+```
+
+O slot é inserido automaticamente após o segundo parágrafo de posts individuais pelo Inline Ads Engine.
+
+## 9. Tipos de criativos suportados
 
 ```text
 image
@@ -261,13 +242,13 @@ Status atual:
 - `image`: homologado;
 - `html`: homologado;
 - `script`: persistência e renderer preparados para administradores;
-- `house`: suportado como tipo conceitual;
-- `affiliate`: suportado como tipo conceitual;
-- `sponsor`: suportado como tipo conceitual;
+- `house`: suportado;
+- `affiliate`: suportado;
+- `sponsor`: suportado;
 - `adsense`: reservado para evolução AdSense Ready;
 - `gam`: reservado para evolução Google Ad Manager.
 
-## 7. Internacionalização
+## 10. Internacionalização
 
 Idiomas suportados:
 
@@ -283,88 +264,23 @@ Regra atual:
 - PT-BR e EN-US podem possuir criativos próprios para o mesmo slot;
 - `all` deve ser usado somente para peças neutras ou intencionalmente globais.
 
-Exemplo recomendado:
-
-```text
-slot: sidebar-community
-criativo PT-BR: language=pt-br
-criativo EN-US: language=en-us
-```
-
-## 8. Dispositivos
-
-Dispositivos suportados:
-
-```text
-desktop
-mobile
-all
-```
-
-Regra atual:
-
-- dispositivo exato tem prioridade sobre `all`;
-- fallback para `all` ocorre somente quando não há criativo específico.
-
-## 9. Algoritmo de seleção do renderer
-
-O renderer executa, em ordem:
-
-1. Localiza o slot ativo por `slot_key`.
-2. Localiza campanha ativa vinculada ao slot.
-3. Aplica filtro de idioma.
-4. Aplica filtro de dispositivo.
-5. Procura criativo por slug conhecido do slot.
-6. Procura criativo por intenção do slot:
-   - `content-bottom`: prioriza criativo horizontal;
-   - `sidebar-community`: prioriza criativo quadrado;
-   - `sidebar-square`: prioriza criativo quadrado;
-   - `header-top`: prioriza criativo 728x140.
-7. Procura por largura/altura.
-8. Usa fallback genérico da campanha somente por último.
-9. Renderiza conforme tipo.
-
-## 10. Estratégia de fallback
-
-Fallbacks homologados:
-
-- por idioma: `en-us`/`pt-br` antes de `all`;
-- por dispositivo: dispositivo exato antes de `all`;
-- por formato: horizontal vs. 1:1;
-- por campanha: somente se as estratégias de slot falharem.
-
-O fallback entre idiomas não deve ser usado como comportamento editorial padrão. Quando o conteúdo textual muda, deve existir criativo específico por idioma.
-
 ## 11. API pública
 
-### 11.1 Shortcode
+### 11.1 Shortcodes
 
 ```text
 [m360_ad_slot id="header-top"]
-[m360_ad_slot id="content-bottom"]
-[m360_ad_slot id="sidebar-community"]
-[m360_ad_slot id="sidebar-square"]
-```
-
-Alias:
-
-```text
 [m360_ads_slot id="header-top"]
+[m360_ad_context context="post"]
+[m360_ads_context context="search" position="top"]
 ```
 
 ### 11.2 PHP API
 
 ```php
 echo m360_ads_render_slot('header-top');
-echo m360_ads_render_slot('content-bottom');
-echo m360_ads_render_slot('sidebar-community');
-echo m360_ads_render_slot('sidebar-square');
-```
-
-Função base:
-
-```php
-m360_ad_slot(string $slot_key, array $args = []): string
+echo m360_ads_render_context('post');
+echo m360_ads_render_position('category', 'top');
 ```
 
 ## 12. Integração com WordPress
@@ -379,23 +295,18 @@ Integrações homologadas:
 - Media Library;
 - widgets de texto/custom HTML;
 - Elementor/tema via shortcode;
-- API PHP para futura integração com componentes M360.
+- API PHP;
+- filtro `the_content` pelo Inline Ads Engine.
 
 ## 13. Segurança
 
-O fluxo de markup confiável foi liberado para administradores do M360 Ads.
+O fluxo de markup confiável é restrito a administradores do M360 Ads.
 
 Decisão atual:
 
 ```text
 Usuários com manage_options podem salvar HTML, style e script em criativos publicitários.
 ```
-
-Justificativa:
-
-- criativos publicitários frequentemente exigem HTML/CSS/JS;
-- o painel é administrativo;
-- a operação é restrita ao escopo de inventário controlado.
 
 Evolução recomendada:
 
@@ -407,46 +318,26 @@ Evolução recomendada:
 
 ## 14. CSS e apresentação
 
-No piloto, parte do CSS ainda pode viver dentro do próprio criativo HTML.
+O CSS central da camada publicitária vive em:
 
-A próxima sprint deverá consolidar:
+```text
+plugin/assets/css/m360-ads.css
+```
+
+Classes principais:
 
 ```text
 .m360-ad-slot
-.m360-ad-label
-.m360-ad-content
-.m360-ad-placeholder
-.m360-ad-image
-.m360-ad-html
-.m360-ad-click
+.m360-ad-slot__label
+.m360-ad-slot__content
+.m360-ad-slot__placeholder
+.m360-inline-ad
+.m360-ad__image
+.m360-ad__html
+.m360-ad__script
 ```
 
-Objetivo:
-
-Padronizar todos os espaços para AdSense Ready, com etiquetas, IDs únicos, data attributes e placeholders.
-
-## 15. Sprint seguinte — M360 AdSense Ready
-
-Sprint recomendada:
-
-```text
-v0.4.4.0 — M360 AdSense Ready
-```
-
-Escopo previsto:
-
-- etiqueta `PUBLICIDADE` para PT-BR;
-- etiqueta `ADVERTISEMENT` para EN-US;
-- IDs únicos por slot;
-- comentários HTML de diagnóstico;
-- data attributes (`data-slot`, `data-format`, `data-provider`, `data-language`);
-- placeholders quando não houver campanha;
-- CSS unificado;
-- checklist operacional AdSense Ready;
-- preparação para ads.txt, sellers.json e políticas institucionais;
-- estrutura semanticamente limpa para crawler e avaliador humano.
-
-## 16. Roadmap da Plataforma Comercial M360
+## 15. Roadmap da Plataforma Comercial M360
 
 Após AdSense Ready:
 
@@ -459,40 +350,8 @@ v0.5.4.0 — Smart Delivery Engine
 v0.5.5.0 — Contextual Ads Integration
 ```
 
-Evoluções previstas:
+## 16. Decisão arquitetural final
 
-- clientes/anunciantes;
-- contratos;
-- agendamento;
-- rotação;
-- peso;
-- prioridade;
-- impressões;
-- cliques;
-- CTR;
-- relatórios;
-- AdSense;
-- Google Ad Manager;
-- campanhas contextuais por taxonomia;
-- integração com Taxonomy Intelligence;
-- integração com Mega Bolão 360.
+O M360 Ads Manager deixa de ser funcionalidade auxiliar e passa a ser subsistema da plataforma.
 
-## 17. Critérios de aceite do piloto
-
-O piloto é considerado homologado porque:
-
-- os quatro slots renderizam em produção;
-- PT-BR e EN-US foram validados;
-- os criativos corretos são selecionados por slot;
-- os formatos não se misturam após v0.4.3.5;
-- HTML, CSS e scripts são persistidos corretamente;
-- links funcionam;
-- shortcodes funcionam no contexto do tema/Elementor;
-- a API PHP está disponível;
-- o inventário pode ser operado pelo painel.
-
-## 18. Decisão arquitetural final
-
-O M360 Ads Manager deixa de ser apenas uma funcionalidade auxiliar do M360 Core e passa a ser documentado como subsistema da plataforma.
-
-Ele será a base técnica para a futura Plataforma Comercial M360 e para a preparação do Mengão 360 à monetização via Google AdSense, campanhas diretas, house ads, afiliados e patrocinadores.
+Ele deve obedecer ao ADR-0007 e utilizar o M360 Core como camada oficial de interface, evitando lógica publicitária presa ao tema, Elementor ou HTML manual.
