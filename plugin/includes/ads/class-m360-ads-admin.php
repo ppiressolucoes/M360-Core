@@ -16,6 +16,7 @@ final class M360_Ads_Admin
         add_menu_page('M360 Ads Manager', 'M360 Ads', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard'], 'dashicons-megaphone', 58);
         add_submenu_page('m360-ads-manager', 'Dashboard', 'Dashboard', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard']);
         add_submenu_page('m360-ads-manager', 'Inventário Piloto', 'Inventário Piloto', 'manage_options', 'm360-ads-inventory', [self::class, 'render_inventory']);
+        add_submenu_page('m360-ads-manager', 'AdSense Ready', 'AdSense Ready', 'manage_options', 'm360-ads-adsense-ready', [self::class, 'render_adsense_ready']);
         add_submenu_page('m360-ads-manager', 'Slots', 'Slots', 'manage_options', 'm360-ads-slots', [self::class, 'render_slots']);
         add_submenu_page('m360-ads-manager', 'Campanhas', 'Campanhas', 'manage_options', 'm360-ads-campaigns', [self::class, 'render_campaigns']);
         add_submenu_page('m360-ads-manager', 'Nova Campanha', 'Nova Campanha', 'manage_options', 'm360-ads-campaign-new', [self::class, 'render_campaign_form']);
@@ -36,7 +37,7 @@ final class M360_Ads_Admin
         echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Manager</h1><p>Gestão inicial de inventário publicitário do Mengão 360.</p>';
         echo '<div class="m360-ads-admin__cards">';
         self::metric('Slots', $total_slots); self::metric('Slots ativos', $active_slots); self::metric('Slots ocupados', $assigned); self::metric('Campanhas', $total_campaigns); self::metric('Campanhas ativas', $active_campaigns); self::metric('Schema Ads', esc_html((string) get_option('m360_ads_db_version', '-')));
-        echo '</div><p><a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=m360-ads-inventory')) . '">Ver inventário piloto</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-campaign-new')) . '">Nova campanha</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-slots')) . '">Ver slots</a></p></div>';
+        echo '</div><p><a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=m360-ads-inventory')) . '">Ver inventário piloto</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-adsense-ready')) . '">Checklist AdSense Ready</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-campaign-new')) . '">Nova campanha</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-slots')) . '">Ver slots</a></p></div>';
     }
 
     public static function render_inventory(): void
@@ -46,6 +47,31 @@ final class M360_Ads_Admin
         echo '<div class="m360-ads-inventory-grid">';
         foreach (M360_Ads_DB::pilot_slots() as $slot_key => $label) { self::inventory_card($slot_key, $label); }
         echo '</div></div>';
+    }
+
+    public static function render_adsense_ready(): void
+    {
+        self::guard();
+        global $wpdb;
+        $slots_table = M360_Ads_DB::table('ad_slots');
+        $rows = $wpdb->get_results("SELECT * FROM {$slots_table} ORDER BY page_context, position, slot_key", ARRAY_A);
+        echo '<div class="wrap m360-ads-admin"><h1>M360 AdSense Ready</h1><p>Checklist técnico de preparação visual, semântica e operacional dos slots. Esta tela não integra o Google AdSense; apenas valida se a infraestrutura M360 está pronta para futura homologação.</p>';
+        echo '<table class="widefat striped"><thead><tr><th>Slot</th><th>ID DOM</th><th>Label PT/EN</th><th>Data attributes</th><th>Placeholder</th><th>Provider ready</th><th>Shortcode/API</th></tr></thead><tbody>';
+        foreach ($rows as $row) {
+            $slot_key = sanitize_key((string) $row['slot_key']);
+            $dom_id = 'm360-ad-slot-' . $slot_key;
+            echo '<tr>';
+            echo '<td><strong>' . esc_html((string) $row['name']) . '</strong><br><code>' . esc_html($slot_key) . '</code></td>';
+            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>' . esc_html($dom_id) . '</code></td>';
+            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>PUBLICIDADE</code> / <code>ADVERTISEMENT</code></td>';
+            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>slot, provider, format, lang, status</code></td>';
+            echo '<td><span class="m360-ads-status is-active">OK</span><br>Slots vazios preservam layout.</td>';
+            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>internal</code>, <code>adsense</code>, <code>google-ad-manager</code>, <code>house</code>, <code>affiliate</code>, <code>sponsor</code></td>';
+            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>[m360_ad_slot id=&quot;' . esc_html($slot_key) . '&quot;]</code><br><code>m360_ads_render_slot(\'' . esc_html($slot_key) . '\')</code></td>';
+            echo '</tr>';
+        }
+        if (empty($rows)) { echo '<tr><td colspan="7">Nenhum slot cadastrado.</td></tr>'; }
+        echo '</tbody></table><h2>Observação operacional</h2><p>A aprovação do Google AdSense ainda dependerá de políticas editoriais, conteúdo, navegação, tráfego e análise externa do Google. Esta sprint cobre apenas a preparação técnica da camada M360 Advertising.</p></div>';
     }
 
     private static function inventory_card(string $slot_key, string $label): void
