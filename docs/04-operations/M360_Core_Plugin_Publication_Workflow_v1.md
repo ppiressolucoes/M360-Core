@@ -16,36 +16,44 @@ Nenhuma versão do M360 Core deve ser aplicada em produção sem:
 1. branch dedicada;
 2. pull request;
 3. documentação de sprint/release atualizada;
-4. pacote ZIP gerado por workflow;
+4. pacote ZIP completo gerado por workflow;
 5. validação em WordPress;
 6. plano de rollback.
 
-## 3. Branches
-
-Fluxo recomendado:
+## 3. Fluxo simplificado
 
 ```text
-main
+branch de sprint
   ↓
-sprint/v0.4.4.0-adsense-ready
+PR draft / revisão
   ↓
-Pull Request
+workflow na main: Build M360 Core Plugin ZIP
+  ↓
+source_ref = branch da sprint
+  ↓
+artifact m360-core-v{version}.zip
+  ↓
+instalação em WordPress de homologação
+  ↓
+validação visual
   ↓
 merge em main
   ↓
-workflow Build M360 Core Plugin ZIP
-  ↓
-artifact ZIP
-  ↓
-instalação manual/assistida no WordPress
+release oficial
 ```
 
-## 4. Workflow de build
+## 4. Workflow de build completo do plugin
 
-Arquivo:
+Arquivo na `main`:
 
 ```text
-.github/workflows/build-plugin-zip.yml
+.github/workflows/build-m360-core-plugin-zip.yml
+```
+
+Nome no GitHub Actions:
+
+```text
+Build M360 Core Plugin ZIP
 ```
 
 Tipo:
@@ -54,32 +62,39 @@ Tipo:
 workflow_dispatch
 ```
 
-Parâmetro obrigatório:
+Inputs:
 
 ```text
-version
+source_ref: sprint/v0.4.4.0-adsense-ready
+version: 0.4.4.3
 ```
 
-Exemplo:
+O workflow:
+
+- faz checkout do `source_ref`;
+- valida `plugin/m360-core.php`;
+- valida o header `Version`;
+- valida a constante `M360_CORE_VERSION`;
+- executa `php -l` no entrypoint e nos arquivos PHP de `includes`;
+- empacota apenas o conteúdo de `plugin/`;
+- gera artifact instalável `m360-core-v{version}.zip`.
+
+## 5. Workflows modulares
+
+Workflows modulares servem para validar componentes, não para instalar no WordPress.
+
+Exemplos:
 
 ```text
-0.4.4.0
+Build M360 Ads Inventory Library
+Build M360 Ads Inline Engine
 ```
 
-O workflow valida se a versão informada existe em:
+Esses artifacts são úteis para revisão técnica, mas não substituem o plugin completo.
 
-```text
-plugin/m360-core.php
-```
+## 6. Conteúdo do pacote instalável
 
-Valida os dois pontos:
-
-- cabeçalho WordPress `Version`;
-- constante `M360_CORE_VERSION`.
-
-## 5. Conteúdo do pacote
-
-O ZIP gerado deve conter apenas o plugin instalável:
+O ZIP completo deve conter:
 
 ```text
 m360-core/
@@ -98,27 +113,13 @@ Ficam fora do ZIP:
 - `releases`;
 - arquivos ZIP anteriores.
 
-## 6. Nome do artifact
-
-Padrão:
-
-```text
-m360-core-v{version}.zip
-```
-
-Exemplo:
-
-```text
-m360-core-v0.4.4.0.zip
-```
-
 ## 7. Checklist antes do build
 
-Antes de gerar o ZIP:
+Antes de gerar o ZIP completo:
 
 - confirmar versão em `plugin/m360-core.php`;
 - confirmar documentação da sprint;
-- confirmar release history;
+- confirmar release checklist;
 - confirmar PR revisado;
 - confirmar que shortcodes existentes continuam compatíveis;
 - confirmar que o plugin não depende de arquivos fora de `plugin/`.
@@ -132,11 +133,13 @@ Após instalar/atualizar o plugin:
 - abrir `M360 Ads → Dashboard`;
 - abrir `M360 Ads → Inventário Piloto`;
 - abrir `M360 Ads → AdSense Ready`;
-- validar os slots:
+- validar os slots piloto:
   - `header-top`;
   - `content-bottom`;
   - `sidebar-community`;
   - `sidebar-square`;
+- validar o slot novo `article-after-paragraph-2`;
+- abrir um post individual e conferir anúncio após o segundo parágrafo;
 - validar shortcode `[m360_ad_slot id="header-top"]`;
 - validar API PHP `m360_ads_render_slot('header-top')`;
 - validar idioma PT-BR;
@@ -158,9 +161,10 @@ Rollback recomendado:
 
 A versão só deve ser considerada publicada quando:
 
-- o ZIP foi gerado pelo workflow;
+- o ZIP completo foi gerado pelo workflow `Build M360 Core Plugin ZIP`;
 - o plugin foi instalado com sucesso;
 - o admin carregou sem erro fatal;
 - os slots renderizaram no front-end;
+- o Inline Ads Engine foi validado em post real;
 - o checklist AdSense Ready ficou acessível;
 - não houve regressão nos shortcodes nem na API PHP.
