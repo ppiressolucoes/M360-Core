@@ -51,36 +51,109 @@ final class M360_Ad_Slot_Component
         $language = self::language();
         $device = self::device();
         $now = current_time('mysql');
-        $sql = $wpdb->prepare("SELECT c.*, r.priority AS slot_priority FROM {$relations} r INNER JOIN {$campaigns} c ON c.id = r.campaign_id WHERE r.slot_id = %d AND r.is_active = 1 AND c.status = 'active' AND (c.language = %s OR c.language = 'all') AND (c.device = %s OR c.device = 'all') AND (c.start_at IS NULL OR c.start_at <= %s) AND (c.end_at IS NULL OR c.end_at >= %s) ORDER BY r.priority DESC, c.priority DESC, c.id DESC LIMIT 1", $slot_id, $language, $device, $now, $now);
+        $sql = $wpdb->prepare("SELECT c.*, r.priority AS slot_priority FROM {$relations} r INNER JOIN {$campaigns} c ON c.id = r.campaign_id WHERE r.slot_id = %d AND r.is_active = 1 AND c.status = 'active' AND (c.language = %s OR c.language = 'all') AND (c.device = %s OR c.device = 'all') AND (c.start_at IS NULL OR c.start_at <= %s) AND (c.end_at IS NULL OR c.end_at >= %s) ORDER BY CASE WHEN c.language = %s THEN 0 ELSE 1 END ASC, r.priority DESC, c.priority DESC, c.id DESC LIMIT 1", $slot_id, $language, $device, $now, $now, $language);
         $row = $wpdb->get_row($sql, ARRAY_A);
         return is_array($row) ? $row : null;
     }
 
     private static function find_creative(int $campaign_id, string $slot_key, array $slot): ?array
     {
-        global $wpdb;
-        $table = M360_Ads_DB::table('ad_creatives');
         $language = self::language();
         $device = self::device();
 
-        foreach (self::slot_slug_candidates($slot_key) as $slug) {
-            $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE campaign_id = %d AND status = 'active' AND (language = %s OR language = 'all') AND (device = %s OR device = 'all') AND slug = %s ORDER BY id DESC LIMIT 1", $campaign_id, $language, $device, $slug), ARRAY_A);
+        $strategies = self::creative_strategies($slot_key, $slot);
+        foreach ($strategies as $strategy) {
+            $row = self::query_creative($campaign_id, $language, $device, $strategy);
             if (is_array($row)) { return $row; }
         }
 
+        return self::query_creative($campaign_id, $language, $device, ['mode' => 'campaign']);
+    }
+
+    private static function creative_strategies(string $slot_key, array $slot): array
+    {
         $width = absint($slot['max_width'] ?? 0);
         $height = absint($slot['max_height'] ?? 0);
+        $strategies = [];
+
+        foreach (self::slot_slug_candidates($slot_key) as $slug) {
+            $strategies[] = ['mode' => 'slug', 'slug' => $slug];
+        }
+
+        if ($slot_key === 'content-bottom') {
+            $strategies[] = ['mode' => 'slot_terms_wide', 'terms' => ['content', 'bottom']];
+            $strategies[] = ['mode' => 'wide'];
+        }
+
+        if ($slot_key === 'sidebar-community') {
+            $strategies[] = ['mode' => 'slot_terms_square', 'terms' => ['sidebar', 'community']];
+            $strategies[] = ['mode' => 'slot_terms_square', 'terms' => ['sidebar', 'html']];
+            $strategies[] = ['mode' => 'square'];
+        }
+
+        if ($slot_key === 'sidebar-square') {
+            $strategies[] = ['mode' => 'slot_terms_square', 'terms' => ['sidebar', 'mega']];
+            $strategies[] = ['mode' => 'square'];
+        }
+
         if ($width && $height) {
-            $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE campaign_id = %d AND status = 'active' AND (language = %s OR language = 'all') AND (device = %s OR device = 'all') AND width = %d AND height = %d ORDER BY id DESC LIMIT 1", $campaign_id, $language, $device, $width, $height), ARRAY_A);
-            if (is_array($row)) { return $row; }
+            $strategies[] = ['mode' => 'size', 'width' => $width, 'height' => $height];
         }
 
-        if ($width && $height && abs($width - $height) <= 2) {
-            $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE campaign_id = %d AND status = 'active' AND (language = %s OR language = 'all') AND (device = %s OR device = 'all') AND width = height ORDER BY id DESC LIMIT 1", $campaign_id, $language, $device), ARRAY_A);
-            if (is_array($row)) { return $row; }
+        return $strategies;
+    }
+
+    private static function query_creative(int $campaign_id, string $language, string $device, array $strategy): ?array
+    {
+        global $wpdb;
+        $table = M360_Ads_DB::table('ad_creatives');
+        $base = "SELECT * FROM {$table} WHERE campaign_id = %d AND status = 'active' AND (language = %s OR language = 'all') AND (device = %s OR device = 'all')";
+        $order = " ORDER BY CASE WHEN language = %s THEN 0 ELSE 1 END ASC, CASE WHEN device = %s THEN 0 ELSE 1 END ASC, id DESC LIMIT 1";
+        $mode = (string) ($strategy['mode'] ?? 'campaign');
+
+        if ($mode === 'slug') {
+            $sql = $wpdb->prepare($base . " AND slug = %s" . $order, $campaign_id, $language, $device, (string) $strategy['slug'], $language, $device);
+            $row = $wpdb->get_row($sql, ARRAY_A);
+            return is_array($row) ? $row : null;
         }
 
-        $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE campaign_id = %d AND status = 'active' AND (language = %s OR language = 'all') AND (device = %s OR device = 'all') ORDER BY id ASC LIMIT 1", $campaign_id, $language, $device), ARRAY_A);
+        if ($mode === 'size') {
+            $sql = $wpdb->prepare($base . " AND width = %d AND height = %d" . $order, $campaign_id, $language, $device, absint($strategy['width']), absint($strategy['height']), $language, $device);
+            $row = $wpdb->get_row($sql, ARRAY_A);
+            return is_array($row) ? $row : null;
+        }
+
+        if ($mode === 'wide') {
+            $sql = $wpdb->prepare($base . " AND width > height AND width >= 700" . $order, $campaign_id, $language, $device, $language, $device);
+            $row = $wpdb->get_row($sql, ARRAY_A);
+            return is_array($row) ? $row : null;
+        }
+
+        if ($mode === 'square') {
+            $sql = $wpdb->prepare($base . " AND width = height" . $order, $campaign_id, $language, $device, $language, $device);
+            $row = $wpdb->get_row($sql, ARRAY_A);
+            return is_array($row) ? $row : null;
+        }
+
+        if ($mode === 'slot_terms_wide' || $mode === 'slot_terms_square') {
+            $terms = array_values(array_filter((array) ($strategy['terms'] ?? [])));
+            if (!$terms) { return null; }
+            $conditions = [];
+            $params = [$campaign_id, $language, $device];
+            foreach ($terms as $term) {
+                $conditions[] = 'slug LIKE %s';
+                $params[] = '%' . $wpdb->esc_like((string) $term) . '%';
+            }
+            $shape = $mode === 'slot_terms_wide' ? ' AND width > height AND width >= 700' : ' AND width = height';
+            $params[] = $language;
+            $params[] = $device;
+            $sql = $wpdb->prepare($base . ' AND (' . implode(' OR ', $conditions) . ')' . $shape . $order, ...$params);
+            $row = $wpdb->get_row($sql, ARRAY_A);
+            return is_array($row) ? $row : null;
+        }
+
+        $sql = $wpdb->prepare($base . $order, $campaign_id, $language, $device, $language, $device);
+        $row = $wpdb->get_row($sql, ARRAY_A);
         return is_array($row) ? $row : null;
     }
 
@@ -88,8 +161,8 @@ final class M360_Ad_Slot_Component
     {
         $map = [
             'header-top' => ['m360-pilot-header-mega-bolao'],
-            'content-bottom' => ['m360-pilot-content-whatsapp'],
-            'sidebar-community' => ['m360-pilot-sidebar-whatsapp'],
+            'content-bottom' => ['m360-pilot-content-whatsapp', 'bottom-html-comunidade-en-us', 'bottom-html-comunidade-pt-br'],
+            'sidebar-community' => ['m360-pilot-sidebar-whatsapp', 'sidebar-html-11-comunidade-en-us', 'sidebar-html-11-comunidade-pt-br'],
             'sidebar-square' => ['m360-pilot-sidebar-mega-bolao'],
         ];
         $base = ['m360-pilot-' . $slot_key, 'm360-pilot-' . str_replace('-', '_', $slot_key)];
