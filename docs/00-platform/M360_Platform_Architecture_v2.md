@@ -6,7 +6,7 @@ Função: bíblia técnica, arquitetural e operacional do projeto.
 
 ## 1. Visão executiva
 
-O Mengão 360 evoluiu de portal editorial WordPress para uma plataforma esportiva modular baseada em dados, automação editorial, internacionalização, widgets esportivos, SEO semântico e produtos de comunidade.
+O Mengão 360 evoluiu de portal editorial WordPress para uma plataforma esportiva modular baseada em dados, automação editorial, internacionalização, widgets esportivos, SEO semântico, comunidade e monetização.
 
 O Documento Mestre é a fonte única de verdade da plataforma. Todo desenvolvimento estrutural futuro deve preservar rastreabilidade por ADR, roadmap, sprint, release e histórico.
 
@@ -26,12 +26,36 @@ Isso significa:
 - internacionalização contínua;
 - suporte a novas competições e produtos.
 
-## 3. Arquitetura macro
+## 3. Decisão arquitetural vigente
+
+O ADR-0007 consolida o M360 Core como camada oficial de interface da Plataforma Mengão 360.
+
+Referência:
+
+```text
+docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
+```
+
+Diretriz oficial:
+
+```text
+WordPress / Polylang / Tema / Elementor
+        ↓
+M360 Core
+        ↓
+Componentes próprios PT-BR / EN-US
+        ↓
+Front-end Mengão 360
+```
+
+O tema News Portal e o Elementor passam a ser tratados como camadas de compatibilidade e composição. A lógica visual, multilíngue e reutilizável deve nascer prioritariamente no M360 Core.
+
+## 4. Arquitetura macro
 
 Fluxo consolidado:
 
 ```text
-API externa → n8n → MariaDB / DW Esportivo → Views frontend → cache_widgets → WordPress → Elementor / Theme Builder → Componentes M360 → Front-end PT-BR / EN-US
+API externa → n8n → MariaDB / DW Esportivo → Views frontend → cache_widgets → WordPress → M360 Core → Componentes PT-BR / EN-US → Front-end
 ```
 
 Camada editorial:
@@ -49,10 +73,10 @@ DW Esportivo → Bolão / Palpites → Rankings → Ligas → Convites → Mega 
 Camada comercial:
 
 ```text
-M360 Ads Manager → Slots → Campanhas → Criativos → Renderer → Front-end PT-BR / EN-US → AdSense Ready / Plataforma Comercial
+M360 Ads Manager → Inventory Library → Slots → Campanhas → Criativos → Ad Slot Component → Front-end PT-BR / EN-US → AdSense Ready / Plataforma Comercial
 ```
 
-## 4. Módulos oficiais
+## 5. Módulos oficiais
 
 ### M360 Core
 
@@ -77,11 +101,13 @@ Componentes oficiais:
 - M360 Dynamic Views;
 - M360 Router;
 - M360 View Engine;
-- M360 Layout Engine.
+- M360 Layout Engine;
+- M360 Advertising Components;
+- M360 Inventory Library.
 
 Missão:
 
-Reduzir gradualmente dependências do tema News Portal e do Nav Menu do Elementor, criando uma camada de interface própria, reutilizável, multilíngue e preparada para novas competições.
+Reduzir gradualmente dependências do tema News Portal e do Elementor, criando uma camada de interface própria, reutilizável, multilíngue e preparada para novas competições, views, widgets, comunidade e monetização.
 
 ### M360 Editorial
 
@@ -146,15 +172,14 @@ Componentes oficiais:
 
 Responsável pela camada comercial, inventário publicitário e preparação para monetização.
 
-Componente oficial consolidado:
+Componentes oficiais consolidados:
 
-- M360 Ads Manager.
-
-Status:
-
-```text
-Piloto funcional homologado até M360 Core v0.4.3.5.
-```
+- M360 Ads Manager;
+- M360 Inventory Library;
+- M360 Ad Slot Component;
+- M360 Ads Context Renderer;
+- M360 Ads Inline Engine;
+- M360 AdSense Ready.
 
 Objetivo:
 
@@ -166,19 +191,6 @@ Arquitetura funcional:
 Slot → Campanha → Criativo → Idioma → Dispositivo → Renderer → Front-end
 ```
 
-Componentes:
-
-- Slots de inventário;
-- Campanhas;
-- Criativos;
-- Renderer;
-- Fallback por idioma e formato;
-- Integração com Media Library;
-- Suporte a HTML, scripts e imagens;
-- Shortcodes;
-- API PHP;
-- Renderização PT-BR / EN-US.
-
 Inventário piloto homologado:
 
 ```text
@@ -188,73 +200,17 @@ sidebar-community
 sidebar-square
 ```
 
-Tipos suportados no piloto:
-
-- Imagem;
-- HTML;
-- Script/markup confiável administrado;
-- House Ads;
-- Affiliate;
-- Sponsor.
-
-Internacionalização:
+Inventário em expansão:
 
 ```text
-pt-br
-en-us
-all
+article-after-paragraph-2
+article-inline-1
+search-top
+category-inline
+tag-inline
+author-inline
+latest-inline
 ```
-
-Dispositivos:
-
-```text
-desktop
-mobile
-all
-```
-
-APIs e shortcodes homologados:
-
-```php
-echo m360_ads_render_slot('header-top');
-echo m360_ads_render_slot('content-bottom');
-echo m360_ads_render_slot('sidebar-community');
-echo m360_ads_render_slot('sidebar-square');
-```
-
-```text
-[m360_ad_slot id="header-top"]
-[m360_ad_slot id="content-bottom"]
-[m360_ad_slot id="sidebar-community"]
-[m360_ad_slot id="sidebar-square"]
-```
-
-Validação concluída:
-
-- Header 728x140 em PT-BR e EN-US;
-- Sidebar 1:1 em PT-BR e EN-US;
-- Sidebar HTML 300x300 em PT-BR e EN-US;
-- Bottom HTML horizontal em PT-BR e EN-US;
-- Links de criativos;
-- HTML com `<style>`;
-- Markup com `<script>` para administradores;
-- Fallback por idioma;
-- Fallback por intenção do slot;
-- Shortcodes em widgets/Elementor;
-- API PHP para integração futura com tema/componentes.
-
-Roadmap comercial:
-
-```text
-v0.4.4.x — M360 AdSense Ready
-v0.5.x   — Plataforma Comercial M360
-v0.6.x   — AdServer / Analytics / Rotação
-v1.x     — Marketplace Comercial M360
-```
-
-Próxima frente imediata:
-
-A Sprint v0.4.4.0 — M360 AdSense Ready deverá padronizar os slots publicitários com etiquetas, IDs únicos, comentários HTML, placeholders para espaços vazios, data attributes, CSS unificado e checklist de preparação para Google AdSense.
 
 ### M360 Admin
 
@@ -292,31 +248,25 @@ Componentes oficiais:
 - REST API;
 - Cache WordPress / Hosting;
 - Observabilidade;
-- Deploy.
+- Deploy;
+- GitHub Actions;
+- Release Build.
 
-## 5. Sprint 9 — Marco arquitetural
+Referência complementar:
+
+```text
+docs/00-platform/M360_Infrastructure_Architecture_v1.md
+```
+
+## 6. Sprint 9 — Marco arquitetural
 
 A Sprint 9 — M360 Navigation Library é considerada o marco oficial de transição para a plataforma Core UI.
-
-Problema original:
-
-- PT-BR renderizado principalmente pelo tema News Portal;
-- EN-US renderizado principalmente via Elementor Theme Builder;
-- menus com HTML, CSS, JavaScript e breakpoints diferentes;
-- inconsistências de dropdown, responsividade, submenus e navegação contextual;
-- crescimento futuro de competições sem base escalável.
 
 Decisão:
 
 Criar a M360 Navigation Library como biblioteca própria de navegação, reutilizando menus do WordPress, mas controlando HTML, CSS, JavaScript, integração Polylang e componentes responsivos por meio da camada M360.
 
-Componentes validados:
-
-- M360 Main Navigation;
-- M360 Section Navigation;
-- M360 Breadcrumb.
-
-## 6. Atualização Sprint 10 — Dynamic Views
+## 7. Atualização Sprint 10 — Dynamic Views
 
 A Sprint 10 iniciou a transição do M360 Core de biblioteca de componentes para camada de renderização dinâmica.
 
@@ -326,14 +276,7 @@ Componentes validados:
 - M360 Search Results;
 - M360 Layout Foundation.
 
-Próxima frente:
-
-- M360 Radar News Engine;
-- M360 View Engine;
-- M360 Archive Engine;
-- M360 Layout Engine.
-
-## 7. Atualização Sprint 11.7 — M360 Ads Pilot
+## 8. Atualização Sprint 11.7 — M360 Ads Pilot
 
 A Sprint 11.7 consolidou o M360 Ads Manager como subsistema funcional da plataforma.
 
@@ -347,26 +290,21 @@ Resultado:
 
 O portal passou a renderizar inventário publicitário real a partir do M360 Ads Manager, reduzindo a dependência de HTML manual, widgets dispersos e trechos colados em tema/Elementor.
 
-Fluxo validado:
+## 9. Atualização Sprint v0.4.4.x — M360 AdSense Ready / Inventory Engine
 
-```text
-Cadastro de Campanha → Cadastro de Criativo → Vinculação ao Slot → Shortcode/API → Renderização no front-end
-```
+A Sprint v0.4.4.x consolida a transição da publicidade para componentes oficiais do M360 Core.
 
-Inventário validado:
+Entregas:
 
-| Slot | Uso | PT-BR | EN-US | Status |
-|---|---|---:|---:|---|
-| `header-top` | Banner 728x140 | OK | OK | Homologado |
-| `content-bottom` | Banner horizontal HTML | OK | OK | Homologado |
-| `sidebar-community` | HTML 300x300 | OK | OK | Homologado |
-| `sidebar-square` | Imagem 1:1 | OK | OK | Homologado |
+- M360 Ad Slot Component;
+- M360 Inventory Library;
+- Inventory Seeder;
+- Context Renderer;
+- Inline Ads Engine;
+- Workflow de publicação;
+- checklist de release.
 
-Decisão arquitetural:
-
-O M360 Ads Manager passa a ser tratado como base da futura Plataforma Comercial M360 e deverá ser evoluído em documentação própria: `M360_Arquitetura_Ads_Manager_v1.md`.
-
-## 8. Governança oficial
+## 10. Governança oficial
 
 Toda evolução estrutural deve responder:
 
@@ -379,10 +317,11 @@ Toda evolução estrutural deve responder:
 7. O Documento Mestre precisa ser atualizado?
 8. Existe evidência de validação?
 9. Existe rollback documentado?
+10. Está aderente ao ADR-0007?
 
 Se qualquer item essencial estiver ausente, a entrega é considerada incompleta do ponto de vista de governança.
 
-## 9. Regra de ouro
+## 11. Regra de ouro
 
 O Documento Mestre nunca deve ser tratado como arquivo histórico estático.
 
