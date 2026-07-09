@@ -22,16 +22,51 @@ final class M360_Ad_Slot_Component
         if ($slot_key === '') { return ''; }
 
         $slot = self::find_slot($slot_key);
-        if (!$slot) { return self::fallback($slot_key, $args); }
+        if (!$slot) { return self::render_slot_shell($slot_key, '', 'empty', 'internal', '', $args, null); }
 
         $campaign = self::find_campaign((int) $slot['id']);
-        if (!$campaign) { return self::fallback($slot_key, $args, $slot); }
+        if (!$campaign) { return self::render_slot_shell($slot_key, '', 'empty', 'internal', self::placeholder($slot_key, $args), $args, $slot); }
 
         $creative = self::find_creative((int) $campaign['id'], $slot_key, $slot);
-        $classes = trim('m360-ad m360-ad-slot m360-ad-slot--' . sanitize_html_class($slot_key) . ' ' . sanitize_html_class((string) ($args['class'] ?? '')));
-        $html = '<aside class="' . esc_attr($classes) . '" data-m360-ad-slot="' . esc_attr($slot_key) . '">';
-        $html .= $creative ? self::render_creative($creative) : self::render_campaign($campaign);
-        $html .= '</aside>';
+        $payload = $creative ?: $campaign;
+        $provider = self::provider_from_payload($payload);
+        $content = $creative ? self::render_creative($creative) : self::render_campaign($campaign);
+        $status = trim($content) !== '' ? 'filled' : 'empty';
+        if ($status === 'empty') { $content = self::placeholder($slot_key, $args); }
+
+        return self::render_slot_shell($slot_key, $provider, $status, $provider, $content, $args, $slot);
+    }
+
+    private static function render_slot_shell(string $slot_key, string $format, string $status, string $provider, string $content, array $args = [], ?array $slot = null): string
+    {
+        $language = self::language();
+        $label = self::label($language);
+        $format = $format !== '' ? sanitize_key($format) : self::format_from_slot($slot_key, $slot);
+        $provider = self::normalize_provider($provider);
+        $status = sanitize_key($status ?: 'empty');
+        $width = absint($slot['max_width'] ?? 0);
+        $height = absint($slot['max_height'] ?? 0);
+        $extra_class = sanitize_html_class((string) ($args['class'] ?? ''));
+        $classes = trim(implode(' ', array_filter([
+            'm360-ad',
+            'm360-ad-slot',
+            'm360-ad-slot--' . sanitize_html_class($slot_key),
+            'm360-ad-slot--provider-' . sanitize_html_class($provider),
+            'm360-ad-slot--format-' . sanitize_html_class($format),
+            'm360-ad-slot--status-' . sanitize_html_class($status),
+            $extra_class,
+        ])));
+
+        if (trim($content) === '') { $content = self::placeholder($slot_key, $args); $status = 'empty'; }
+
+        $html = '<section id="m360-ad-slot-' . esc_attr($slot_key) . '" class="' . esc_attr($classes) . '" data-m360-ad-slot="' . esc_attr($slot_key) . '" data-m360-ad-provider="' . esc_attr($provider) . '" data-m360-ad-format="' . esc_attr($format) . '" data-m360-ad-lang="' . esc_attr($language) . '" data-m360-ad-status="' . esc_attr($status) . '"';
+        if ($width > 0) { $html .= ' data-m360-ad-width="' . esc_attr((string) $width) . '"'; }
+        if ($height > 0) { $html .= ' data-m360-ad-height="' . esc_attr((string) $height) . '"'; }
+        $html .= ' aria-label="' . esc_attr($label) . '">';
+        $html .= '<!-- M360 ADS SLOT: ' . esc_html($slot_key) . ' | provider: ' . esc_html($provider) . ' | format: ' . esc_html($format) . ' | lang: ' . esc_html($language) . ' | status: ' . esc_html($status) . ' -->';
+        $html .= '<span class="m360-ad-slot__label">' . esc_html($label) . '</span>';
+        $html .= '<div class="m360-ad-slot__content">' . $content . '</div>';
+        $html .= '</section>';
         return $html;
     }
 
@@ -209,12 +244,44 @@ final class M360_Ad_Slot_Component
         return do_shortcode($markup);
     }
 
-    private static function fallback(string $slot_key, array $args = [], ?array $slot = null): string
+    private static function placeholder(string $slot_key, array $args = []): string
     {
         $fallback = trim((string) ($args['fallback'] ?? ''));
-        if ($fallback === '') { return ''; }
-        $classes = 'm360-ad m360-ad-slot m360-ad-slot--' . sanitize_html_class($slot_key) . ' m360-ad-slot--fallback';
-        return '<aside class="' . esc_attr($classes) . '">' . wp_kses_post($fallback) . '</aside>';
+        if ($fallback !== '') { return '<div class="m360-ad-slot__placeholder m360-ad-slot__placeholder--custom">' . wp_kses_post($fallback) . '</div>'; }
+        $message = self::language() === 'en-us' ? 'Advertising space available.' : 'Espaço publicitário disponível.';
+        return '<div class="m360-ad-slot__placeholder" aria-hidden="true"><span>' . esc_html($message) . '</span></div>';
+    }
+
+    private static function label(string $language): string
+    {
+        return $language === 'en-us' ? 'ADVERTISEMENT' : 'PUBLICIDADE';
+    }
+
+    private static function provider_from_payload(array $payload): string
+    {
+        $type = sanitize_key((string) ($payload['creative_type'] ?? $payload['campaign_type'] ?? 'internal'));
+        return self::normalize_provider($type);
+    }
+
+    private static function normalize_provider(string $provider): string
+    {
+        $provider = sanitize_key($provider ?: 'internal');
+        if ($provider === 'gam') { return 'google-ad-manager'; }
+        if ($provider === 'image' || $provider === 'html' || $provider === 'script') { return 'internal'; }
+        if (in_array($provider, ['internal','adsense','google-ad-manager','house','affiliate','sponsor'], true)) { return $provider; }
+        return 'internal';
+    }
+
+    private static function format_from_slot(string $slot_key, ?array $slot = null): string
+    {
+        $width = absint($slot['max_width'] ?? 0);
+        $height = absint($slot['max_height'] ?? 0);
+        if ($width >= 700 && $height > 0 && $width > $height) { return 'leaderboard'; }
+        if ($width > 0 && $height > 0 && $width === $height) { return 'square'; }
+        if (str_contains($slot_key, 'sidebar')) { return 'sidebar'; }
+        if (str_contains($slot_key, 'header')) { return 'leaderboard'; }
+        if (str_contains($slot_key, 'bottom')) { return 'wide'; }
+        return 'responsive';
     }
 
     private static function language(): string
