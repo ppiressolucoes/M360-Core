@@ -3,34 +3,64 @@ name: Build M360 Ads Inventory Library
 on:
   workflow_dispatch:
     inputs:
+      source_ref:
+        description: 'Branch/tag/ref containing the Inventory Library source code'
+        required: true
+        default: 'sprint/v0.4.4.0-adsense-ready'
       version:
-        description: 'Inventory Library version'
+        description: 'Inventory Library package version'
         required: true
         default: '0.4.4.1'
 
 jobs:
   build:
+    name: Build Inventory Library package
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout source ref
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.source_ref }}
 
-      - name: Validate Inventory Library
+      - name: Validate source files
         run: |
+          set -euo pipefail
+          echo "Source ref: ${{ github.event.inputs.source_ref }}"
+          echo "Version: ${{ github.event.inputs.version }}"
+
           test -f plugin/includes/ads/class-m360-ads-inventory-library.php
-          echo "Inventory Library detected"
+          test -f docs/00-platform/M360_Inventory_Library_v1.md
+          test -f docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md
+
+          grep -q "final class M360_Ads_Inventory_Library" plugin/includes/ads/class-m360-ads-inventory-library.php
+          grep -q "M360 Inventory Library" docs/00-platform/M360_Inventory_Library_v1.md
+
+          echo "Inventory Library source validated."
 
       - name: Build package
         run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          PACKAGE_DIR="m360-ads-inventory-library-v${VERSION}"
+          ZIP_NAME="${PACKAGE_DIR}.zip"
+
+          rm -rf dist "${PACKAGE_DIR}" "${ZIP_NAME}"
+          mkdir -p "${PACKAGE_DIR}/plugin/includes/ads"
+          mkdir -p "${PACKAGE_DIR}/docs/00-platform"
+          mkdir -p "${PACKAGE_DIR}/docs/02-sprints"
+
+          cp plugin/includes/ads/class-m360-ads-inventory-library.php "${PACKAGE_DIR}/plugin/includes/ads/"
+          cp docs/00-platform/M360_Inventory_Library_v1.md "${PACKAGE_DIR}/docs/00-platform/"
+          cp docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md "${PACKAGE_DIR}/docs/02-sprints/"
+
           mkdir -p dist
-          zip -r dist/m360-ads-inventory-library-v${{ github.event.inputs.version }}.zip \
-            plugin/includes/ads/class-m360-ads-inventory-library.php \
-            docs/00-platform/M360_Inventory_Library_v1.md \
-            docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md
+          zip -r "dist/${ZIP_NAME}" "${PACKAGE_DIR}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: m360-ads-inventory-library-v${{ github.event.inputs.version }}
-          path: dist/*.zip
+          name: ${{ env.ZIP_NAME }}
+          path: dist/${{ env.ZIP_NAME }}
+          if-no-files-found: error
