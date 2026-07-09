@@ -24,6 +24,7 @@ A partir da Sprint `v0.4.4.0 — M360 AdSense Ready`, a **M360 Inventory Library
 | Documento | Caminho | Função |
 |---|---|---|
 | M360 Advertising Plugin Guide | `docs/01-modules/M360_Advertising_Plugin_Guide_v1.md` | Guia operacional do módulo M360 Advertising |
+| M360 Ads Inline Engine | `docs/01-modules/M360_Ads_Inline_Engine_v1.md` | Guia técnico da inserção automática de anúncios inline em artigos |
 
 ## 4. Sprints
 
@@ -36,7 +37,7 @@ A partir da Sprint `v0.4.4.0 — M360 AdSense Ready`, a **M360 Inventory Library
 | Documento | Caminho | Função |
 |---|---|---|
 | M360 Release History | `docs/03-releases/M360_Release_History_v2.md` | Histórico oficial de releases e marcos arquiteturais |
-| M360 Core v0.4.4.0 Release Checklist | `releases/v0.4.4.0/M360_Core_v0.4.4.0_Release_Checklist.md` | Checklist operacional da release v0.4.4.0 |
+| M360 Core v0.4.4.x Release Checklist | `releases/v0.4.4.0/M360_Core_v0.4.4.0_Release_Checklist.md` | Checklist operacional da release v0.4.4.x |
 
 ## 6. Operações
 
@@ -44,7 +45,15 @@ A partir da Sprint `v0.4.4.0 — M360 AdSense Ready`, a **M360 Inventory Library
 |---|---|---|
 | M360 Core Plugin Publication Workflow | `docs/04-operations/M360_Core_Plugin_Publication_Workflow_v1.md` | Workflow de publicação, build ZIP e rollback |
 
-## 7. Referência arquitetural da Inventory Library
+## 7. Workflows GitHub Actions
+
+| Workflow | Caminho | Função |
+|---|---|---|
+| Build M360 Core Plugin ZIP | `.github/workflows/build-m360-core-plugin-zip.yml` | Gera o ZIP completo e instalável do plugin |
+| Build M360 Ads Inventory Library | `.github/workflows/build-m360-ads-inventory-library.yml` | Gera artifact modular da Inventory Library |
+| Build M360 Ads Inline Engine | `.github/workflows/build-m360-ads-inline-engine.yml` | Gera artifact modular do Inline Engine |
+
+## 8. Referência arquitetural da Inventory Library
 
 A **M360 Inventory Library** é o documento oficial para qualquer evolução que envolva slots comerciais, incluindo:
 
@@ -64,7 +73,7 @@ A **M360 Inventory Library** é o documento oficial para qualquer evolução que
 - Sponsor;
 - Marketplace Comercial M360.
 
-## 8. Regra de governança
+## 9. Regra de governança
 
 Toda evolução estrutural deverá atualizar este índice quando criar ou promover um documento para referência oficial.
 
