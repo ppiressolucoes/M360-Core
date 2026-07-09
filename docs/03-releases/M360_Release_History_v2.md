@@ -222,7 +222,50 @@ Consolidar o primeiro motor funcional de inventário publicitário do Mengão 36
 
 O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes da Plataforma Comercial completa, a próxima sprint será `v0.4.4.0 — M360 AdSense Ready`, com foco em padronização visual e semântica dos espaços publicitários, etiquetas, IDs, placeholders, comentários HTML e preparação para aprovação do Google AdSense.
 
-## 13. Release 3.0 — M360 Layout Engine
+## 13. Release 2.4 — M360 AdSense Ready
+
+Status: implementação inicial em `M360 Core v0.4.4.0`.
+
+Módulos principais:
+
+- M360 Advertising.
+- M360 Core.
+- M360 Admin.
+
+Objetivo:
+
+Preparar os espaços publicitários do Mengão 360 para futura integração com Google AdSense e outros provedores, sem integrar código AdSense nesta etapa e sem reestruturar o Ads Manager homologado.
+
+### Linha de entregas
+
+| Versão | Entrega | Status |
+|---|---|---|
+| `0.4.4.0` | M360 Ad Slot Component semântico, labels PT/EN, placeholders, CSS centralizado e checklist AdSense Ready | Implementação inicial |
+
+### Entregas consolidadas
+
+- Wrapper HTML semântico para cada slot.
+- ID DOM único por slot no padrão `m360-ad-slot-{slot_key}`.
+- Classes CSS padronizadas por slot, provider, formato e status.
+- Labels automáticas `PUBLICIDADE` e `ADVERTISEMENT`.
+- Comentários HTML de diagnóstico.
+- Data attributes para slot, provider, formato, idioma, status e dimensões.
+- Placeholders discretos para slots vazios.
+- CSS unificado em `plugin/assets/css/m360-ads.css`.
+- Providers preparados: internal, AdSense, Google Ad Manager, house ads, affiliate e sponsor.
+- Tela administrativa `M360 Ads → AdSense Ready`.
+
+### Fora do escopo confirmado
+
+- Integração oficial com Google AdSense.
+- Estatísticas de impressões e cliques.
+- Rotação de campanhas.
+- Priorização comercial.
+- Google Ad Manager operacional.
+- Dashboard Comercial.
+- Marketplace Comercial M360.
+
+## 14. Release 3.0 — M360 Layout Engine
 
 Status: visão futura.
 
@@ -235,7 +278,7 @@ Escopo:
 - Layout Slots.
 - Containers independentes do tema.
 
-## 14. Regra de atualização
+## 15. Regra de atualização
 
 Toda sprint concluída deve ser consolidada em uma release.
 
