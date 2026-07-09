@@ -181,11 +181,10 @@ final class M360_Ads_DB
             'device' => sanitize_key((string) $slot[6]),
             'max_width' => absint($slot[7]),
             'max_height' => absint($slot[8]),
-            'is_active' => 1,
             'updated_at' => $now,
         ];
         if ($exists) { $wpdb->update($table, $data, ['id' => (int) $exists]); }
-        else { $data['created_at'] = $now; $wpdb->insert($table, $data); }
+        else { $data['is_active'] = 1; $data['created_at'] = $now; $wpdb->insert($table, $data); }
     }
 
     private static function seed_production_pilot(): void
