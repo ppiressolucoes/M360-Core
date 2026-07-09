@@ -220,6 +220,18 @@ Objetivo:
 
 Preparar os espaços publicitários do Mengão 360 para futura integração com Google AdSense e outros provedores, sem integrar código AdSense nesta etapa e sem reestruturar o Ads Manager homologado.
 
+### Architecture Milestone
+
+ADR-0007 aprovado.
+
+O M360 Core passa oficialmente a ser a camada de interface da Plataforma Mengão 360, consolidando a independência progressiva do tema News Portal e do Elementor. A partir deste marco, tema e Elementor são tratados como camadas de compatibilidade e composição, enquanto a lógica visual, multilíngue e reutilizável deve nascer prioritariamente no M360 Core.
+
+Documento normativo:
+
+```text
+docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
+```
+
 ### Linha de entregas
 
 | Versão | Entrega | Status |
