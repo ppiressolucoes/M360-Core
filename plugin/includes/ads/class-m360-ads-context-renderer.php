@@ -38,8 +38,10 @@ final class M360_Ads_Context_Renderer
 
         $html = '<div class="m360-ads-context m360-ads-context--' . esc_attr($context) . '" data-m360-ads-context="' . esc_attr($context) . '">';
         foreach ($slots as $slot) {
-            $html .= M360_Ad_Slot_Component::render((string) $slot['slot_key'], [
+            $html .= M360_Slot_Renderer::render((string) $slot['slot_key'], [
                 'class' => trim('m360-ads-context__slot ' . (string) ($args['class'] ?? '')),
+                'context' => $context,
+                'source' => 'context-renderer',
             ]);
         }
         $html .= '</div>';
@@ -63,7 +65,6 @@ final class M360_Ads_Context_Renderer
 
         $where = ['page_context = %s', 'is_active = 1'];
         $params = [$context];
-
         if ($position !== '') {
             $where[] = 'position = %s';
             $params[] = $position;
