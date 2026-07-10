@@ -50,6 +50,24 @@ Front-end Mengão 360
 
 O tema News Portal e o Elementor passam a ser tratados como camadas de compatibilidade e composição. A lógica visual, multilíngue e reutilizável deve nascer prioritariamente no M360 Core.
 
+### Internacionalização estrutural da interface
+
+A transição para PT-BR / EN-US revelou que o News Portal e o Elementor não garantiam isolamento completo dos elementos globais por idioma. Em páginas EN-US, headers, footers e menus podiam herdar conteúdo PT-BR.
+
+A solução homologada foi criar modelos M360 independentes de topo e rodapé por idioma, com navegação e elementos globais integralmente traduzidos. O M360 Core passa a resolver a interface correta pelo contexto linguístico e não permite fallback cruzado de menus ou componentes globais entre PT-BR e EN-US.
+
+```text
+Idioma da requisição
+        ↓
+M360 Core Language Context
+        ↓
+Header + Navigation + Footer do mesmo idioma
+        ↓
+Experiência integralmente localizada
+```
+
+Essa decisão transforma o M360 Core em solução completa de experiência de interface multilíngue, enquanto News Portal e Elementor permanecem somente como camadas de compatibilidade e composição.
+
 ## 4. Arquitetura macro
 
 Fluxo consolidado:
