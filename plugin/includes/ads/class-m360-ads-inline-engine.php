@@ -32,7 +32,6 @@ final class M360_Ads_Inline_Engine
 
             $ad = self::render_inline_slot($slot, $class);
             if ($ad === '') { continue; }
-
             $output = self::insert_after_paragraph($output, $ad, $paragraph);
         }
 
@@ -52,12 +51,13 @@ final class M360_Ads_Inline_Engine
 
     private static function render_inline_slot(string $slot_key, string $class = ''): string
     {
-        $rendered = M360_Ad_Slot_Component::render($slot_key, [
+        $rendered = M360_Slot_Renderer::render($slot_key, [
             'class' => trim('m360-inline-ad__slot ' . $class),
+            'context' => 'post',
+            'source' => 'inline-engine',
         ]);
 
         if (trim($rendered) === '') { return ''; }
-
         return '<div class="m360-inline-ad" data-m360-inline-ads="1" data-m360-inline-slot="' . esc_attr($slot_key) . '">' . $rendered . '</div>';
     }
 
@@ -69,7 +69,6 @@ final class M360_Ads_Inline_Engine
         $paragraph_index = 0;
         $output = '';
         $inserted = false;
-
         foreach ($parts as $part) {
             $output .= $part;
             if (preg_match('/<\/p>/i', $part)) {
@@ -80,7 +79,6 @@ final class M360_Ads_Inline_Engine
                 }
             }
         }
-
         return $inserted ? $output : $content . $insertion;
     }
 }
