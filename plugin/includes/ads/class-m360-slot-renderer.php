@@ -36,10 +36,6 @@ final class M360_Slot_Renderer
             'args' => $args,
         ];
 
-        /**
-         * Filters the normalized render request before the legacy-compatible
-         * component pipeline is executed.
-         */
         $request = apply_filters('m360_slot_before_render', $request, $slot_key, $args);
         if (!is_array($request)) { return ''; }
 
@@ -51,8 +47,6 @@ final class M360_Slot_Renderer
         $component_args['provider'] = self::normalize_provider((string) ($request['provider'] ?? $provider));
 
         $html = M360_Ad_Slot_Component::render($resolved_slot, $component_args);
-
-        /** Allows consumers to replace or decorate the final slot markup. */
         $html = apply_filters('m360_slot_after_render', $html, $request, $resolved_slot, $component_args);
         return is_string($html) ? $html : '';
     }
@@ -95,16 +89,15 @@ final class M360_Slot_Renderer
             'cache' => (bool) ($args['cache'] ?? false),
         ];
 
-        return apply_filters('m360_slot_render_args', $normalized, $args);
+        $filtered = apply_filters('m360_slot_render_args', $normalized, $args);
+        return is_array($filtered) ? $filtered : $normalized;
     }
 
     private static function context(array $args): string
     {
         $context = sanitize_key((string) ($args['context'] ?? ''));
         if ($context !== '') { return $context; }
-        if (class_exists('M360_Ads_Context_Renderer')) {
-            return M360_Ads_Context_Renderer::detect_context();
-        }
+        if (class_exists('M360_Ads_Context_Renderer')) { return M360_Ads_Context_Renderer::detect_context(); }
         return 'global';
     }
 
@@ -135,6 +128,20 @@ final class M360_Slot_Renderer
 
 if (!function_exists('m360_render_ad_slot')) {
     function m360_render_ad_slot(string $slot_key, array $args = []): string
+    {
+        return M360_Slot_Renderer::render($slot_key, $args);
+    }
+}
+
+if (!function_exists('m360_ad_slot')) {
+    function m360_ad_slot(string $slot_key, array $args = []): string
+    {
+        return M360_Slot_Renderer::render($slot_key, $args);
+    }
+}
+
+if (!function_exists('m360_ads_render_slot')) {
+    function m360_ads_render_slot(string $slot_key, array $args = []): string
     {
         return M360_Slot_Renderer::render($slot_key, $args);
     }
