@@ -208,7 +208,7 @@ O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes
 
 ## 13. Release 2.4 — M360 AdSense Ready / Inventory Engine
 
-Status: implementação funcional inicial até `M360 Core v0.4.4.3`.
+Status: implementação funcional inicial até `M360 Core v0.4.4.4`.
 
 Módulos principais:
 
@@ -240,6 +240,7 @@ docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
 | `0.4.4.1` | M360 Inventory Library registry e Inventory Seeder oficial | Implementação inicial |
 | `0.4.4.2` | M360 Ads Context Renderer com shortcode e API por contexto | Implementação inicial |
 | `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Entrega funcional inicial |
+| `0.4.4.4` | M360 Archive Ads Engine em Search, Category, Tag, Author e Latest News | Implementada; pendente homologação |
 
 ### Entregas consolidadas
 
@@ -257,6 +258,7 @@ docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
 - Inventory Seeder com cadastro automático de slots oficiais.
 - Context Renderer para renderização por contexto lógico.
 - Inline Ads Engine com primeiro impacto visível no front-end de artigos.
+- Archive Ads Engine com inserção automática nas listagens controladas pelo M360 Core.
 
 ### Fora do escopo confirmado
 
