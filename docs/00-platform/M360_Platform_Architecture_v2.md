@@ -96,6 +96,20 @@ M360 Ads Manager → Inventory Library → Slots → Campanhas → Criativos →
 
 ## 5. Módulos oficiais
 
+### Plugins precursores do ecossistema
+
+Três plugins especializados antecederam a consolidação do M360 Core e permanecem ativos em seus próprios domínios:
+
+- **Mengão 360 — Bolão:** gestão de bolões e palpites, com carga e atualização de dados pela API externa e integração DW Esportivo;
+- **M360 Home Editorial:** composição independente das Homes, com blocos configuráveis e modelos internacionais de cabeçalho, conteúdo e rodapé;
+- **M360 Semantic Relations:** relações semânticas internas, apoio à descoberta e indexação no Google Search Console e renderização de snapshots persistidos sem IA no front-end.
+
+O M360 Core integra esses módulos pela camada de interface, mas não substitui suas regras de negócio. A referência completa está em:
+
+```text
+docs/00-platform/M360_Plugin_Ecosystem_v1.md
+```
+
 ### M360 Core
 
 Responsável pela camada própria de interface da plataforma.
