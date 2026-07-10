@@ -1,81 +1,108 @@
 # M360 Core v0.4.4.5 — Release Notes
 
-Status: planejamento aprovado / desenvolvimento iniciado
+Status: implementação concluída / pronta para build e homologação
 Entrega: M360 Universal Slot Renderer
 Projeto: Mengão 360 | DW Esportivo
 
 ## 1. Contexto
 
-A v0.4.4.4 foi homologada em PT-BR e EN-US nos contextos Search, Category, Tag, Author e Latest News. A próxima evolução consolida toda a renderização publicitária em uma única camada do M360 Core.
+A v0.4.4.4 foi homologada em PT-BR e EN-US nos contextos Search, Category, Tag, Author e Latest News. A v0.4.4.5 consolida toda a renderização publicitária em uma única camada do M360 Core.
 
-## 2. Objetivo
-
-Criar o M360 Universal Slot Renderer como ponto focal para qualquer origem de publicidade:
-
-```text
-Elementor
-News Portal
-Widgets
-Templates
-Shortcodes
-APIs PHP
-Componentes M360
-        ↓
-M360 Universal Slot Renderer
-        ↓
-M360 Ad Slot Component
-```
-
-## 3. Escopo aprovado
+## 2. Implementado
 
 - classe `M360_Slot_Renderer`;
 - API pública `m360_render_ad_slot()`;
-- compatibilidade com APIs e shortcodes existentes;
-- migração interna de Inline Ads Engine, Archive Ads Engine e Context Renderer;
-- suporte preparado para providers `internal`, `house`, `adsense`, `google-ad-manager`, `affiliate` e `sponsor`;
-- hooks de extensão antes e depois da renderização;
-- diagnóstico HTML padronizado;
-- integração compatível com widgets, Elementor, News Portal e templates;
-- preparação para cache futuro.
+- APIs históricas redirecionadas para o renderer universal;
+- shortcodes históricos redirecionados para o renderer universal;
+- Inline Ads Engine migrado;
+- Archive Ads Engine migrado;
+- Context Renderer migrado;
+- normalização de contexto, provider, idioma, device e origem;
+- hooks de extensão;
+- contrato de cache preparado, ainda desativado;
+- compatibilidade com Elementor, News Portal, widgets e templates.
 
-## 4. Hooks previstos
+## 3. Pipeline
 
 ```text
-m360_slot_before_render
-m360_slot_after_render
-m360_slot_provider
-m360_slot_campaign
-m360_slot_placeholder
+Elementor / News Portal / Widgets / Templates / Shortcodes / APIs
+                              ↓
+                  M360 Universal Slot Renderer
+                              ↓
+                    M360 Ad Slot Component
+                              ↓
+                Campaign / Creative / Placeholder
 ```
 
-## 5. Compatibilidade obrigatória
+## 4. API oficial
 
-- `[m360_ad_slot]`;
-- `[m360_ads_slot]`;
-- `m360_ads_render_slot()`;
-- `m360_ad_slot()`;
-- Inline Ads Engine;
-- Archive Ads Engine;
-- Context Renderer;
-- slots `header-top`, `content-bottom`, `sidebar-community` e `sidebar-square`;
-- PT-BR / EN-US.
+```php
+echo m360_render_ad_slot('header-top');
+```
 
-## 6. Critérios de aceite
+Compatibilidade preservada:
 
-- todas as chamadas internas utilizam o Universal Slot Renderer;
-- nenhuma regressão visual em relação à v0.4.4.4;
-- admin do Ads Manager permanece íntegro;
-- Elementor e News Portal continuam compatíveis;
-- API pública documentada;
-- plugin completo gera artifact instalável;
-- homologação aprovada antes da v0.4.4.6.
+```php
+m360_ads_render_slot();
+m360_ad_slot();
+```
 
-## 7. Próxima etapa
+```text
+[m360_ad_slot id="header-top"]
+[m360_ads_slot id="header-top"]
+```
 
-Após a homologação desta release:
+## 5. Hooks disponíveis
+
+```text
+m360_slot_render_args
+m360_slot_campaign
+m360_slot_provider
+m360_slot_placeholder
+m360_slot_before_render
+m360_slot_after_render
+```
+
+A seleção comercial forçada e priorização de campanhas permanecem fora do escopo até a Plataforma Comercial v0.5.x.
+
+## 6. Critérios de homologação
+
+- plugin ativa sem erro fatal;
+- quatro slots piloto permanecem operacionais;
+- Inline Ads Engine permanece operacional;
+- Search, Category, Tag, Author e Latest News permanecem operacionais;
+- PT-BR e EN-US preservados;
+- placeholders preservados;
+- shortcodes históricos preservados;
+- APIs históricas preservadas;
+- nova API `m360_render_ad_slot()` operacional;
+- nenhuma regressão no Elementor ou News Portal.
+
+## 7. Build de publicação
+
+Workflow:
+
+```text
+Build M360 Core Plugin ZIP
+```
+
+Inputs:
+
+```text
+source_ref: sprint/v0.4.4.0-adsense-ready
+version: 0.4.4.5
+```
+
+Artifact esperado:
+
+```text
+m360-core-v0.4.4.5.zip
+```
+
+## 8. Próxima etapa
+
+Após homologação:
 
 ```text
 v0.4.4.6 — M360 AdSense Ready Final
 ```
-
-A v0.4.4.6 será dedicada à auditoria, checklist final e documentação de certificação técnica, sem integrar ainda o código oficial do Google AdSense.
