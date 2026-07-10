@@ -1,12 +1,6 @@
 <?php
 if (!defined('ABSPATH')) { exit; }
 
-/**
- * Universal public rendering facade for every M360 advertising surface.
- *
- * The renderer normalizes input, exposes stable extension hooks and delegates
- * the proven campaign/creative selection pipeline to M360_Ad_Slot_Component.
- */
 final class M360_Slot_Renderer
 {
     private const PROVIDERS = [
@@ -33,9 +27,11 @@ final class M360_Slot_Renderer
             'provider' => $provider,
             'language' => self::language(),
             'device' => wp_is_mobile() ? 'mobile' : 'desktop',
+            'campaign' => null,
             'args' => $args,
         ];
 
+        $request['campaign'] = apply_filters('m360_slot_campaign', null, $request, $slot_key, $args);
         $request = apply_filters('m360_slot_before_render', $request, $slot_key, $args);
         if (!is_array($request)) { return ''; }
 
@@ -45,6 +41,11 @@ final class M360_Slot_Renderer
         $component_args = is_array($request['args'] ?? null) ? $request['args'] : $args;
         $component_args['context'] = sanitize_key((string) ($request['context'] ?? $context));
         $component_args['provider'] = self::normalize_provider((string) ($request['provider'] ?? $provider));
+        $component_args['campaign'] = $request['campaign'] ?? null;
+
+        $fallback = (string) ($component_args['fallback'] ?? '');
+        $filtered_fallback = apply_filters('m360_slot_placeholder', $fallback, $request, $resolved_slot, $component_args);
+        $component_args['fallback'] = is_string($filtered_fallback) ? $filtered_fallback : $fallback;
 
         $html = M360_Ad_Slot_Component::render($resolved_slot, $component_args);
         $html = apply_filters('m360_slot_after_render', $html, $request, $resolved_slot, $component_args);
