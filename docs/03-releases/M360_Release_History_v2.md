@@ -153,7 +153,7 @@ Módulo principal: M360 Core.
 
 ## 11. Release 2.2 — View Engine / Radar News
 
-Status: planejada.
+Status: evolução contínua.
 
 Escopo:
 
@@ -220,9 +220,162 @@ Consolidar o primeiro motor funcional de inventário publicitário do Mengão 36
 
 ### Decisão histórica
 
-O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes da Plataforma Comercial completa, a próxima sprint será `v0.4.4.0 — M360 AdSense Ready`, com foco em padronização visual e semântica dos espaços publicitários, etiquetas, IDs, placeholders, comentários HTML e preparação para aprovação do Google AdSense.
+O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. A sprint seguinte, `v0.4.4.0 — M360 AdSense Ready`, foi criada para padronizar visualmente e semanticamente todos os espaços publicitários antes da integração com provedores externos.
 
-## 13. Release 3.0 — M360 Layout Engine
+## 13. Release 2.4 — M360 AdSense Ready
+
+Status: **homologada**.
+
+Baseline de encerramento:
+
+```text
+M360 Core v0.4.4.5
+```
+
+Módulos principais:
+
+- M360 Advertising.
+- M360 Core.
+- M360 Admin.
+
+Objetivo:
+
+Preparar toda a infraestrutura visual, semântica e técnica dos espaços publicitários do Mengão 360 para futura integração com Google AdSense e outros provedores, sem alterar a arquitetura homologada do Ads Manager.
+
+### Linha de entregas concluídas
+
+| Versão | Entrega | Status |
+|---|---|---|
+| `0.4.4.0` | Ad Slot Component, wrappers semânticos, labels, placeholders e CSS centralizado | Homologada |
+| `0.4.4.1` | Inventory Library e Inventory Seeder | Homologada |
+| `0.4.4.2` | Context Renderer | Homologada |
+| `0.4.4.3` | Inline Ads Engine em artigos | Homologada |
+| `0.4.4.4` | Archive Ads Engine em Search, Category, Tag, Author e Latest News | Homologada em PT-BR e EN-US |
+| `0.4.4.5` | Universal Slot Renderer e API única de renderização | Homologada em PT-BR e EN-US |
+
+### Componentes consolidados
+
+- M360 Ad Slot Component.
+- M360 Ads Inventory Library.
+- M360 Inventory Seeder.
+- M360 Ads Context Renderer.
+- M360 Ads Inline Engine.
+- M360 Ads Archive Engine.
+- M360 Universal Slot Renderer.
+- CSS centralizado do M360 Ads.
+- Checklist administrativo AdSense Ready.
+
+### Pipeline oficial homologado
+
+```text
+Elementor / News Portal / Widgets / Templates / Shortcodes / APIs
+                              ↓
+                  M360 Universal Slot Renderer
+                              ↓
+                    M360 Ad Slot Component
+                              ↓
+                 Slot → Campanha → Criativo
+                              ↓
+                   Provider / Placeholder
+                              ↓
+                    Front-end PT-BR / EN-US
+```
+
+### API oficial
+
+```php
+echo m360_render_ad_slot('header-top');
+```
+
+Compatibilidade preservada:
+
+```php
+m360_ads_render_slot();
+m360_ad_slot();
+```
+
+```text
+[m360_ad_slot id="header-top"]
+[m360_ads_slot id="header-top"]
+```
+
+### Inventário dinâmico homologado
+
+| Contexto | Slot | PT-BR | EN-US | Status |
+|---|---|---:|---:|---|
+| Artigo | `article-after-paragraph-2` | OK | OK | Homologado |
+| Search | `search-inline` | OK | OK | Homologado |
+| Category | `category-inline` | OK | OK | Homologado |
+| Tag | `tag-inline` | OK | OK | Homologado |
+| Author | `author-inline` | OK | OK | Homologado |
+| Latest News | `latest-inline` | OK | OK | Homologado |
+| Search vazio | `search-empty` | OK | OK | Homologado |
+
+### Critérios de aceite atendidos
+
+- HTML semântico padronizado para os slots.
+- IDs únicos e classes CSS consistentes.
+- Labels automáticas `PUBLICIDADE` e `ADVERTISEMENT`.
+- Data attributes de slot, idioma, formato, provider, status e dimensões.
+- Placeholders para ausência de campanha ativa.
+- CSS centralizado no M360 Core.
+- Compatibilidade com Elementor, News Portal e Polylang.
+- Renderização por shortcode e API PHP preservada.
+- Homologação visual em PT-BR e EN-US.
+- Build instalável gerada por GitHub Actions.
+- Nenhuma integração oficial com AdSense realizada nesta etapa.
+
+### Marco arquitetural
+
+A Release 2.4 materializa o ADR-0007 e consolida o M360 Core como camada oficial de interface, renderização e preparação para monetização da Plataforma Mengão 360.
+
+Tema News Portal e Elementor permanecem como camadas de compatibilidade e composição, não como fonte primária da lógica publicitária.
+
+### Documentos oficiais relacionados
+
+```text
+docs/00-platform/M360_Platform_Architecture_v2.md
+docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
+docs/00-platform/M360_Arquitetura_Ads_Manager_v1.md
+docs/01-modules/M360_Ads_Archive_Engine_v1.md
+docs/01-modules/M360_Universal_Slot_Renderer_v1.md
+docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md
+releases/v0.4.4.5/M360_Core_v0.4.4.5_Release_Notes.md
+```
+
+## 14. Release 2.5 — Plataforma Comercial M360
+
+Status: próxima fase planejada (`v0.5.x`).
+
+Objetivo:
+
+Evoluir a infraestrutura homologada de publicidade para uma plataforma comercial operacional, sem refatorar o pipeline consolidado na Release 2.4.
+
+### Backlog inicial
+
+- Campaign Engine avançado.
+- Priorização comercial.
+- Rotação de campanhas e criativos.
+- Regras por contexto, idioma, dispositivo e período.
+- Métricas de impressões e cliques.
+- Dashboard Comercial.
+- Google AdSense.
+- Google Ad Manager.
+- House Ads inteligentes.
+- Patrocinadores e afiliados.
+- Auditoria e observabilidade comercial.
+
+### Regra de evolução
+
+Toda funcionalidade comercial deverá consumir:
+
+```text
+M360 Universal Slot Renderer
+```
+
+Nenhuma nova integração publicitária deverá renderizar diretamente no tema, Elementor ou templates externos.
+
+## 15. Release 3.0 — M360 Layout Engine
 
 Status: visão futura.
 
@@ -235,7 +388,7 @@ Escopo:
 - Layout Slots.
 - Containers independentes do tema.
 
-## 14. Regra de atualização
+## 16. Regra de atualização
 
 Toda sprint concluída deve ser consolidada em uma release.
 
@@ -246,3 +399,5 @@ Toda release deve atualizar:
 - Release History.
 - Roadmap, quando o item sair de planejado para concluído.
 - ADR, quando houver decisão estrutural.
+- Evidências de homologação.
+- Procedimento de rollback.
