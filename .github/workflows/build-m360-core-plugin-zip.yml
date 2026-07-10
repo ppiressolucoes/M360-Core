@@ -8,9 +8,9 @@ on:
         required: true
         default: 'sprint/v0.4.4.0-adsense-ready'
       version:
-        description: 'Plugin version to package, e.g. 0.4.4.3'
+        description: 'Plugin version to package, e.g. 0.4.4.4'
         required: true
-        default: '0.4.4.3'
+        default: '0.4.4.4'
 
 jobs:
   build-plugin-zip:
@@ -29,17 +29,13 @@ jobs:
           VERSION="${{ github.event.inputs.version }}"
           echo "Source ref: ${{ github.event.inputs.source_ref }}"
           echo "Version: ${VERSION}"
-
           test -f plugin/m360-core.php
           test -d plugin/includes
           test -d plugin/assets
-
           grep -q "Version: ${VERSION}" plugin/m360-core.php
           grep -q "M360_CORE_VERSION', '${VERSION}'" plugin/m360-core.php
-
           php -l plugin/m360-core.php
           find plugin/includes -name '*.php' -print0 | xargs -0 -n1 php -l
-
           echo "Plugin source validated."
 
       - name: Prepare package directory
@@ -48,10 +44,8 @@ jobs:
           VERSION="${{ github.event.inputs.version }}"
           PACKAGE_DIR="m360-core"
           ZIP_NAME="m360-core-v${VERSION}.zip"
-
           rm -rf dist "${PACKAGE_DIR}" "${ZIP_NAME}"
           mkdir -p "${PACKAGE_DIR}" dist
-
           rsync -av \
             --exclude='.git' \
             --exclude='.github' \
@@ -60,7 +54,6 @@ jobs:
             --exclude='releases' \
             --exclude='*.zip' \
             plugin/ "${PACKAGE_DIR}/"
-
           zip -r "dist/${ZIP_NAME}" "${PACKAGE_DIR}"
           echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
 
