@@ -8,9 +8,9 @@ on:
         required: true
         default: 'sprint/v0.4.4.0-adsense-ready'
       version:
-        description: 'Plugin version to package, e.g. 0.4.4.4'
+        description: 'Plugin version to package, e.g. 0.4.4.5'
         required: true
-        default: '0.4.4.4'
+        default: '0.4.4.5'
 
 jobs:
   build-plugin-zip:
