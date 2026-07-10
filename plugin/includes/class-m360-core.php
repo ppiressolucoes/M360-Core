@@ -13,6 +13,7 @@ require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-context-renderer.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-inline-engine.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-archive-engine.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-admin.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-creatives-admin.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
