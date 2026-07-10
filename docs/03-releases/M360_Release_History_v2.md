@@ -1,4 +1,13 @@
-# M360 Release History v2.0 — Snapshot GitHub
+# M360 Release History v2.2 — Baseline Estável
+
+## Atualização canônica — julho de 2026
+
+- Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
+- Baseline estável: `M360 Core v0.4.4.5 — M360 Universal Slot Renderer`.
+- Arquitetura vigente: `M360 Platform Architecture v2.2`.
+- Próxima linha evolutiva: `v0.5.x — Plataforma Comercial M360`.
+
+Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada; a evolução seguinte começa diretamente em `v0.5.x`.
 
 Status: oficial
 Projeto: Mengão 360 | DW Esportivo
@@ -208,7 +217,7 @@ O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes
 
 ## 13. Release 2.4 — M360 AdSense Ready / Inventory Engine
 
-Status: implementação funcional em evolução até `M360 Core v0.4.4.5`.
+Status: homologada e encerrada em `M360 Core v0.4.4.5`.
 
 Módulos principais:
 
@@ -236,21 +245,20 @@ docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
 
 | Versão | Entrega | Status |
 |---|---|---|
-| `0.4.4.0` | M360 Ad Slot Component semântico, labels PT/EN, placeholders, CSS centralizado e checklist AdSense Ready | Implementação inicial |
-| `0.4.4.1` | M360 Inventory Library registry e Inventory Seeder oficial | Implementação inicial |
-| `0.4.4.2` | M360 Ads Context Renderer com shortcode e API por contexto | Implementação inicial |
-| `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Homologação inicial |
+| `0.4.4.0` | M360 Ad Slot Component semântico, labels PT/EN, placeholders, CSS centralizado e checklist AdSense Ready | Publicada em produção |
+| `0.4.4.1` | M360 Inventory Library registry e Inventory Seeder oficial | Homologada |
+| `0.4.4.2` | M360 Ads Context Renderer com shortcode e API por contexto | Homologada |
+| `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Homologada |
 | `0.4.4.4` | M360 Archive Ads Engine em Search, Category, Tag, Author e Latest News | Homologada em PT-BR e EN-US |
-| `0.4.4.5` | M360 Universal Slot Renderer e API única de renderização | Em desenvolvimento |
-| `0.4.4.6` | Auditoria e consolidação AdSense Ready Final | Planejada |
+| `0.4.4.5` | M360 Universal Slot Renderer e API única de renderização | Baseline estável homologada |
 
 ### Marco v0.4.4.4
 
 A homologação confirmou a renderização automática de etiquetas e placeholders em Search, Category, Tag, Author e Latest News nos dois idiomas, sem regressão visual nem alterações em templates do News Portal ou Elementor.
 
-### Início v0.4.4.5
+### Encerramento v0.4.4.5
 
-A v0.4.4.5 inicia a unificação de todo o pipeline publicitário em uma única camada do M360 Core:
+A v0.4.4.5 conclui a unificação de todo o pipeline publicitário em uma única camada do M360 Core:
 
 ```text
 Elementor / News Portal / Widgets / Templates / Shortcodes / APIs

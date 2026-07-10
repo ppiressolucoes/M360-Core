@@ -1,5 +1,24 @@
 # Roadmap — M360 Core
 
+## Baseline canônico — julho de 2026
+
+- Arquitetura vigente: `M360 Platform Architecture v2.2`.
+- Produção: `v0.4.4.0 — M360 AdSense Ready`.
+- Baseline estável: `v0.4.4.5 — M360 Universal Slot Renderer`.
+- Próxima linha: `v0.5.x — Plataforma Comercial M360`.
+
+As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
+
+## v0.5.x — Plataforma Comercial M360
+
+1. `v0.5.0`: domínio comercial, permissões, feature flags, migrações e rollback.
+2. `v0.5.1`: Campaign Engine, priorização, rotação e regras por contexto, idioma, dispositivo e período.
+3. `v0.5.2`: métricas, auditoria, consentimento e Dashboard Comercial.
+4. `v0.5.3`: conectores Google AdSense, Google Ad Manager, afiliados e patrocinadores.
+5. `v0.5.4`: Smart Delivery, pacing, frequência e otimização contextual.
+
+Toda evolução comercial deve consumir o `M360 Universal Slot Renderer` e preservar PT-BR, EN-US, APIs, shortcodes e slots homologados.
+
 ## Visão
 
 O M360 Core é o framework de interface do Projeto Mengão 360. Sua missão é reduzir progressivamente a dependência do tema News Portal e do Theme Builder do Elementor, consolidando componentes próprios, multilíngues e reutilizáveis.
