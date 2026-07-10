@@ -1,6 +1,6 @@
 # Sprint v0.4.4.0 — M360 AdSense Ready
 
-Status: implementação funcional inicial
+Status: implementação funcional em homologação
 Projeto: Mengão 360 | DW Esportivo
 Produto: M360 Core
 Módulo: M360 Advertising
@@ -8,160 +8,93 @@ Subsistema: M360 Ads Manager
 
 ## 1. Objetivo
 
-Preparar a infraestrutura visual, semântica e técnica dos espaços publicitários do Mengão 360 para futura avaliação e integração com provedores externos, especialmente Google AdSense, sem alterar a arquitetura consolidada do M360 Ads Manager.
+Preparar a infraestrutura visual, semântica e técnica dos espaços publicitários do Mengão 360 para futura integração com provedores externos, especialmente Google AdSense, sem alterar a arquitetura consolidada do M360 Ads Manager.
 
-Esta sprint não integra o Google AdSense. Ela deixa o renderer de slots tecnicamente preparado para uma futura camada de monetização externa e inicia a primeira entrega funcional visível no front-end.
+## 2. Base arquitetural
 
-## 2. Base arquitetural preservada
+A sprint preserva inventário, campanhas, criativos, shortcodes, API PHP, internacionalização PT-BR/EN-US, compatibilidade com Elementor/News Portal e independência progressiva do tema, conforme o ADR-0007.
 
-A sprint preserva:
+## 3. Linha de entregas
 
-- inventário de slots;
-- campanhas;
-- biblioteca de criativos;
-- renderização por shortcode;
-- API PHP `m360_ads_render_slot()`;
-- fallback por idioma;
-- fallback por intenção/formato;
-- compatibilidade com Elementor;
-- compatibilidade com tema News Portal;
-- independência de tema.
+| Versão | Entrega | Status |
+|---|---|---|
+| `0.4.4.0` | Ad Slot Component, labels, data attributes, placeholders e CSS centralizado | Homologação inicial |
+| `0.4.4.1` | Inventory Library e Inventory Seeder | Implementada |
+| `0.4.4.2` | Context Renderer | Implementada |
+| `0.4.4.3` | Inline Ads Engine em artigos | Homologada inicialmente |
+| `0.4.4.4` | Archive Ads Engine em listagens M360 | Implementada; pendente homologação |
+| `0.4.4.5` | Universal Slot Renderer | Planejada |
+| `0.4.4.6` | AdSense Ready Final | Planejada |
 
-## 3. Entregas técnicas iniciais
+## 4. v0.4.4.4 — M360 Archive Ads Engine
 
-### 3.1 M360 Ad Slot Component
+### Objetivo
 
-Cada slot passa a ser renderizado por um wrapper semântico único com label, data attributes, provider, formato, idioma e status.
+Inserir slots publicitários automaticamente nas listagens controladas pelo M360 Core, sem editar templates do tema News Portal nem estruturas do Elementor.
 
-### 3.2 Labels automáticos
+### Contextos implementados
 
-- `PUBLICIDADE` para PT-BR;
-- `ADVERTISEMENT` para EN-US.
+| Contexto | Slot | Posição padrão |
+|---|---|---:|
+| Search | `search-inline` | após o 3º resultado |
+| Category | `category-inline` | após o 3º artigo |
+| Tag | `tag-inline` | após o 3º artigo |
+| Author | `author-inline` | após o 3º artigo |
+| Latest News | `latest-inline` | após o 4º item |
 
-### 3.3 Data attributes padronizados
+Busca sem resultados utiliza `search-empty`.
 
-- `data-m360-ad-slot`;
-- `data-m360-ad-provider`;
-- `data-m360-ad-format`;
-- `data-m360-ad-lang`;
-- `data-m360-ad-status`;
-- `data-m360-ad-width` quando disponível;
-- `data-m360-ad-height` quando disponível.
+### Arquivos funcionais
 
-### 3.4 Providers preparados
+- `plugin/includes/ads/class-m360-ads-archive-engine.php`;
+- `plugin/includes/search/class-m360-search-controller.php`;
+- `plugin/includes/category/class-m360-category-controller.php`;
+- `plugin/includes/tag/class-m360-tag-controller.php`;
+- `plugin/includes/author/class-m360-author-controller.php`;
+- `plugin/includes/latest-news/class-m360-latest-news-component.php`;
+- `plugin/includes/class-m360-core.php`;
+- `plugin/assets/css/m360-ads.css`;
+- `plugin/m360-core.php`.
 
-- `internal`;
-- `adsense`;
-- `google-ad-manager`;
-- `house`;
-- `affiliate`;
-- `sponsor`.
+### APIs e filtros
 
-## 4. Primeira entrega de código — Inventory Seeder
-
-Versão técnica:
-
-```text
-M360 Core v0.4.4.1
+```php
+m360_ads_render_archive(string $context, array $args = []): string
+m360_ads_archive_position(string $context): int
 ```
 
-Entrega:
-
-- criação da classe `M360_Ads_Inventory_Library`;
-- registro oficial dos slots da M360 Inventory Library no código;
-- integração da biblioteca ao runtime do M360 Core;
-- atualização do schema do Ads Manager para `0.4.4.1`;
-- sincronização automática dos slots durante instalação/upgrade;
-- preservação do estado `is_active` de slots já existentes;
-- criação automática de novos slots como ativos;
-- manutenção do inventário piloto e vínculos de campanha já homologados.
-
-## 5. Segunda entrega de código — Context Renderer
-
-Versão técnica:
+Filtros:
 
 ```text
-M360 Core v0.4.4.2
+m360_ads_archive_enabled
+m360_ads_archive_position
+m360_ads_archive_slot
 ```
 
-Entrega:
+### Limite arquitetural conhecido
 
-- criação da classe `M360_Ads_Context_Renderer`;
-- renderização de slots por contexto lógico da Inventory Library;
-- detecção automática de contexto WordPress: home, post, search, category, tag, author e archive;
-- shortcode `[m360_ad_context]`;
-- alias `[m360_ads_context]`;
-- API PHP `m360_ads_render_context()`;
-- API PHP `m360_ads_render_position()`;
-- renderização por posição dentro do contexto.
+O contexto `archive-inline` está disponível por API, porém a injeção automática em arquivos genéricos ainda controlados pelo tema será implementada pelo futuro Theme Adapter/Universal Slot Renderer. A v0.4.4.4 não modifica templates externos, em aderência ao ADR-0007.
 
-## 6. Terceira entrega de código — Inline Ads Engine
+## 5. Critérios de aceite da v0.4.4.4
 
-Versão técnica:
+- plugin ativa sem erro fatal;
+- Search insere publicidade após o terceiro resultado;
+- Category insere publicidade após o terceiro artigo;
+- Tag insere publicidade após o terceiro artigo;
+- Author insere publicidade após o terceiro artigo;
+- Latest News insere publicidade após o quarto item;
+- busca sem resultados renderiza `search-empty`;
+- labels PT-BR e EN-US permanecem corretas;
+- placeholder aparece sem campanha vinculada;
+- layout permanece íntegro em desktop e mobile;
+- nenhum template do tema ou Elementor é alterado.
 
-```text
-M360 Core v0.4.4.3
-```
-
-Entrega funcional visível:
-
-- criação da classe `M360_Ads_Inline_Engine`;
-- registro automático no filtro `the_content`;
-- inserção automática do slot `article-after-paragraph-2` após o 2º parágrafo de posts individuais;
-- execução apenas no loop principal, query principal e posts individuais;
-- proteção contra admin, feed, AJAX e REST;
-- filtro global `m360_ads_inline_enabled`;
-- filtro de placements `m360_ads_inline_article_placements`;
-- wrapper `.m360-inline-ad`;
-- CSS mínimo de espaçamento no `m360-ads.css`.
-
-Resultado esperado no front-end:
-
-```text
-Parágrafo 1
-Parágrafo 2
-[M360 Ad Slot: article-after-paragraph-2]
-Parágrafo 3
-```
-
-## 7. Fora do escopo
-
-Permanecem fora desta sprint:
+## 6. Fora do escopo
 
 - integração oficial com Google AdSense;
-- código real de anúncios AdSense;
-- estatísticas de impressões;
-- estatísticas de cliques;
-- rotação avançada de campanhas;
-- priorização comercial;
+- métricas de impressão/clique;
+- rotação avançada;
 - Google Ad Manager operacional;
 - Dashboard Comercial;
-- Marketplace Comercial M360.
-
-## 8. Critérios de aceite
-
-A sprint será considerada concluída quando:
-
-- todos os slots usarem o wrapper semântico padrão;
-- labels forem renderizadas automaticamente conforme idioma;
-- slots possuírem IDs e data attributes consistentes;
-- placeholders forem exibidos em slots vazios;
-- CSS dos anúncios estiver centralizado no Core;
-- checklist AdSense Ready estiver disponível no painel;
-- shortcodes e API PHP existentes continuarem compatíveis;
-- Inventory Seeder cadastrar todos os slots oficiais sem duplicidade;
-- slots desativados manualmente não forem reativados pelo upgrade;
-- Context Renderer renderizar slots por contexto sem exigir alteração de templates;
-- Inline Ads Engine inserir `article-after-paragraph-2` após o segundo parágrafo em posts individuais.
-
-## 9. Arquivos alterados nesta etapa
-
-- `plugin/m360-core.php`;
-- `plugin/includes/class-m360-core.php`;
-- `plugin/includes/ads/class-m360-ads-inventory-library.php`;
-- `plugin/includes/ads/class-m360-ads-context-renderer.php`;
-- `plugin/includes/ads/class-m360-ads-inline-engine.php`;
-- `plugin/includes/ads/class-m360-ads-db.php`;
-- `plugin/includes/ads/class-m360-ad-slot-component.php`;
-- `plugin/includes/ads/class-m360-ads-admin.php`;
-- `plugin/assets/css/m360-ads.css`.
+- Marketplace Comercial M360;
+- arquivos genéricos do tema sem componente M360.
