@@ -2,7 +2,9 @@
 
 Todas as mudanças relevantes do M360 Core serão registradas neste arquivo.
 
-## [Unreleased] — Campaign CRUD Hotfix
+## [v0.4.4.6] — Campaign CRUD Hotfix
+
+Status: pronta para build e homologação.
 
 ### Corrigido
 
