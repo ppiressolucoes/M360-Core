@@ -45,8 +45,10 @@ final class M360_Ads_Archive_Engine
         if ($slot === '') { return ''; }
 
         $class = sanitize_html_class((string) ($args['class'] ?? ''));
-        $rendered = M360_Ad_Slot_Component::render($slot, [
+        $rendered = M360_Slot_Renderer::render($slot, [
             'class' => trim('m360-archive-ad__slot ' . $class),
+            'context' => $context,
+            'source' => 'archive-engine',
         ]);
         if (trim($rendered) === '') { return ''; }
 
@@ -57,7 +59,11 @@ final class M360_Ads_Archive_Engine
     {
         $context = sanitize_key($context);
         if ($context !== 'search' || !self::is_enabled('search')) { return ''; }
-        return M360_Ad_Slot_Component::render('search-empty', ['class' => 'm360-archive-ad__slot m360-archive-ad__slot--empty']);
+        return M360_Slot_Renderer::render('search-empty', [
+            'class' => 'm360-archive-ad__slot m360-archive-ad__slot--empty',
+            'context' => 'search',
+            'source' => 'archive-engine',
+        ]);
     }
 
     public static function render(string $context, array $args = []): string
