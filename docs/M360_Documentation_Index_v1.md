@@ -19,6 +19,7 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 | M360 Infrastructure Architecture | `docs/00-platform/M360_Infrastructure_Architecture_v1.md` | Referência da infraestrutura e posicionamento do M360 Core |
 | M360 Ads Manager Architecture | `docs/00-platform/M360_Arquitetura_Ads_Manager_v1.md` | Arquitetura do subsistema M360 Ads Manager |
 | M360 Inventory Library | `docs/00-platform/M360_Inventory_Library_v1.md` | Biblioteca oficial de inventário comercial e slots publicitários |
+| Ecossistema de Plugins M360 | `docs/00-platform/M360_Plugin_Ecosystem_v1.md` | Responsabilidades e limites de Bolão, Home Editorial e Semantic Relations |
 
 ## 3. Architecture Decision Records
 

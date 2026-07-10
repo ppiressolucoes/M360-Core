@@ -50,6 +50,24 @@ Front-end Mengão 360
 
 O tema News Portal e o Elementor passam a ser tratados como camadas de compatibilidade e composição. A lógica visual, multilíngue e reutilizável deve nascer prioritariamente no M360 Core.
 
+### Internacionalização estrutural da interface
+
+A transição para PT-BR / EN-US revelou que o News Portal e o Elementor não garantiam isolamento completo dos elementos globais por idioma. Em páginas EN-US, headers, footers e menus podiam herdar conteúdo PT-BR.
+
+A solução homologada foi criar modelos M360 independentes de topo e rodapé por idioma, com navegação e elementos globais integralmente traduzidos. O M360 Core passa a resolver a interface correta pelo contexto linguístico e não permite fallback cruzado de menus ou componentes globais entre PT-BR e EN-US.
+
+```text
+Idioma da requisição
+        ↓
+M360 Core Language Context
+        ↓
+Header + Navigation + Footer do mesmo idioma
+        ↓
+Experiência integralmente localizada
+```
+
+Essa decisão transforma o M360 Core em solução completa de experiência de interface multilíngue, enquanto News Portal e Elementor permanecem somente como camadas de compatibilidade e composição.
+
 ## 4. Arquitetura macro
 
 Fluxo consolidado:
@@ -77,6 +95,20 @@ M360 Ads Manager → Inventory Library → Slots → Campanhas → Criativos →
 ```
 
 ## 5. Módulos oficiais
+
+### Plugins precursores do ecossistema
+
+Três plugins especializados antecederam a consolidação do M360 Core e permanecem ativos em seus próprios domínios:
+
+- **Mengão 360 — Bolão:** gestão de bolões e palpites, com carga e atualização de dados pela API externa e integração DW Esportivo;
+- **M360 Home Editorial:** composição independente das Homes, com blocos configuráveis e modelos internacionais de cabeçalho, conteúdo e rodapé;
+- **M360 Semantic Relations:** relações semânticas internas, apoio à descoberta e indexação no Google Search Console e renderização de snapshots persistidos sem IA no front-end.
+
+O M360 Core integra esses módulos pela camada de interface, mas não substitui suas regras de negócio. A referência completa está em:
+
+```text
+docs/00-platform/M360_Plugin_Ecosystem_v1.md
+```
 
 ### M360 Core
 

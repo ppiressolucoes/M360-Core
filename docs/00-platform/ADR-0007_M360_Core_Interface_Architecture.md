@@ -43,6 +43,8 @@ O tema WordPress News Portal e o Elementor passam a ser tratados como camadas de
 - O tema é camada de compatibilidade e não deve concentrar regra de negócio.
 - O Elementor pode compor páginas, mas não deve ser a fonte da lógica dos componentes.
 - Todo componente deve ser compatível com PT-BR e EN-US.
+- Header, navegação e footer devem ser resolvidos pelo mesmo contexto de idioma da página.
+- Modelos globais PT-BR e EN-US devem permanecer independentes, sem fallback cruzado de menus ou conteúdo entre idiomas.
 - Toda nova renderização deve priorizar shortcode, API PHP ou componente Core reutilizável.
 - Toda dependência direta do tema deve ser tratada como temporária.
 - Toda nova sprint deve evitar criar dívida de refatoração futura.
