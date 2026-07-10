@@ -1,77 +1,31 @@
 # M360 Core
 
-Framework oficial de interface do Projeto Mengão 360 / DW Esportivo.
-
-## Objetivo
-
-O M360 Core concentra os componentes próprios de navegação, páginas dinâmicas, renderização editorial, SEO estrutural e integração multilíngue do portal Mengão 360.
+Framework oficial de interface, renderização e publicidade do Projeto Mengão 360 / DW Esportivo.
 
 ## Estado atual
 
-Versão estável operacional: `v0.3.2`
+- Arquitetura vigente: `M360 Platform Architecture v2.2`.
+- Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
+- Baseline estável: `M360 Core v0.4.4.5`.
+- Próxima linha evolutiva: `v0.5.x — Plataforma Comercial M360`.
 
-Componentes validados:
+## Componentes consolidados
 
-- M360 Main Navigation
-- M360 Section Navigation
-- M360 Breadcrumb
-- M360 Author Hub
-- M360 Search Results
-- M360 Layout Foundation
+- M360 Navigation e Dynamic Views.
+- M360 Universal Slot Renderer.
+- M360 Ad Slot Component.
+- M360 Ads Inventory Library e Inventory Seeder.
+- M360 Ads Context, Inline e Archive Engines.
+- APIs e shortcodes publicitários compatíveis com PT-BR e EN-US.
 
-Próxima evolução planejada:
+## Diretriz para v0.5.x
 
-- `v0.3.3` — Radar News Engine + View Engine Consolidation
-
-## Estrutura planejada
-
-```text
-m360-core/
-├── plugin/
-│   ├── m360-core.php
-│   ├── assets/
-│   ├── core/
-│   ├── navigation/
-│   ├── router/
-│   ├── views/
-│   ├── schema/
-│   ├── seo/
-│   └── languages/
-├── docs/
-├── releases/
-├── tests/
-├── CHANGELOG.md
-└── ROADMAP.md
-```
+Toda evolução comercial deve consumir o `M360 Universal Slot Renderer`. Nenhuma nova integração publicitária deve renderizar diretamente no tema, Elementor ou templates externos.
 
 ## Fluxo de desenvolvimento
 
 ```text
-Issue → Branch → Pull Request → Release → ZIP → WordPress
+Issue → Branch → Pull Request → Release → ZIP → WordPress → Homologação
 ```
 
-## Branches
-
-- `main`: versões estáveis.
-- `develop`: desenvolvimento contínuo.
-- `release/*`: validação de release.
-- `hotfix/*`: correções urgentes.
-
-## Padrão de versionamento
-
-O projeto seguirá versionamento semântico adaptado ao ciclo do M360 Core:
-
-- `v0.2.x`: Navigation + Dynamic Views Foundation.
-- `v0.3.x`: Router, Search, Radar News e View Engine.
-- `v0.4.x`: Layout Engine.
-- `v1.0.0`: primeira versão estável oficial do M360 Core.
-
-## Segurança operacional
-
-Nenhuma alteração estrutural deve ser aplicada diretamente em produção sem:
-
-1. issue registrada;
-2. branch dedicada;
-3. checklist de validação;
-4. changelog atualizado;
-5. rollback documentado.
+Nenhuma alteração estrutural deve chegar à produção sem checklist, evidências de homologação, documentação atualizada e rollback definido.

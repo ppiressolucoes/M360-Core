@@ -1,6 +1,6 @@
 # Sprint v0.4.4.0 — M360 AdSense Ready
 
-Status: implementação funcional em evolução
+Status: encerrada e homologada
 Projeto: Mengão 360 | DW Esportivo
 Produto: M360 Core
 Módulo: M360 Advertising
@@ -23,8 +23,7 @@ A sprint preserva inventário, campanhas, criativos, shortcodes, API PHP, intern
 | `0.4.4.2` | Context Renderer | Implementada |
 | `0.4.4.3` | Inline Ads Engine em artigos | Homologada inicialmente |
 | `0.4.4.4` | Archive Ads Engine em listagens M360 | Homologada em PT-BR e EN-US |
-| `0.4.4.5` | Universal Slot Renderer | Em desenvolvimento |
-| `0.4.4.6` | AdSense Ready Final | Planejada |
+| `0.4.4.5` | Universal Slot Renderer | Baseline estável homologada |
 
 ## 4. v0.4.4.4 — M360 Archive Ads Engine
 
@@ -56,7 +55,7 @@ Busca sem resultados utiliza `search-empty`.
 
 ### Status
 
-Início oficial aprovado após a homologação da v0.4.4.4.
+Implementação concluída e homologada como baseline estável da linha v0.4.4.x.
 
 ### Objetivo
 
@@ -130,13 +129,13 @@ A entrega não poderá quebrar:
 
 ## 6. Próxima etapa
 
-Após a homologação da v0.4.4.5, a sprint seguirá para:
+Após o encerramento da v0.4.4.5, o projeto seguirá para:
 
 ```text
-v0.4.4.6 — AdSense Ready Final
+v0.5.x — Plataforma Comercial M360
 ```
 
-Essa etapa consolidará auditoria, checklist final, documentação definitiva e preparação técnica para futura integração oficial com Google AdSense.
+Essa linha evoluirá Campaign Engine, métricas, Dashboard Comercial e provedores externos sem criar pipelines paralelos ao Universal Slot Renderer.
 
 ## 7. Fora do escopo
 

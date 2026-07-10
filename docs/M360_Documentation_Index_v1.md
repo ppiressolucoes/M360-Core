@@ -1,6 +1,6 @@
 # M360 Documentation Index v1
 
-Status: oficial em preparação
+Status: oficial
 Projeto: Mengão 360 | DW Esportivo
 Produto: M360 Core
 Função: índice de referência documental da plataforma.
@@ -32,6 +32,8 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 |---|---|---|
 | M360 Advertising Plugin Guide | `docs/01-modules/M360_Advertising_Plugin_Guide_v1.md` | Guia operacional do módulo M360 Advertising |
 | M360 Ads Inline Engine | `docs/01-modules/M360_Ads_Inline_Engine_v1.md` | Guia técnico da inserção automática de anúncios inline em artigos |
+| M360 Ads Archive Engine | `docs/01-modules/M360_Ads_Archive_Engine_v1.md` | Publicidade nas listagens controladas pelo M360 Core |
+| M360 Universal Slot Renderer | `docs/01-modules/M360_Universal_Slot_Renderer_v1.md` | Pipeline único homologado na baseline v0.4.4.5 |
 
 ## 5. Sprints
 
@@ -45,6 +47,16 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 |---|---|---|
 | M360 Release History | `docs/03-releases/M360_Release_History_v2.md` | Histórico oficial de releases e marcos arquiteturais |
 | M360 Core v0.4.4.x Release Checklist | `releases/v0.4.4.0/M360_Core_v0.4.4.0_Release_Checklist.md` | Checklist operacional da release v0.4.4.x |
+| M360 Core v0.4.4.5 Release Notes | `releases/v0.4.4.5/M360_Core_v0.4.4.5_Release_Notes.md` | Baseline estável e encerramento da linha AdSense Ready |
+
+### Baseline canônico
+
+```text
+Produção: v0.4.4.0 — M360 AdSense Ready
+Baseline estável: v0.4.4.5 — M360 Universal Slot Renderer
+Arquitetura: M360 Platform Architecture v2.2
+Próxima linha: v0.5.x — Plataforma Comercial M360
+```
 
 ## 7. Operações
 

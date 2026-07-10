@@ -1,6 +1,6 @@
 # M360 Core v0.4.4.5 — Release Notes
 
-Status: implementação concluída / pronta para build e homologação
+Status: baseline estável homologada em PT-BR e EN-US
 Entrega: M360 Universal Slot Renderer
 Projeto: Mengão 360 | DW Esportivo
 
@@ -101,8 +101,8 @@ m360-core-v0.4.4.5.zip
 
 ## 8. Próxima etapa
 
-Após homologação:
+Próxima linha evolutiva:
 
 ```text
-v0.4.4.6 — M360 AdSense Ready Final
+v0.5.x — Plataforma Comercial M360
 ```

@@ -2,6 +2,22 @@
 
 Todas as mudanças relevantes do M360 Core serão registradas neste arquivo.
 
+## [v0.4.4.5] — M360 Universal Slot Renderer
+
+Status: baseline estável homologada em PT-BR e EN-US.
+
+### Consolidado
+
+- `M360_Slot_Renderer` e API pública `m360_render_ad_slot()`.
+- APIs e shortcodes históricos redirecionados ao renderer universal.
+- Inline Ads Engine, Archive Ads Engine e Context Renderer integrados ao pipeline único.
+- Compatibilidade com Elementor, News Portal, widgets e templates.
+- Linha `v0.4.4.x — M360 AdSense Ready` encerrada como base da Plataforma Comercial.
+
+### Próxima linha
+
+- `v0.5.x — Plataforma Comercial M360`.
+
 ## [v0.3.7.0] — Sprint 10.6 Search Engine
 
 Status: pronto para build via GitHub Actions.

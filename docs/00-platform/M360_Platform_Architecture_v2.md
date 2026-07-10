@@ -1,6 +1,6 @@
-# M360 Platform Architecture v2.0 — Snapshot GitHub
+# M360 Platform Architecture v2.2 — Baseline Estável
 
-Status: oficial
+Status: oficial e vigente
 Projeto: Mengão 360 | DW Esportivo
 Função: bíblia técnica, arquitetural e operacional do projeto.
 
@@ -283,7 +283,7 @@ A Sprint 11.7 consolidou o M360 Ads Manager como subsistema funcional da platafo
 Marco de homologação:
 
 ```text
-M360 Core v0.4.3.5 — Ads Slot Intent Fallback
+M360 Core v0.4.4.5 — M360 Universal Slot Renderer
 ```
 
 Resultado:
@@ -305,6 +305,12 @@ Entregas:
 - checklist de release.
 
 ## 10. Governança oficial
+
+### Diretriz comercial vigente
+
+A linha `v0.4.4.x — M360 AdSense Ready` está encerrada com baseline estável `v0.4.4.5`. A próxima evolução é `v0.5.x — Plataforma Comercial M360`.
+
+Toda integração comercial deve consumir o `M360 Universal Slot Renderer`. Tema, Elementor, widgets e templates externos não devem implementar pipelines publicitários paralelos.
 
 Toda evolução estrutural deve responder:
 
