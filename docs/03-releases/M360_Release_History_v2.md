@@ -208,7 +208,7 @@ O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes
 
 ## 13. Release 2.4 — M360 AdSense Ready / Inventory Engine
 
-Status: implementação funcional inicial até `M360 Core v0.4.4.4`.
+Status: implementação funcional em evolução até `M360 Core v0.4.4.5`.
 
 Módulos principais:
 
@@ -239,8 +239,28 @@ docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
 | `0.4.4.0` | M360 Ad Slot Component semântico, labels PT/EN, placeholders, CSS centralizado e checklist AdSense Ready | Implementação inicial |
 | `0.4.4.1` | M360 Inventory Library registry e Inventory Seeder oficial | Implementação inicial |
 | `0.4.4.2` | M360 Ads Context Renderer com shortcode e API por contexto | Implementação inicial |
-| `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Entrega funcional inicial |
-| `0.4.4.4` | M360 Archive Ads Engine em Search, Category, Tag, Author e Latest News | Implementada; pendente homologação |
+| `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Homologação inicial |
+| `0.4.4.4` | M360 Archive Ads Engine em Search, Category, Tag, Author e Latest News | Homologada em PT-BR e EN-US |
+| `0.4.4.5` | M360 Universal Slot Renderer e API única de renderização | Em desenvolvimento |
+| `0.4.4.6` | Auditoria e consolidação AdSense Ready Final | Planejada |
+
+### Marco v0.4.4.4
+
+A homologação confirmou a renderização automática de etiquetas e placeholders em Search, Category, Tag, Author e Latest News nos dois idiomas, sem regressão visual nem alterações em templates do News Portal ou Elementor.
+
+### Início v0.4.4.5
+
+A v0.4.4.5 inicia a unificação de todo o pipeline publicitário em uma única camada do M360 Core:
+
+```text
+Elementor / News Portal / Widgets / Templates / Shortcodes / APIs
+                              ↓
+                  M360 Universal Slot Renderer
+                              ↓
+                    M360 Ad Slot Component
+```
+
+A entrega deverá preservar todas as integrações existentes e expor a API pública `m360_render_ad_slot()` como ponto focal para futuras evoluções e manutenções.
 
 ### Entregas consolidadas
 
@@ -258,7 +278,7 @@ docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
 - Inventory Seeder com cadastro automático de slots oficiais.
 - Context Renderer para renderização por contexto lógico.
 - Inline Ads Engine com primeiro impacto visível no front-end de artigos.
-- Archive Ads Engine com inserção automática nas listagens controladas pelo M360 Core.
+- Archive Ads Engine homologado nas listagens controladas pelo M360 Core.
 
 ### Fora do escopo confirmado
 
