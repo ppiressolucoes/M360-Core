@@ -1,0 +1,57 @@
+name: Build M360 Ads Archive Engine
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: 'Branch/tag/ref containing the Archive Ads Engine source code'
+        required: true
+        default: 'sprint/v0.4.4.0-adsense-ready'
+      version:
+        description: 'Archive Ads Engine package version'
+        required: true
+        default: '0.4.4.4'
+
+jobs:
+  build:
+    name: Build Archive Ads Engine package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.source_ref }}
+
+      - name: Validate source
+        run: |
+          set -euo pipefail
+          test -f plugin/includes/ads/class-m360-ads-archive-engine.php
+          test -f docs/01-modules/M360_Ads_Archive_Engine_v1.md
+          grep -q "final class M360_Ads_Archive_Engine" plugin/includes/ads/class-m360-ads-archive-engine.php
+          php -l plugin/includes/ads/class-m360-ads-archive-engine.php
+          php -l plugin/includes/search/class-m360-search-controller.php
+          php -l plugin/includes/category/class-m360-category-controller.php
+          php -l plugin/includes/tag/class-m360-tag-controller.php
+          php -l plugin/includes/author/class-m360-author-controller.php
+          php -l plugin/includes/latest-news/class-m360-latest-news-component.php
+
+      - name: Build package
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          PACKAGE_DIR="m360-ads-archive-engine-v${VERSION}"
+          ZIP_NAME="${PACKAGE_DIR}.zip"
+          rm -rf dist "${PACKAGE_DIR}"
+          mkdir -p "${PACKAGE_DIR}/plugin/includes/ads" "${PACKAGE_DIR}/docs/01-modules" dist
+          cp plugin/includes/ads/class-m360-ads-archive-engine.php "${PACKAGE_DIR}/plugin/includes/ads/"
+          cp docs/01-modules/M360_Ads_Archive_Engine_v1.md "${PACKAGE_DIR}/docs/01-modules/"
+          zip -r "dist/${ZIP_NAME}" "${PACKAGE_DIR}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: dist/${{ env.ZIP_NAME }}
+          if-no-files-found: error
