@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.4.4.5
+0.4.4.6
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline estável de código: `v0.4.4.5 — M360 Universal Slot Renderer`.
+- Baseline estável de código: `v0.4.4.6 — Campaign CRUD Hotfix`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Próxima linha: `v0.5.x — Plataforma Comercial M360`.
 
@@ -30,6 +30,7 @@
 - `0.4.4.3`: Inline Ads Engine.
 - `0.4.4.4`: Archive Ads Engine homologado em PT-BR e EN-US.
 - `0.4.4.5`: Universal Slot Renderer e API única de renderização.
+- `0.4.4.6`: correção e estabilização do CRUD de campanhas do M360 Ads Manager.
 
 ## API oficial
 

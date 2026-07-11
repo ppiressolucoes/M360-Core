@@ -2,6 +2,18 @@
 
 Todas as mudanças relevantes do M360 Core serão registradas neste arquivo.
 
+## [v0.4.4.6] — Campaign CRUD Hotfix
+
+Status: pronta para build e homologação.
+
+### Corrigido
+
+- erro fatal ao editar campanhas com datas inicial/final nulas;
+- validação de título, datas, período, enums e prioridade;
+- tratamento de falhas do banco em criação, atualização e exclusão;
+- validação da existência de campanhas e slots antes de vincular;
+- mensagens administrativas de sucesso e erro para o CRUD.
+
 ## [v0.4.4.5] — M360 Universal Slot Renderer
 
 Status: baseline estável homologada em PT-BR e EN-US.
