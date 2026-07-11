@@ -111,5 +111,40 @@
     });
 
     $(document).on('change keyup', '#width, #height', checkSizeWarning);
-    $(function(){ checkSizeWarning(); });
+    function filterSlots(){
+        var query = ($('#m360-slot-search').val() || '').toString().toLowerCase().trim();
+        var context = $('#m360-slot-context').val() || '';
+        var runtime = $('#m360-slot-runtime').val() || '';
+        var occupancy = $('#m360-slot-occupancy').val() || '';
+        var visible = 0;
+        $('.m360-slot-card').each(function(){
+            var $card = $(this);
+            var show = (!query || ($card.data('slot-search') || '').toString().indexOf(query) !== -1) && (!context || $card.data('context') === context) && (!runtime || $card.data('runtime') === runtime) && (!occupancy || $card.data('occupancy') === occupancy);
+            $card.prop('hidden', !show);
+            if (show) { visible++; }
+        });
+        $('.m360-slot-group').each(function(){
+            var count = $(this).find('.m360-slot-card:not([hidden])').length;
+            $(this).prop('hidden', count === 0).find('.m360-slot-group-count').text('(' + count + ')');
+        });
+        $('#m360-slot-result-count').text(visible + ' slot(s) exibido(s)');
+    }
+
+    function updateSlotChanges(){
+        var changes = 0;
+        $('#m360-slots-bulk-form select[name^="assignments"]').each(function(){
+            var $select = $(this);
+            var changed = $select.val().toString() !== ($select.data('original') || 0).toString();
+            $select.closest('.m360-slot-card').toggleClass('is-changed', changed);
+            if (changed) { changes++; }
+        });
+        $('#m360-slot-change-count').text(changes);
+        $('.m360-slot-savebar button[type="submit"]').prop('disabled', changes === 0);
+    }
+
+    $(document).on('input change', '#m360-slot-search, #m360-slot-context, #m360-slot-runtime, #m360-slot-occupancy', filterSlots);
+    $(document).on('click', '#m360-slot-clear-filters', function(){ $('#m360-slot-search').val(''); $('#m360-slot-context, #m360-slot-runtime, #m360-slot-occupancy').val(''); filterSlots(); });
+    $(document).on('change', '#m360-slots-bulk-form select[name^="assignments"]', updateSlotChanges);
+    $(document).on('submit', '#m360-slots-bulk-form', function(){ return window.confirm('Salvar todos os vínculos alterados?'); });
+    $(function(){ checkSizeWarning(); filterSlots(); updateSlotChanges(); });
 })(jQuery);

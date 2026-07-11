@@ -9,6 +9,7 @@ final class M360_Ads_Admin
         add_action('admin_post_m360_ads_save_campaign', [self::class, 'save_campaign']);
         add_action('admin_post_m360_ads_delete_campaign', [self::class, 'delete_campaign']);
         add_action('admin_post_m360_ads_assign_campaign', [self::class, 'assign_campaign']);
+        add_action('admin_post_m360_ads_bulk_assign_campaigns', [self::class, 'bulk_assign_campaigns']);
     }
 
     public static function admin_menu(): void
@@ -101,22 +102,44 @@ final class M360_Ads_Admin
         $slots = M360_Ads_DB::table('ad_slots'); $campaigns = M360_Ads_DB::table('ad_campaigns'); $relations = M360_Ads_DB::table('ad_slot_campaigns');
         $rows = $wpdb->get_results("SELECT * FROM {$slots} ORDER BY page_context, position, slot_key", ARRAY_A);
         $active_campaigns = $wpdb->get_results("SELECT id,title FROM {$campaigns} WHERE status IN ('active','draft','paused') ORDER BY title", ARRAY_A);
-        echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Slots</h1>';
+        $contexts = [];
+        foreach ($rows as $row) { $contexts[sanitize_key((string) $row['page_context'])] = (string) $row['page_context']; }
+        echo '<div class="wrap m360-ads-admin m360-slots-manager"><h1>M360 Ads Slots</h1>';
         self::render_notice();
-        echo '<p>O diagnóstico indica quais slots são chamados automaticamente pelo portal e quais dependem de shortcode, widget ou template.</p>';
-        echo '<table class="widefat striped"><thead><tr><th>Slot</th><th>Contexto</th><th>Runtime</th><th>Origem / acionamento</th><th>Idioma</th><th>Dispositivo</th><th>Tamanho</th><th>Vincular campanha</th></tr></thead><tbody>';
+        echo '<p>Gerencie os vínculos em uma única operação. Use os filtros para localizar slots por contexto, execução ou ocupação.</p>';
+        echo '<div class="m360-slot-toolbar">';
+        echo '<label>Buscar<input type="search" id="m360-slot-search" placeholder="Nome ou identificador"></label>';
+        echo '<label>Contexto<select id="m360-slot-context"><option value="">Todos</option>';
+        foreach ($contexts as $key=>$label) { echo '<option value="' . esc_attr($key) . '">' . esc_html(ucfirst($label)) . '</option>'; }
+        echo '</select></label><label>Runtime<select id="m360-slot-runtime"><option value="">Todos</option><option value="runtime">Automático</option><option value="manual">Manual</option><option value="planned">Planejado</option><option value="legacy">Legado</option></select></label>';
+        echo '<label>Ocupação<select id="m360-slot-occupancy"><option value="">Todos</option><option value="occupied">Ocupados</option><option value="free">Livres</option></select></label>';
+        echo '<button type="button" class="button" id="m360-slot-clear-filters">Limpar filtros</button><span id="m360-slot-result-count" aria-live="polite"></span></div>';
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" id="m360-slots-bulk-form">';
+        wp_nonce_field('m360_ads_bulk_assign_campaigns');
+        echo '<input type="hidden" name="action" value="m360_ads_bulk_assign_campaigns"><div class="m360-slot-groups">';
+        $open_context = '';
         foreach ($rows as $row) {
             $current = (int) $wpdb->get_var($wpdb->prepare("SELECT campaign_id FROM {$relations} WHERE slot_id = %d AND is_active = 1 ORDER BY priority DESC LIMIT 1", (int) $row['id']));
             $runtime = M360_Ads_Runtime_Map::describe((string) $row['slot_key']);
             $runtime_labels = ['runtime'=>'Automático','legacy'=>'Legado compatível','planned'=>'Planejado','manual'=>'Manual'];
             $runtime_class = $runtime['status'] === 'runtime' ? 'is-active' : 'is-empty';
-            echo '<tr><td><strong>' . esc_html($row['name']) . '</strong><br><code>' . esc_html($row['slot_key']) . '</code></td><td>' . esc_html($row['page_context']) . '</td><td><span class="m360-ads-status ' . esc_attr($runtime_class) . '">' . esc_html($runtime_labels[$runtime['status']] ?? $runtime['status']) . '</span></td><td><strong>' . esc_html($runtime['source']) . '</strong><br>' . esc_html($runtime['trigger']) . '<br><code>[m360_ad_slot id=&quot;' . esc_html($row['slot_key']) . '&quot;]</code></td><td>' . esc_html($row['language']) . '</td><td>' . esc_html($row['device']) . '</td><td>' . esc_html((string) $row['max_width']) . 'x' . esc_html((string) $row['max_height']) . '</td><td>';
-            echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">'; wp_nonce_field('m360_ads_assign_campaign');
-            echo '<input type="hidden" name="action" value="m360_ads_assign_campaign"><input type="hidden" name="slot_id" value="' . esc_attr((string) $row['id']) . '"><select name="campaign_id"><option value="0">Nenhuma</option>';
+            $context = sanitize_key((string) $row['page_context']);
+            if ($context !== $open_context) {
+                if ($open_context !== '') { echo '</div></section>'; }
+                $open_context = $context;
+                echo '<section class="m360-slot-group" data-context-group="' . esc_attr($context) . '"><h2>' . esc_html(ucfirst((string) $row['page_context'])) . ' <span class="m360-slot-group-count"></span></h2><div class="m360-slot-grid">';
+            }
+            $occupancy = $current ? 'occupied' : 'free';
+            echo '<article class="m360-slot-card" data-slot-search="' . esc_attr(strtolower((string) $row['name'] . ' ' . (string) $row['slot_key'])) . '" data-context="' . esc_attr($context) . '" data-runtime="' . esc_attr($runtime['status']) . '" data-occupancy="' . esc_attr($occupancy) . '">';
+            echo '<header><div><strong>' . esc_html($row['name']) . '</strong><code>' . esc_html($row['slot_key']) . '</code></div><span class="m360-slot-occupancy is-' . esc_attr($occupancy) . '">' . ($current ? 'Ocupado' : 'Livre') . '</span></header>';
+            echo '<div class="m360-slot-card__meta"><span class="m360-ads-status ' . esc_attr($runtime_class) . '">' . esc_html($runtime_labels[$runtime['status']] ?? $runtime['status']) . '</span><span>' . esc_html((string) $row['max_width']) . '×' . esc_html((string) $row['max_height']) . '</span><span>' . esc_html($row['language']) . '</span><span>' . esc_html($row['device']) . '</span></div>';
+            echo '<p><strong>' . esc_html($runtime['source']) . '</strong><br>' . esc_html($runtime['trigger']) . '</p><code>[m360_ad_slot id=&quot;' . esc_html($row['slot_key']) . '&quot;]</code>';
+            echo '<label class="m360-slot-card__assignment">Campanha<select name="assignments[' . esc_attr((string) $row['id']) . ']" data-original="' . esc_attr((string) $current) . '"><option value="0">Nenhuma</option>';
             foreach ($active_campaigns as $campaign) { echo '<option value="' . esc_attr((string) $campaign['id']) . '"' . selected($current, (int) $campaign['id'], false) . '>' . esc_html($campaign['title']) . '</option>'; }
-            echo '</select> <input class="button" type="submit" value="Salvar"></form></td></tr>';
+            echo '</select></label></article>';
         }
-        echo '</tbody></table></div>';
+        if ($open_context !== '') { echo '</div></section>'; }
+        echo '</div><div class="m360-slot-savebar"><span><strong id="m360-slot-change-count">0</strong> alteração(ões) pendente(s)</span><button class="button button-primary button-hero" type="submit" disabled>Salvar todos os vínculos</button></div></form></div>';
     }
 
     public static function render_campaigns(): void
@@ -205,6 +228,33 @@ final class M360_Ads_Admin
         self::redirect_slots('slot_assignment_saved', 'success');
     }
 
+    public static function bulk_assign_campaigns(): void
+    {
+        self::guard(); check_admin_referer('m360_ads_bulk_assign_campaigns'); global $wpdb;
+        $assignments = isset($_POST['assignments']) && is_array($_POST['assignments']) ? wp_unslash($_POST['assignments']) : [];
+        $slots = M360_Ads_DB::table('ad_slots'); $campaigns = M360_Ads_DB::table('ad_campaigns'); $relations = M360_Ads_DB::table('ad_slot_campaigns');
+        $valid_slots = array_map('intval', (array) $wpdb->get_col("SELECT id FROM {$slots}"));
+        $valid_campaigns = array_map('intval', (array) $wpdb->get_col("SELECT id FROM {$campaigns} WHERE status IN ('active','draft','paused')"));
+        $normalized = [];
+        foreach ($assignments as $slot_id=>$campaign_id) {
+            $slot_id = absint($slot_id); $campaign_id = absint($campaign_id);
+            if (!in_array($slot_id, $valid_slots, true)) { self::redirect_slots('slot_not_found', 'error'); }
+            if ($campaign_id && !in_array($campaign_id, $valid_campaigns, true)) { self::redirect_slots('campaign_not_found', 'error'); }
+            $normalized[$slot_id] = $campaign_id;
+        }
+        $wpdb->query('START TRANSACTION');
+        foreach ($normalized as $slot_id=>$campaign_id) {
+            if ($wpdb->update($relations, ['is_active'=>0,'updated_at'=>current_time('mysql')], ['slot_id'=>$slot_id]) === false) { $wpdb->query('ROLLBACK'); self::redirect_slots('database_error', 'error'); }
+            if (!$campaign_id) { continue; }
+            $exists = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$relations} WHERE slot_id=%d AND campaign_id=%d", $slot_id, $campaign_id));
+            $data = ['slot_id'=>$slot_id,'campaign_id'=>$campaign_id,'priority'=>100,'weight'=>100,'is_active'=>1,'updated_at'=>current_time('mysql')];
+            $result = $exists ? $wpdb->update($relations, $data, ['id'=>$exists]) : $wpdb->insert($relations, array_merge($data, ['created_at'=>current_time('mysql')]));
+            if ($result === false) { $wpdb->query('ROLLBACK'); self::redirect_slots('database_error', 'error'); }
+        }
+        $wpdb->query('COMMIT');
+        self::redirect_slots('slot_assignments_saved', 'success');
+    }
+
     private static function metric(string $label, $value): void { echo '<div class="m360-ads-admin__card"><strong>' . esc_html((string) $value) . '</strong><span>' . esc_html($label) . '</span></div>'; }
     private static function guard(): void { if (!current_user_can('manage_options')) { wp_die('Acesso negado.'); } }
     private static function input(string $label, string $name, ?string $value, bool $required = false): void { echo '<tr><th><label for="' . esc_attr($name) . '">' . esc_html($label) . '</label></th><td><input class="regular-text" id="' . esc_attr($name) . '" name="' . esc_attr($name) . '" value="' . esc_attr((string) $value) . '"' . ($required ? ' required' : '') . '></td></tr>'; }
@@ -229,7 +279,7 @@ final class M360_Ads_Admin
     {
         $code = sanitize_key((string) ($_GET['m360_notice'] ?? ''));
         $type = sanitize_key((string) ($_GET['m360_notice_type'] ?? 'success'));
-        $messages = ['campaign_saved'=>'Campanha salva com sucesso.','campaign_deleted'=>'Campanha excluida com sucesso.','campaign_not_found'=>'Campanha nao encontrada.','title_required'=>'Informe o titulo da campanha.','invalid_datetime'=>'Use uma data valida no formato AAAA-MM-DD HH:MM:SS.','invalid_period'=>'A data final deve ser posterior a data inicial.','database_error'=>'Nao foi possivel concluir a operacao no banco de dados.','slot_not_found'=>'Slot nao encontrado.','slot_assignment_saved'=>'Vinculo do slot salvo com sucesso.'];
+        $messages = ['campaign_saved'=>'Campanha salva com sucesso.','campaign_deleted'=>'Campanha excluida com sucesso.','campaign_not_found'=>'Campanha nao encontrada.','title_required'=>'Informe o titulo da campanha.','invalid_datetime'=>'Use uma data valida no formato AAAA-MM-DD HH:MM:SS.','invalid_period'=>'A data final deve ser posterior a data inicial.','database_error'=>'Nao foi possivel concluir a operacao no banco de dados.','slot_not_found'=>'Slot nao encontrado.','slot_assignment_saved'=>'Vinculo do slot salvo com sucesso.','slot_assignments_saved'=>'Vinculos dos slots salvos com sucesso.'];
         if (!isset($messages[$code])) { return; }
         $class = $type === 'error' ? 'notice notice-error' : 'notice notice-success is-dismissible';
         echo '<div class="' . esc_attr($class) . '"><p>' . esc_html($messages[$code]) . '</p></div>';

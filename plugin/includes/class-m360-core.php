@@ -101,6 +101,7 @@ final class M360_Core_Runtime_034
         $hook = (string) $hook;
         if (strpos($hook, 'm360-ads') !== false) {
             wp_enqueue_style('m360-core-ads-admin', M360_CORE_URL . 'assets/css/m360-ads-admin.css', [], M360_CORE_VERSION);
+            wp_enqueue_style('m360-core-ads-slots-manager', M360_CORE_URL . 'assets/css/m360-ads-slots-manager.css', ['m360-core-ads-admin'], M360_CORE_VERSION);
             wp_enqueue_media();
             wp_enqueue_script('m360-core-ads-admin', M360_CORE_URL . 'assets/js/m360-ads-admin.js', ['jquery', 'media-editor'], M360_CORE_VERSION, true);
         }

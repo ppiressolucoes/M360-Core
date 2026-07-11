@@ -1,5 +1,14 @@
 # Changelog — M360 Core
 
+## [v0.5.0] — Ads Manager Slot Management UX
+
+- gestão de vínculos em cartões agrupados por contexto;
+- filtros por nome, contexto, runtime e ocupação;
+- indicadores visuais Livre/Ocupado e alterações pendentes;
+- botão único para salvar todos os vínculos;
+- persistência em lote com validação e transação de banco;
+- interface responsiva para desktop e mobile.
+
 ## [v0.4.4.7] — Slot Runtime Mapping & Diagnostics
 
 - `article-inline-1` canônico após o segundo parágrafo, com fallback legado.
