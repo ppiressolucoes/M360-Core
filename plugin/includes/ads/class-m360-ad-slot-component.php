@@ -22,19 +22,27 @@ final class M360_Ad_Slot_Component
         if ($slot_key === '') { return ''; }
 
         $slot = self::find_slot($slot_key);
-        if (!$slot) { return self::render_slot_shell($slot_key, '', 'empty', 'internal', '', $args, null); }
+        if (!$slot) { return self::empty_result($slot_key, $args, null); }
 
         $campaign = self::find_campaign((int) $slot['id']);
-        if (!$campaign) { return self::render_slot_shell($slot_key, '', 'empty', 'internal', self::placeholder($slot_key, $args), $args, $slot); }
+        if (!$campaign) { return self::empty_result($slot_key, $args, $slot); }
 
         $creative = self::find_creative((int) $campaign['id'], $slot_key, $slot);
         $payload = $creative ?: $campaign;
         $provider = self::provider_from_payload($payload);
         $content = $creative ? self::render_creative($creative) : self::render_campaign($campaign);
         $status = trim($content) !== '' ? 'filled' : 'empty';
-        if ($status === 'empty') { $content = self::placeholder($slot_key, $args); }
+        if ($status === 'empty') { return self::empty_result($slot_key, $args, $slot); }
 
         return self::render_slot_shell($slot_key, $provider, $status, $provider, $content, $args, $slot);
+    }
+
+    private static function empty_result(string $slot_key, array $args, ?array $slot): string
+    {
+        $show_placeholder = (bool) ($args['show_placeholder'] ?? false);
+        $show_placeholder = (bool) apply_filters('m360_ads_show_empty_placeholder', $show_placeholder, $slot_key, $args, $slot);
+        if (!$show_placeholder) { return ''; }
+        return self::render_slot_shell($slot_key, '', 'empty', 'internal', self::placeholder($slot_key, $args), $args, $slot);
     }
 
     private static function render_slot_shell(string $slot_key, string $format, string $status, string $provider, string $content, array $args = [], ?array $slot = null): string
