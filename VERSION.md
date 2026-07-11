@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.4.4.6
+0.4.4.7
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline estável de código: `v0.4.4.6 — Campaign CRUD Hotfix`.
+- Baseline estável de código: `v0.4.4.7 — Slot Runtime Mapping & Diagnostics`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Próxima linha: `v0.5.x — Plataforma Comercial M360`.
 

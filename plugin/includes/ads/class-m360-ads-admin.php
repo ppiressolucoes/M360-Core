@@ -103,10 +103,14 @@ final class M360_Ads_Admin
         $active_campaigns = $wpdb->get_results("SELECT id,title FROM {$campaigns} WHERE status IN ('active','draft','paused') ORDER BY title", ARRAY_A);
         echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Slots</h1>';
         self::render_notice();
-        echo '<table class="widefat striped"><thead><tr><th>Slot</th><th>Contexto</th><th>Idioma</th><th>Dispositivo</th><th>Tamanho</th><th>Shortcode</th><th>Vincular campanha</th></tr></thead><tbody>';
+        echo '<p>O diagnóstico indica quais slots são chamados automaticamente pelo portal e quais dependem de shortcode, widget ou template.</p>';
+        echo '<table class="widefat striped"><thead><tr><th>Slot</th><th>Contexto</th><th>Runtime</th><th>Origem / acionamento</th><th>Idioma</th><th>Dispositivo</th><th>Tamanho</th><th>Vincular campanha</th></tr></thead><tbody>';
         foreach ($rows as $row) {
             $current = (int) $wpdb->get_var($wpdb->prepare("SELECT campaign_id FROM {$relations} WHERE slot_id = %d AND is_active = 1 ORDER BY priority DESC LIMIT 1", (int) $row['id']));
-            echo '<tr><td><strong>' . esc_html($row['name']) . '</strong><br><code>' . esc_html($row['slot_key']) . '</code></td><td>' . esc_html($row['page_context']) . '</td><td>' . esc_html($row['language']) . '</td><td>' . esc_html($row['device']) . '</td><td>' . esc_html((string) $row['max_width']) . 'x' . esc_html((string) $row['max_height']) . '</td><td><code>[m360_ad_slot id=&quot;' . esc_html($row['slot_key']) . '&quot;]</code></td><td>';
+            $runtime = M360_Ads_Runtime_Map::describe((string) $row['slot_key']);
+            $runtime_labels = ['runtime'=>'Automático','legacy'=>'Legado compatível','planned'=>'Planejado','manual'=>'Manual'];
+            $runtime_class = $runtime['status'] === 'runtime' ? 'is-active' : 'is-empty';
+            echo '<tr><td><strong>' . esc_html($row['name']) . '</strong><br><code>' . esc_html($row['slot_key']) . '</code></td><td>' . esc_html($row['page_context']) . '</td><td><span class="m360-ads-status ' . esc_attr($runtime_class) . '">' . esc_html($runtime_labels[$runtime['status']] ?? $runtime['status']) . '</span></td><td><strong>' . esc_html($runtime['source']) . '</strong><br>' . esc_html($runtime['trigger']) . '<br><code>[m360_ad_slot id=&quot;' . esc_html($row['slot_key']) . '&quot;]</code></td><td>' . esc_html($row['language']) . '</td><td>' . esc_html($row['device']) . '</td><td>' . esc_html((string) $row['max_width']) . 'x' . esc_html((string) $row['max_height']) . '</td><td>';
             echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">'; wp_nonce_field('m360_ads_assign_campaign');
             echo '<input type="hidden" name="action" value="m360_ads_assign_campaign"><input type="hidden" name="slot_id" value="' . esc_attr((string) $row['id']) . '"><select name="campaign_id"><option value="0">Nenhuma</option>';
             foreach ($active_campaigns as $campaign) { echo '<option value="' . esc_attr((string) $campaign['id']) . '"' . selected($current, (int) $campaign['id'], false) . '>' . esc_html($campaign['title']) . '</option>'; }

@@ -10,6 +10,7 @@ require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
 require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-inventory-library.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-db.php';
+require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-runtime-map.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-slot-renderer.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ad-slot-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-context-renderer.php';

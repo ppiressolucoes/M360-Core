@@ -15,7 +15,7 @@ final class M360_Ads_Inline_Engine
         $placements = apply_filters('m360_ads_inline_article_placements', [
             [
                 'after_paragraph' => 2,
-                'slot' => 'article-after-paragraph-2',
+                'slot' => M360_Ads_Runtime_Map::article_primary_slot(),
                 'class' => 'm360-inline-ad--after-paragraph-2',
             ],
         ]);

@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.4.4.7] — Slot Runtime Mapping & Diagnostics
+
+- `article-inline-1` canônico após o segundo parágrafo, com fallback legado.
+- diagnóstico de slots automáticos, manuais, planejados e legados.
+- mapeamento dos consumidores de busca, categoria, tag, autor, últimas notícias e arquivos.
+
 Todas as mudanças relevantes do M360 Core serão registradas neste arquivo.
 
 ## [v0.4.4.6] — Campaign CRUD Hotfix
