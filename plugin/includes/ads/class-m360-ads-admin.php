@@ -55,24 +55,44 @@ final class M360_Ads_Admin
         self::guard();
         global $wpdb;
         $slots_table = M360_Ads_DB::table('ad_slots');
+        $campaigns_table = M360_Ads_DB::table('ad_campaigns');
+        $relations_table = M360_Ads_DB::table('ad_slot_campaigns');
+        $creatives_table = M360_Ads_DB::table('ad_creatives');
         $rows = $wpdb->get_results("SELECT * FROM {$slots_table} ORDER BY page_context, position, slot_key", ARRAY_A);
-        echo '<div class="wrap m360-ads-admin"><h1>M360 AdSense Ready</h1><p>Checklist técnico de preparação visual, semântica e operacional dos slots. Esta tela não integra o Google AdSense; apenas valida se a infraestrutura M360 está pronta para futura homologação.</p>';
-        echo '<table class="widefat striped"><thead><tr><th>Slot</th><th>ID DOM</th><th>Label PT/EN</th><th>Data attributes</th><th>Placeholder</th><th>Provider ready</th><th>Shortcode/API</th></tr></thead><tbody>';
+        $audit = []; $automatic = 0; $covered = 0; $ready = 0;
         foreach ($rows as $row) {
             $slot_key = sanitize_key((string) $row['slot_key']);
-            $dom_id = 'm360-ad-slot-' . $slot_key;
+            $runtime = M360_Ads_Runtime_Map::describe($slot_key);
+            if ($runtime['status'] === 'runtime') { $automatic++; }
+            $campaign = $wpdb->get_row($wpdb->prepare("SELECT c.* FROM {$relations_table} r INNER JOIN {$campaigns_table} c ON c.id=r.campaign_id WHERE r.slot_id=%d AND r.is_active=1 ORDER BY r.priority DESC,c.priority DESC LIMIT 1", (int) $row['id']), ARRAY_A);
+            $eligible = false; $has_content = false; $creative_count = 0;
+            if (is_array($campaign)) {
+                $now = current_time('mysql');
+                $eligible = $campaign['status'] === 'active' && (empty($campaign['start_at']) || $campaign['start_at'] <= $now) && (empty($campaign['end_at']) || $campaign['end_at'] >= $now);
+                $creative_count = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$creatives_table} WHERE campaign_id=%d AND status='active'", (int) $campaign['id']));
+                $has_content = $creative_count > 0 || trim((string) ($campaign['image_url'] ?? '')) !== '' || trim((string) ($campaign['html_code'] ?? '')) !== '' || trim((string) ($campaign['script_code'] ?? '')) !== '';
+            }
+            if ($eligible) { $covered++; }
+            if ($eligible && $has_content) { $ready++; }
+            $audit[] = ['slot'=>$row,'runtime'=>$runtime,'campaign'=>$campaign,'eligible'=>$eligible,'has_content'=>$has_content,'creative_count'=>$creative_count];
+        }
+        echo '<div class="wrap m360-ads-admin"><h1>M360 AdSense Approval Readiness</h1><p>Auditoria operacional da cobertura publicitária. Esta tela não garante aprovação do Google; ela identifica lacunas técnicas antes da candidatura.</p>';
+        echo '<div class="m360-ads-admin__cards">'; self::metric('Slots inventariados', count($rows)); self::metric('Slots automáticos', $automatic); self::metric('Com campanha elegível', $covered); self::metric('Prontos para entrega', $ready); self::metric('Vazios recolhidos', max(0, count($rows)-$covered)); echo '</div>';
+        echo '<div class="notice notice-info inline"><p><strong>Política ativa:</strong> campanha elegível com conteúdo → renderizar; sem entrega válida → recolher completamente o slot. Placeholders aparecem somente nas telas administrativas.</p></div>';
+        echo '<table class="widefat striped"><thead><tr><th>Slot</th><th>Runtime</th><th>Campanha vinculada</th><th>Elegibilidade</th><th>Conteúdo</th><th>Comportamento vazio</th></tr></thead><tbody>';
+        foreach ($audit as $item) {
+            $row = $item['slot']; $slot_key = sanitize_key((string) $row['slot_key']); $campaign = $item['campaign'];
             echo '<tr>';
             echo '<td><strong>' . esc_html((string) $row['name']) . '</strong><br><code>' . esc_html($slot_key) . '</code></td>';
-            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>' . esc_html($dom_id) . '</code></td>';
-            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>PUBLICIDADE</code> / <code>ADVERTISEMENT</code></td>';
-            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>slot, provider, format, lang, status</code></td>';
-            echo '<td><span class="m360-ads-status is-active">OK</span><br>Slots vazios preservam layout.</td>';
-            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>internal</code>, <code>adsense</code>, <code>google-ad-manager</code>, <code>house</code>, <code>affiliate</code>, <code>sponsor</code></td>';
-            echo '<td><span class="m360-ads-status is-active">OK</span><br><code>[m360_ad_slot id=&quot;' . esc_html($slot_key) . '&quot;]</code><br><code>m360_ads_render_slot(\'' . esc_html($slot_key) . '\')</code></td>';
+            echo '<td><span class="m360-ads-status ' . ($item['runtime']['status'] === 'runtime' ? 'is-active' : 'is-empty') . '">' . esc_html($item['runtime']['status']) . '</span><br>' . esc_html($item['runtime']['source']) . '</td>';
+            echo '<td>' . ($campaign ? '<strong>' . esc_html($campaign['title']) . '</strong><br><code>' . esc_html($campaign['campaign_type']) . '</code>' : '<span class="m360-ads-status is-empty">Sem vínculo</span>') . '</td>';
+            echo '<td><span class="m360-ads-status ' . ($item['eligible'] ? 'is-active' : 'is-empty') . '">' . ($item['eligible'] ? 'Elegível' : 'Não elegível') . '</span></td>';
+            echo '<td><span class="m360-ads-status ' . ($item['has_content'] ? 'is-active' : 'is-empty') . '">' . ($item['has_content'] ? 'Disponível' : 'Ausente') . '</span>' . ($item['creative_count'] ? '<br>' . esc_html((string) $item['creative_count']) . ' criativo(s)' : '') . '</td>';
+            echo '<td><span class="m360-ads-status is-active">Recolher</span><br>Sem espaço residual no front-end.</td>';
             echo '</tr>';
         }
-        if (empty($rows)) { echo '<tr><td colspan="7">Nenhum slot cadastrado.</td></tr>'; }
-        echo '</tbody></table><h2>Observação operacional</h2><p>A aprovação do Google AdSense ainda dependerá de políticas editoriais, conteúdo, navegação, tráfego e análise externa do Google. Esta sprint cobre apenas a preparação técnica da camada M360 Advertising.</p></div>';
+        if (empty($rows)) { echo '<tr><td colspan="6">Nenhum slot cadastrado.</td></tr>'; }
+        echo '</tbody></table><h2>Checklist editorial e institucional</h2><ul class="ul-disc"><li>Política de Privacidade e Cookies disponível em PT-BR e EN-US.</li><li>Páginas Sobre e Contato acessíveis nos dois ambientes.</li><li>Navegação, autoria, datas e conteúdo integralmente traduzidos.</li><li>Conteúdo original, política editorial e identificação dos responsáveis.</li><li>Experiência mobile sem sobreposição, CLS excessivo ou densidade publicitária abusiva.</li><li><code>ads.txt</code>, consentimento e código AdSense validados antes da candidatura.</li></ul><p><strong>Observação:</strong> a decisão final permanece sob análise externa do Google AdSense.</p></div>';
     }
 
     private static function inventory_card(string $slot_key, string $label): void
@@ -91,7 +111,7 @@ final class M360_Ads_Admin
         echo '<p><b>Campanha:</b> ' . esc_html($campaign['title'] ?? '-') . '</p>';
         echo '<p><b>Shortcode:</b><br><code>[m360_ad_slot id=&quot;' . esc_html($slot_key) . '&quot;]</code></p>';
         echo '<p><b>PHP:</b><br><code>echo m360_ads_render_slot(\'' . esc_html($slot_key) . '\');</code></p>';
-        echo '<div class="m360-ads-inventory-preview">' . M360_Ad_Slot_Component::render($slot_key) . '</div>';
+        echo '<div class="m360-ads-inventory-preview">' . M360_Ad_Slot_Component::render($slot_key, ['show_placeholder'=>true]) . '</div>';
         echo '</section>';
     }
 

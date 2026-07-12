@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.5.1] — AdSense Approval Readiness
+
+- auditoria real de slots, campanhas elegíveis e conteúdo disponível;
+- métricas de cobertura e prontidão para entrega;
+- recolhimento completo de slots vazios no front-end;
+- placeholders preservados apenas no inventário administrativo;
+- checklist editorial, institucional, mobile, consentimento e `ads.txt`.
+
 ## [v0.5.0] — Ads Manager Slot Management UX
 
 - gestão de vínculos em cartões agrupados por contexto;

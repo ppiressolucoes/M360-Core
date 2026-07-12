@@ -88,6 +88,7 @@ final class M360_Slot_Renderer
             'provider' => self::normalize_provider((string) ($args['provider'] ?? '')),
             'source' => sanitize_key((string) ($args['source'] ?? 'php')),
             'cache' => (bool) ($args['cache'] ?? false),
+            'show_placeholder' => (bool) ($args['show_placeholder'] ?? false),
         ];
 
         $filtered = apply_filters('m360_slot_render_args', $normalized, $args);
