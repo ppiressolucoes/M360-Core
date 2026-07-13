@@ -43,6 +43,23 @@ final class M360_Navigation_Shortcodes
             $term = get_queried_object();
             $items[] = '<span>' . esc_html('Tag') . '</span>';
             if ($term instanceof WP_Term) { $items[] = '<span aria-current="page">' . esc_html($term->name) . '</span>'; }
+        } elseif (is_date()) {
+            $is_en = self::is_en();
+            $year = (int) get_query_var('year');
+            $month = (int) get_query_var('monthnum');
+            $day = (int) get_query_var('day');
+            $items[] = '<span>' . esc_html($is_en ? 'Date archive' : 'Arquivo por data') . '</span>';
+            if ($month > 0 || $day > 0) {
+                $items[] = '<a href="' . esc_url(get_year_link($year)) . '">' . esc_html((string) $year) . '</a>';
+            }
+            if ($day > 0 && $month > 0) {
+                $month_label = self::month_label($month, $is_en);
+                $items[] = '<a href="' . esc_url(get_month_link($year, $month)) . '">' . esc_html($month_label) . '</a>';
+            }
+            $date_title = class_exists('M360_Date_Archive_Controller')
+                ? M360_Date_Archive_Controller::archive_title($is_en)
+                : get_the_archive_title();
+            $items[] = '<span aria-current="page">' . esc_html($date_title) . '</span>';
         } elseif (is_singular()) {
             $cats = get_the_category();
             if (!empty($cats)) { $items[] = '<a href="' . esc_url(get_category_link($cats[0])) . '">' . esc_html($cats[0]->name) . '</a>'; }
@@ -104,6 +121,12 @@ final class M360_Navigation_Shortcodes
     {
         if (wp_style_is('m360-core-foundation','registered')) { wp_enqueue_style('m360-core-foundation'); }
         if (wp_style_is('m360-core-navigation-components','registered')) { wp_enqueue_style('m360-core-navigation-components'); }
+    }
+    private static function month_label(int $month, bool $is_en): string
+    {
+        $months_en = [1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December'];
+        $months_pt = [1=>'janeiro',2=>'fevereiro',3=>'março',4=>'abril',5=>'maio',6=>'junho',7=>'julho',8=>'agosto',9=>'setembro',10=>'outubro',11=>'novembro',12=>'dezembro'];
+        return $is_en ? ($months_en[$month] ?? '') : ($months_pt[$month] ?? '');
     }
     private static function is_en(): bool { return str_starts_with((string)get_locale(), 'en'); }
 }

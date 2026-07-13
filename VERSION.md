@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.5.1
+0.5.2.2
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline evolutiva de código: `v0.5.1 — AdSense Approval Readiness`.
+- Baseline evolutiva de código: `v0.5.2.2 — Multilingual Date Archive`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Próxima linha: `v0.5.x — Plataforma Comercial M360`.
 
@@ -36,6 +36,23 @@
 
 - `0.5.0`: gestão visual de slots com filtros, agrupamentos, estados e salvamento único.
 - `0.5.1`: auditoria de cobertura, elegibilidade e recolhimento de slots vazios.
+- `0.5.2`: componente individual e multilíngue de informações do post.
+- `0.5.2.1`: recorte circular robusto do avatar e invalidação do cache dos assets.
+- `0.5.2.2`: arquivo multilíngue próprio para navegação por dia, mês e ano.
+
+## Componente Post Info
+
+Uso padrão:
+
+```text
+[m360_post_info]
+```
+
+Exemplo sem avatar e sem horário:
+
+```text
+[m360_post_info avatar="false" time="false"]
+```
 
 ## API oficial
 

@@ -1,5 +1,25 @@
 # Changelog — M360 Core
 
+## [v0.5.2.2] — Multilingual Date Archive
+
+- arquivos por dia, mês e ano incorporados ao M360 Core;
+- títulos, descrições, breadcrumb, estado vazio e paginação próprios em PT-BR e EN-US;
+- cards responsivos e slot `archive-inline` integrados ao arquivo por data;
+- remoção da dependência do título de arquivo padrão do tema.
+
+## [v0.5.2.1] — Post Info Avatar Cache Hotfix
+
+- moldura circular própria com recorte do avatar e neutralização de estilos herdados do tema;
+- atualização da versão dos assets para invalidar caches LiteSpeed, CDN e navegador.
+
+## [v0.5.2] — Multilingual Post Navigation
+
+- novo componente `[m360_post_info]` para substituir progressivamente o widget Meta Data do Elementor;
+- autor com avatar e link, categoria, publicação, horário e última atualização;
+- avatar com recorte circular resistente aos estilos do tema e data vinculada ao arquivo diário;
+- rótulos e textos relativos próprios para PT-BR e EN-US;
+- controles individuais de exibição, marcação semântica, acessibilidade e layout responsivo.
+
 ## [v0.5.1] — AdSense Approval Readiness
 
 - auditoria real de slots, campanhas elegíveis e conteúdo disponível;

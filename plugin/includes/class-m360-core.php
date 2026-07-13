@@ -6,6 +6,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php'
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
+require_once M360_CORE_PATH . 'includes/post/class-m360-post-info-component.php';
 require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
 require_once M360_CORE_PATH . 'includes/latest-news/class-m360-latest-news-component.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-inventory-library.php';
@@ -22,6 +23,7 @@ require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php'
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
 require_once M360_CORE_PATH . 'includes/tag/class-m360-tag-controller.php';
+require_once M360_CORE_PATH . 'includes/date/class-m360-date-archive-controller.php';
 
 final class M360_Core_Runtime_034
 {
@@ -67,6 +69,7 @@ final class M360_Core_Runtime_034
         add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
         add_filter('template_include', ['M360_Category_Controller', 'template_include'], 32);
         add_filter('template_include', ['M360_Tag_Controller', 'template_include'], 33);
+        add_filter('template_include', ['M360_Date_Archive_Controller', 'template_include'], 34);
     }
 
     private function init_view_engine(): void
@@ -80,6 +83,7 @@ final class M360_Core_Runtime_034
         $this->view_registry->register('search', ['template' => 'search', 'public' => true]);
         $this->view_registry->register('category', ['template' => 'category', 'public' => true]);
         $this->view_registry->register('tag', ['template' => 'tag', 'public' => true]);
+        $this->view_registry->register('date', ['template' => 'date', 'public' => true]);
     }
 
     public function register_assets(): void
@@ -88,12 +92,14 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-ui-polish', M360_CORE_URL . 'assets/css/m360-ui-polish.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-ui-components', M360_CORE_URL . 'assets/css/m360-ui-components.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-navigation-components', M360_CORE_URL . 'assets/css/m360-navigation-components.css', ['m360-core-foundation', 'm360-core-ui-components'], M360_CORE_VERSION);
+        wp_register_style('m360-core-post-info', M360_CORE_URL . 'assets/css/m360-post-info.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-latest-news', M360_CORE_URL . 'assets/css/m360-latest-news.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-ads', M360_CORE_URL . 'assets/css/m360-ads.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-tag', M360_CORE_URL . 'assets/css/tag.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
+        wp_register_style('m360-core-date', M360_CORE_URL . 'assets/css/date.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
     }
 
     public function register_admin_assets(string $hook = ''): void
@@ -110,6 +116,7 @@ final class M360_Core_Runtime_034
     public function register_shortcodes(): void
     {
         M360_Navigation_Shortcodes::register();
+        M360_Post_Info_Component::register_shortcodes();
         M360_UI_Components::register_shortcodes();
         M360_Latest_News_Component::register_shortcodes();
         M360_Slot_Renderer::register_shortcodes();
