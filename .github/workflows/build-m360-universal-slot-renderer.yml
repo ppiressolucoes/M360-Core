@@ -1,0 +1,57 @@
+name: Build M360 Universal Slot Renderer
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: 'Branch/tag/ref containing the Universal Slot Renderer source code'
+        required: true
+        default: 'sprint/v0.4.4.0-adsense-ready'
+      version:
+        description: 'Universal Slot Renderer package version'
+        required: true
+        default: '0.4.4.5'
+
+jobs:
+  build:
+    name: Build Universal Slot Renderer package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.source_ref }}
+
+      - name: Validate source
+        run: |
+          set -euo pipefail
+          test -f plugin/includes/ads/class-m360-slot-renderer.php
+          test -f docs/01-modules/M360_Universal_Slot_Renderer_v1.md
+          grep -q "final class M360_Slot_Renderer" plugin/includes/ads/class-m360-slot-renderer.php
+          grep -q "function m360_render_ad_slot" plugin/includes/ads/class-m360-slot-renderer.php
+          php -l plugin/includes/ads/class-m360-slot-renderer.php
+          php -l plugin/includes/ads/class-m360-ads-inline-engine.php
+          php -l plugin/includes/ads/class-m360-ads-archive-engine.php
+          php -l plugin/includes/ads/class-m360-ads-context-renderer.php
+          php -l plugin/includes/class-m360-core.php
+
+      - name: Build package
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          PACKAGE_DIR="m360-universal-slot-renderer-v${VERSION}"
+          ZIP_NAME="${PACKAGE_DIR}.zip"
+          rm -rf dist "${PACKAGE_DIR}"
+          mkdir -p "${PACKAGE_DIR}/plugin/includes/ads" "${PACKAGE_DIR}/docs/01-modules" dist
+          cp plugin/includes/ads/class-m360-slot-renderer.php "${PACKAGE_DIR}/plugin/includes/ads/"
+          cp docs/01-modules/M360_Universal_Slot_Renderer_v1.md "${PACKAGE_DIR}/docs/01-modules/"
+          zip -r "dist/${ZIP_NAME}" "${PACKAGE_DIR}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: dist/${{ env.ZIP_NAME }}
+          if-no-files-found: error

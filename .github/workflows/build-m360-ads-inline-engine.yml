@@ -1,0 +1,68 @@
+name: Build M360 Ads Inline Engine
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: 'Branch/tag/ref containing the Inline Engine source code'
+        required: true
+        default: 'sprint/v0.4.4.0-adsense-ready'
+      version:
+        description: 'Inline Engine package version'
+        required: true
+        default: '0.4.4.3'
+
+jobs:
+  build:
+    name: Build Inline Engine package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.source_ref }}
+
+      - name: Validate Inline Engine source
+        run: |
+          set -euo pipefail
+          echo "Source ref: ${{ github.event.inputs.source_ref }}"
+          echo "Version: ${{ github.event.inputs.version }}"
+
+          test -f plugin/includes/ads/class-m360-ads-inline-engine.php
+          test -f plugin/includes/ads/class-m360-ad-slot-component.php
+          test -f plugin/assets/css/m360-ads.css
+          test -f docs/01-modules/M360_Ads_Inline_Engine_v1.md
+
+          grep -q "final class M360_Ads_Inline_Engine" plugin/includes/ads/class-m360-ads-inline-engine.php
+          grep -q "M360 Ads Inline Engine" docs/01-modules/M360_Ads_Inline_Engine_v1.md
+
+          php -l plugin/includes/ads/class-m360-ads-inline-engine.php
+          echo "Inline Engine source validated."
+
+      - name: Build package
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          PACKAGE_DIR="m360-ads-inline-engine-v${VERSION}"
+          ZIP_NAME="${PACKAGE_DIR}.zip"
+
+          rm -rf dist "${PACKAGE_DIR}" "${ZIP_NAME}"
+          mkdir -p "${PACKAGE_DIR}/plugin/includes/ads"
+          mkdir -p "${PACKAGE_DIR}/plugin/assets/css"
+          mkdir -p "${PACKAGE_DIR}/docs/01-modules"
+
+          cp plugin/includes/ads/class-m360-ads-inline-engine.php "${PACKAGE_DIR}/plugin/includes/ads/"
+          cp plugin/assets/css/m360-ads.css "${PACKAGE_DIR}/plugin/assets/css/"
+          cp docs/01-modules/M360_Ads_Inline_Engine_v1.md "${PACKAGE_DIR}/docs/01-modules/"
+
+          mkdir -p dist
+          zip -r "dist/${ZIP_NAME}" "${PACKAGE_DIR}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: dist/${{ env.ZIP_NAME }}
+          if-no-files-found: error

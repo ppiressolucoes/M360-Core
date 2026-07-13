@@ -168,7 +168,7 @@ Módulo principal: M360 Core.
 
 ## 11. Release 2.2 — View Engine / Radar News
 
-Status: planejada.
+Status: evolução contínua.
 
 Escopo:
 
@@ -219,7 +219,7 @@ Consolidar o primeiro motor funcional de inventário publicitário do Mengão 36
 
 ### Decisão histórica
 
-O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. Antes da Plataforma Comercial completa, a próxima sprint será `v0.4.4.0 — M360 AdSense Ready`, com foco em padronização visual e semântica dos espaços publicitários, etiquetas, IDs, placeholders, comentários HTML e preparação para aprovação do Google AdSense.
+O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. A sprint seguinte, `v0.4.4.0 — M360 AdSense Ready`, foi criada para padronizar visualmente e semanticamente todos os espaços publicitários antes da integração com provedores externos.
 
 ## 13. Release 2.4 — M360 AdSense Ready / Inventory Engine
 
@@ -328,3 +328,5 @@ Toda release deve atualizar:
 - Release History.
 - Roadmap, quando o item sair de planejado para concluído.
 - ADR, quando houver decisão estrutural.
+- Evidências de homologação.
+- Procedimento de rollback.
