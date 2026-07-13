@@ -1,0 +1,49 @@
+name: Build M360 Core Plugin ZIP
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Plugin version to package, e.g. 0.4.4.0'
+        required: true
+        default: '0.4.4.0'
+
+jobs:
+  build-plugin-zip:
+    name: Build plugin ZIP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate plugin version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          grep -q "Version: ${VERSION}" plugin/m360-core.php
+          grep -q "M360_CORE_VERSION', '${VERSION}'" plugin/m360-core.php
+
+      - name: Prepare package directory
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          PACKAGE_DIR="m360-core"
+          ZIP_NAME="m360-core-v${VERSION}.zip"
+          rm -rf "${PACKAGE_DIR}" "${ZIP_NAME}"
+          mkdir -p "${PACKAGE_DIR}"
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='docs' \
+            --exclude='tests' \
+            --exclude='releases' \
+            --exclude='*.zip' \
+            plugin/ "${PACKAGE_DIR}/"
+          zip -r "${ZIP_NAME}" "${PACKAGE_DIR}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: ${{ env.ZIP_NAME }}
+          if-no-files-found: error

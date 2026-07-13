@@ -1,4 +1,19 @@
-# M360 Release History v2.0 — Snapshot GitHub
+# M360 Release History v2.2 — Baseline Estável
+
+## Atualização canônica — julho de 2026
+
+- Release oficial homologada: `M360 Core v0.5.1 — AdSense Approval Readiness`.
+- Tag canônica: `v0.5.1`.
+- Arquitetura vigente: `M360 Platform Architecture v2.2`.
+- Próxima entrega: `v0.5.2 — Multilingual Post Navigation`.
+
+Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada e a baseline `v0.5.1` consolida a primeira etapa da Plataforma Comercial M360.
+
+## Baseline v0.5.x consolidada
+
+- `v0.5.0`: Ads Manager Slot Management UX.
+- `v0.5.1`: AdSense Approval Readiness, auditoria e recolhimento de slots vazios.
+- Próximo ciclo: Post Info, Breadcrumbs, Search Experience e orquestração do cabeçalho.
 
 Status: oficial
 Projeto: Mengão 360 | DW Esportivo
@@ -202,35 +217,13 @@ Consolidar o primeiro motor funcional de inventário publicitário do Mengão 36
 | `sidebar-community` | HTML 300x300 | OK | OK | Homologado |
 | `sidebar-square` | Imagem 1:1 | OK | OK | Homologado |
 
-### Entregas consolidadas
-
-- Tabelas próprias para slots, campanhas, relações e criativos.
-- Painel `M360 Ads` no WordPress.
-- Cadastro e edição de campanhas.
-- Cadastro e edição de criativos.
-- Upload/seleção via Media Library.
-- Suporte a imagem, HTML, script/markup administrado, house ads, affiliate e sponsor.
-- Shortcode `[m360_ad_slot id="..."]`.
-- API PHP `m360_ads_render_slot()`.
-- Renderização em PT-BR e EN-US.
-- Fallback por idioma e formato.
-- Fallback por intenção do slot: horizontal vs. 1:1.
-- Renderização de HTML com CSS e scripts preservados para administradores.
-- Validação em widgets do tema/Elementor.
-
 ### Decisão histórica
 
 O M360 Ads Manager passa a ser a base da futura Plataforma Comercial M360. A sprint seguinte, `v0.4.4.0 — M360 AdSense Ready`, foi criada para padronizar visualmente e semanticamente todos os espaços publicitários antes da integração com provedores externos.
 
-## 13. Release 2.4 — M360 AdSense Ready
+## 13. Release 2.4 — M360 AdSense Ready / Inventory Engine
 
-Status: **homologada**.
-
-Baseline de encerramento:
-
-```text
-M360 Core v0.4.4.5
-```
+Status: homologada e encerrada em `M360 Core v0.4.4.5`.
 
 Módulos principais:
 
@@ -240,32 +233,38 @@ Módulos principais:
 
 Objetivo:
 
-Preparar toda a infraestrutura visual, semântica e técnica dos espaços publicitários do Mengão 360 para futura integração com Google AdSense e outros provedores, sem alterar a arquitetura homologada do Ads Manager.
+Preparar os espaços publicitários do Mengão 360 para futura integração com Google AdSense e outros provedores, sem integrar código AdSense nesta etapa e sem reestruturar o Ads Manager homologado.
 
-### Linha de entregas concluídas
+### Architecture Milestone
+
+ADR-0007 aprovado.
+
+O M360 Core passa oficialmente a ser a camada de interface da Plataforma Mengão 360, consolidando a independência progressiva do tema News Portal e do Elementor. A partir deste marco, tema e Elementor são tratados como camadas de compatibilidade e composição, enquanto a lógica visual, multilíngue e reutilizável deve nascer prioritariamente no M360 Core.
+
+Documento normativo:
+
+```text
+docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
+```
+
+### Linha de entregas
 
 | Versão | Entrega | Status |
 |---|---|---|
-| `0.4.4.0` | Ad Slot Component, wrappers semânticos, labels, placeholders e CSS centralizado | Homologada |
-| `0.4.4.1` | Inventory Library e Inventory Seeder | Homologada |
-| `0.4.4.2` | Context Renderer | Homologada |
-| `0.4.4.3` | Inline Ads Engine em artigos | Homologada |
-| `0.4.4.4` | Archive Ads Engine em Search, Category, Tag, Author e Latest News | Homologada em PT-BR e EN-US |
-| `0.4.4.5` | Universal Slot Renderer e API única de renderização | Homologada em PT-BR e EN-US |
+| `0.4.4.0` | M360 Ad Slot Component semântico, labels PT/EN, placeholders, CSS centralizado e checklist AdSense Ready | Publicada em produção |
+| `0.4.4.1` | M360 Inventory Library registry e Inventory Seeder oficial | Homologada |
+| `0.4.4.2` | M360 Ads Context Renderer com shortcode e API por contexto | Homologada |
+| `0.4.4.3` | M360 Ads Inline Engine com inserção automática após o 2º parágrafo em posts | Homologada |
+| `0.4.4.4` | M360 Archive Ads Engine em Search, Category, Tag, Author e Latest News | Homologada em PT-BR e EN-US |
+| `0.4.4.5` | M360 Universal Slot Renderer e API única de renderização | Baseline estável homologada |
 
-### Componentes consolidados
+### Marco v0.4.4.4
 
-- M360 Ad Slot Component.
-- M360 Ads Inventory Library.
-- M360 Inventory Seeder.
-- M360 Ads Context Renderer.
-- M360 Ads Inline Engine.
-- M360 Ads Archive Engine.
-- M360 Universal Slot Renderer.
-- CSS centralizado do M360 Ads.
-- Checklist administrativo AdSense Ready.
+A homologação confirmou a renderização automática de etiquetas e placeholders em Search, Category, Tag, Author e Latest News nos dois idiomas, sem regressão visual nem alterações em templates do News Portal ou Elementor.
 
-### Pipeline oficial homologado
+### Encerramento v0.4.4.5
+
+A v0.4.4.5 conclui a unificação de todo o pipeline publicitário em uma única camada do M360 Core:
 
 ```text
 Elementor / News Portal / Widgets / Templates / Shortcodes / APIs
@@ -273,109 +272,39 @@ Elementor / News Portal / Widgets / Templates / Shortcodes / APIs
                   M360 Universal Slot Renderer
                               ↓
                     M360 Ad Slot Component
-                              ↓
-                 Slot → Campanha → Criativo
-                              ↓
-                   Provider / Placeholder
-                              ↓
-                    Front-end PT-BR / EN-US
 ```
 
-### API oficial
+A entrega deverá preservar todas as integrações existentes e expor a API pública `m360_render_ad_slot()` como ponto focal para futuras evoluções e manutenções.
 
-```php
-echo m360_render_ad_slot('header-top');
-```
+### Entregas consolidadas
 
-Compatibilidade preservada:
-
-```php
-m360_ads_render_slot();
-m360_ad_slot();
-```
-
-```text
-[m360_ad_slot id="header-top"]
-[m360_ads_slot id="header-top"]
-```
-
-### Inventário dinâmico homologado
-
-| Contexto | Slot | PT-BR | EN-US | Status |
-|---|---|---:|---:|---|
-| Artigo | `article-after-paragraph-2` | OK | OK | Homologado |
-| Search | `search-inline` | OK | OK | Homologado |
-| Category | `category-inline` | OK | OK | Homologado |
-| Tag | `tag-inline` | OK | OK | Homologado |
-| Author | `author-inline` | OK | OK | Homologado |
-| Latest News | `latest-inline` | OK | OK | Homologado |
-| Search vazio | `search-empty` | OK | OK | Homologado |
-
-### Critérios de aceite atendidos
-
-- HTML semântico padronizado para os slots.
-- IDs únicos e classes CSS consistentes.
+- Wrapper HTML semântico para cada slot.
+- ID DOM único por slot no padrão `m360-ad-slot-{slot_key}`.
+- Classes CSS padronizadas por slot, provider, formato e status.
 - Labels automáticas `PUBLICIDADE` e `ADVERTISEMENT`.
-- Data attributes de slot, idioma, formato, provider, status e dimensões.
-- Placeholders para ausência de campanha ativa.
-- CSS centralizado no M360 Core.
-- Compatibilidade com Elementor, News Portal e Polylang.
-- Renderização por shortcode e API PHP preservada.
-- Homologação visual em PT-BR e EN-US.
-- Build instalável gerada por GitHub Actions.
-- Nenhuma integração oficial com AdSense realizada nesta etapa.
+- Comentários HTML de diagnóstico.
+- Data attributes para slot, provider, formato, idioma, status e dimensões.
+- Placeholders discretos para slots vazios.
+- CSS unificado em `plugin/assets/css/m360-ads.css`.
+- Providers preparados: internal, AdSense, Google Ad Manager, house ads, affiliate e sponsor.
+- Tela administrativa `M360 Ads → AdSense Ready`.
+- M360 Inventory Library como documento mestre do inventário comercial.
+- Inventory Seeder com cadastro automático de slots oficiais.
+- Context Renderer para renderização por contexto lógico.
+- Inline Ads Engine com primeiro impacto visível no front-end de artigos.
+- Archive Ads Engine homologado nas listagens controladas pelo M360 Core.
 
-### Marco arquitetural
+### Fora do escopo confirmado
 
-A Release 2.4 materializa o ADR-0007 e consolida o M360 Core como camada oficial de interface, renderização e preparação para monetização da Plataforma Mengão 360.
-
-Tema News Portal e Elementor permanecem como camadas de compatibilidade e composição, não como fonte primária da lógica publicitária.
-
-### Documentos oficiais relacionados
-
-```text
-docs/00-platform/M360_Platform_Architecture_v2.md
-docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md
-docs/00-platform/M360_Arquitetura_Ads_Manager_v1.md
-docs/01-modules/M360_Ads_Archive_Engine_v1.md
-docs/01-modules/M360_Universal_Slot_Renderer_v1.md
-docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md
-releases/v0.4.4.5/M360_Core_v0.4.4.5_Release_Notes.md
-```
-
-## 14. Release 2.5 — Plataforma Comercial M360
-
-Status: próxima fase planejada (`v0.5.x`).
-
-Objetivo:
-
-Evoluir a infraestrutura homologada de publicidade para uma plataforma comercial operacional, sem refatorar o pipeline consolidado na Release 2.4.
-
-### Backlog inicial
-
-- Campaign Engine avançado.
+- Integração oficial com Google AdSense.
+- Estatísticas de impressões e cliques.
+- Rotação de campanhas.
 - Priorização comercial.
-- Rotação de campanhas e criativos.
-- Regras por contexto, idioma, dispositivo e período.
-- Métricas de impressões e cliques.
+- Google Ad Manager operacional.
 - Dashboard Comercial.
-- Google AdSense.
-- Google Ad Manager.
-- House Ads inteligentes.
-- Patrocinadores e afiliados.
-- Auditoria e observabilidade comercial.
+- Marketplace Comercial M360.
 
-### Regra de evolução
-
-Toda funcionalidade comercial deverá consumir:
-
-```text
-M360 Universal Slot Renderer
-```
-
-Nenhuma nova integração publicitária deverá renderizar diretamente no tema, Elementor ou templates externos.
-
-## 15. Release 3.0 — M360 Layout Engine
+## 14. Release 3.0 — M360 Layout Engine
 
 Status: visão futura.
 
@@ -388,7 +317,7 @@ Escopo:
 - Layout Slots.
 - Containers independentes do tema.
 
-## 16. Regra de atualização
+## 15. Regra de atualização
 
 Toda sprint concluída deve ser consolidada em uma release.
 

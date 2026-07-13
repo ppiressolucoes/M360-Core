@@ -1,6 +1,57 @@
 # Changelog — M360 Core
 
+## [v0.5.1] — AdSense Approval Readiness
+
+- auditoria real de slots, campanhas elegíveis e conteúdo disponível;
+- métricas de cobertura e prontidão para entrega;
+- recolhimento completo de slots vazios no front-end;
+- placeholders preservados apenas no inventário administrativo;
+- checklist editorial, institucional, mobile, consentimento e `ads.txt`.
+
+## [v0.5.0] — Ads Manager Slot Management UX
+
+- gestão de vínculos em cartões agrupados por contexto;
+- filtros por nome, contexto, runtime e ocupação;
+- indicadores visuais Livre/Ocupado e alterações pendentes;
+- botão único para salvar todos os vínculos;
+- persistência em lote com validação e transação de banco;
+- interface responsiva para desktop e mobile.
+
+## [v0.4.4.7] — Slot Runtime Mapping & Diagnostics
+
+- `article-inline-1` canônico após o segundo parágrafo, com fallback legado.
+- diagnóstico de slots automáticos, manuais, planejados e legados.
+- mapeamento dos consumidores de busca, categoria, tag, autor, últimas notícias e arquivos.
+
 Todas as mudanças relevantes do M360 Core serão registradas neste arquivo.
+
+## [v0.4.4.6] — Campaign CRUD Hotfix
+
+Status: pronta para build e homologação.
+
+### Corrigido
+
+- erro fatal ao editar campanhas com datas inicial/final nulas;
+- validação de título, datas, período, enums e prioridade;
+- tratamento de falhas do banco em criação, atualização e exclusão;
+- validação da existência de campanhas e slots antes de vincular;
+- mensagens administrativas de sucesso e erro para o CRUD.
+
+## [v0.4.4.5] — M360 Universal Slot Renderer
+
+Status: baseline estável homologada em PT-BR e EN-US.
+
+### Consolidado
+
+- `M360_Slot_Renderer` e API pública `m360_render_ad_slot()`.
+- APIs e shortcodes históricos redirecionados ao renderer universal.
+- Inline Ads Engine, Archive Ads Engine e Context Renderer integrados ao pipeline único.
+- Compatibilidade com Elementor, News Portal, widgets e templates.
+- Linha `v0.4.4.x — M360 AdSense Ready` encerrada como base da Plataforma Comercial.
+
+### Próxima linha
+
+- `v0.5.x — Plataforma Comercial M360`.
 
 ## [v0.3.7.0] — Sprint 10.6 Search Engine
 

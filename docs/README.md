@@ -42,14 +42,14 @@ docs/
 - DW Esportivo — Transição para Mata-Mata.
 - Índice Histórico DW Esportivo.
 
-## Pendências da migração
+## Baseline documental vigente
 
-A próxima etapa deve importar os documentos vivos v2 do Google Drive:
+- M360 Platform Architecture v2.2.
+- M360 Release History v2.2.
+- M360 Core v0.4.4.5 como baseline estável.
+- v0.5.x — Plataforma Comercial M360 como próxima linha evolutiva.
 
-- M360 Platform Architecture v2.0.
-- M360 Release History v2.0.
-- M360 Core — Navigation Library Sprint 9.1 Foundation Log.
-- Documentos ADR da fase v2.
+Documentos históricos e snapshots anteriores permanecem preservados, mas não substituem esta baseline.
 
 ## Regra de manutenção
 
