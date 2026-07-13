@@ -4,8 +4,8 @@
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Baseline oficial homologada: `v0.5.1 — AdSense Approval Readiness`.
-- Tag oficial: `v0.5.1`.
-- Próxima entrega: `v0.5.2 — Multilingual Post Navigation`.
+- Entrega em homologação: `v0.5.2 — Multilingual Post Navigation`.
+- Próxima entrega planejada: `v0.5.3 — M360 Search Experience`.
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
 
@@ -18,7 +18,7 @@ As seções históricas abaixo preservam a evolução original. Para novas imple
 
 ### Próximas entregas
 
-3. `v0.5.2 — Multilingual Post Navigation`: Post Info e Breadcrumbs próprios, sem dependência funcional do widget Meta Data do Elementor.
+3. `v0.5.2 — Multilingual Post Navigation`: Post Info individual entregue; evolução dos Breadcrumbs permanece como próximo incremento de navegação.
 4. `v0.5.3 — M360 Search Experience`: formulário robusto, acessível, multilíngue e reutilizável.
 5. `v0.5.4 — Header Search & Ad Orchestration`: campanha elegível, AdSense ou busca como fallback útil do cabeçalho.
 
