@@ -53,10 +53,10 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 ### Baseline canônico
 
 ```text
-Produção: v0.4.4.0 — M360 AdSense Ready
-Baseline estável: v0.4.4.5 — M360 Universal Slot Renderer
+Release homologada: v0.5.1 — AdSense Approval Readiness
+Tag canônica: v0.5.1
 Arquitetura: M360 Platform Architecture v2.2
-Próxima linha: v0.5.x — Plataforma Comercial M360
+Próxima entrega: v0.5.2 — Multilingual Post Navigation
 ```
 
 ## 7. Operações
@@ -64,6 +64,13 @@ Próxima linha: v0.5.x — Plataforma Comercial M360
 | Documento | Caminho | Função |
 |---|---|---|
 | M360 Core Plugin Publication Workflow | `docs/04-operations/M360_Core_Plugin_Publication_Workflow_v1.md` | Workflow de publicação, build ZIP e rollback |
+| Governança do Repositório | `docs/04-operations/M360_Repository_Governance_v1.md` | Fonte da verdade, branches, tags e manutenção |
+
+## Roadmap vigente
+
+| Documento | Caminho | Função |
+|---|---|---|
+| Roadmap v0.5.2–v0.5.4 | `docs/04-roadmap/M360_Roadmap_v0.5.2_v0.5.4.md` | Post Info, Breadcrumbs, busca e cabeçalho |
 
 ## 8. Workflows GitHub Actions
 

@@ -2,12 +2,18 @@
 
 ## Atualização canônica — julho de 2026
 
-- Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline estável: `M360 Core v0.4.4.5 — M360 Universal Slot Renderer`.
+- Release oficial homologada: `M360 Core v0.5.1 — AdSense Approval Readiness`.
+- Tag canônica: `v0.5.1`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Próxima linha evolutiva: `v0.5.x — Plataforma Comercial M360`.
+- Próxima entrega: `v0.5.2 — Multilingual Post Navigation`.
 
-Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada; a evolução seguinte começa diretamente em `v0.5.x`.
+Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada e a baseline `v0.5.1` consolida a primeira etapa da Plataforma Comercial M360.
+
+## Baseline v0.5.x consolidada
+
+- `v0.5.0`: Ads Manager Slot Management UX.
+- `v0.5.1`: AdSense Approval Readiness, auditoria e recolhimento de slots vazios.
+- Próximo ciclo: Post Info, Breadcrumbs, Search Experience e orquestração do cabeçalho.
 
 Status: oficial
 Projeto: Mengão 360 | DW Esportivo
