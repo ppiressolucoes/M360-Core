@@ -1,4 +1,4 @@
-/* M360 Latest News Component - v0.4.2.3
+/* M360 Latest News Component - v0.5.4.1
  * Scope: only .m360-latest-news and children.
  */
 
@@ -125,6 +125,51 @@
 
 .m360-latest-news--compact .m360-latest-news__thumb { display: none; }
 
+/* Sidebar: dense, uniform news list without a featured first item. */
+.m360-latest-news--sidebar {
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.05);
+}
+
+.m360-latest-news--sidebar .m360-latest-news__header {
+    padding: 13px 15px;
+    border-bottom-width: 2px;
+}
+
+.m360-latest-news--sidebar .m360-latest-news__header h2 { font-size: 16px; }
+
+.m360-latest-news--sidebar .m360-latest-news__item,
+.m360-latest-news--sidebar .m360-latest-news__item.is-featured {
+    grid-template-columns: 84px minmax(0,1fr);
+    gap: 10px;
+    padding: 12px 14px;
+    background: #fff;
+}
+
+.m360-latest-news--sidebar .m360-latest-news__thumb {
+    aspect-ratio: 4/3;
+    border-radius: 8px;
+}
+
+.m360-latest-news--sidebar .m360-latest-news__category {
+    margin-bottom: 4px;
+    font-size: 10px;
+}
+
+.m360-latest-news--sidebar .m360-latest-news__title,
+.m360-latest-news--sidebar .m360-latest-news__item.is-featured .m360-latest-news__title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.m360-latest-news--sidebar .m360-latest-news__date {
+    margin-top: 5px;
+    font-size: 11px;
+}
 @media (max-width: 640px) {
     .m360-latest-news__item,
     .m360-latest-news__item.is-featured {
@@ -135,4 +180,14 @@
     .m360-latest-news__header { padding: 14px; }
     .m360-latest-news__title,
     .m360-latest-news__item.is-featured .m360-latest-news__title { font-size: 15px; }
+    .m360-latest-news--sidebar .m360-latest-news__item,
+    .m360-latest-news--sidebar .m360-latest-news__item.is-featured {
+        grid-template-columns: 80px minmax(0,1fr);
+        padding: 11px 12px;
+    }
+
+    .m360-latest-news--sidebar .m360-latest-news__title,
+    .m360-latest-news--sidebar .m360-latest-news__item.is-featured .m360-latest-news__title {
+        font-size: 14px;
+    }
 }

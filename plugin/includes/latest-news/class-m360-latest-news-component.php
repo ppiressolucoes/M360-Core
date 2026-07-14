@@ -16,6 +16,7 @@ final class M360_Latest_News_Component
             'show_image' => 'true',
             'show_category' => 'true',
             'show_date' => 'true',
+            'show_ads' => 'true',
             'layout' => 'list',
             'cache' => 'true',
         ], $atts, 'm360_latest_news');
@@ -31,6 +32,7 @@ final class M360_Latest_News_Component
             'show_image' => true,
             'show_category' => true,
             'show_date' => true,
+            'show_ads' => true,
             'layout' => 'list',
             'cache' => true,
         ]);
@@ -38,13 +40,17 @@ final class M360_Latest_News_Component
         $is_en = self::is_en();
         $title = trim((string) $args['title']);
         if ($title === '') { $title = $is_en ? 'Latest News' : 'Últimas Notícias'; }
-        $layout = sanitize_html_class((string) $args['layout']);
+        $layout = sanitize_key((string) $args['layout']);
+        if (!in_array($layout, ['list', 'compact', 'sidebar'], true)) {
+            $layout = 'list';
+        }
         $cache_enabled = filter_var($args['cache'], FILTER_VALIDATE_BOOLEAN);
         $show_image = filter_var($args['show_image'], FILTER_VALIDATE_BOOLEAN);
         $show_category = filter_var($args['show_category'], FILTER_VALIDATE_BOOLEAN);
         $show_date = filter_var($args['show_date'], FILTER_VALIDATE_BOOLEAN);
+        $show_ads = filter_var($args['show_ads'], FILTER_VALIDATE_BOOLEAN);
 
-        $cache_key = 'm360_latest_news_' . md5(wp_json_encode([$limit, $is_en, $layout, $show_image, $show_category, $show_date, M360_CORE_VERSION]));
+        $cache_key = 'm360_latest_news_' . md5(wp_json_encode([$limit, $is_en, $layout, $show_image, $show_category, $show_date, $show_ads, M360_CORE_VERSION]));
         if ($cache_enabled) {
             $cached = get_transient($cache_key);
             if (is_string($cached) && $cached !== '') { return $cached; }
@@ -74,8 +80,10 @@ final class M360_Latest_News_Component
             while ($query->have_posts()) {
                 $query->the_post();
                 $index++;
-                echo self::render_item($index, $show_image, $show_category, $show_date);
-                echo M360_Ads_Archive_Engine::after_item('latest-news', $index);
+                echo self::render_item($index, $show_image, $show_category, $show_date, $layout);
+                if ($show_ads) {
+                    echo M360_Ads_Archive_Engine::after_item('latest-news', $index);
+                }
             }
             echo '</div>';
         } else {
@@ -88,14 +96,19 @@ final class M360_Latest_News_Component
         return $html;
     }
 
-    private static function render_item(int $index, bool $show_image, bool $show_category, bool $show_date): string
+    private static function render_item(int $index, bool $show_image, bool $show_category, bool $show_date, string $layout): string
     {
         $classes = 'm360-latest-news__item' . ($index === 1 ? ' is-featured' : '');
         $categories = get_the_category();
         $category = !empty($categories) ? $categories[0] : null;
         ob_start();
         echo '<article class="' . esc_attr($classes) . '">';
-        if ($show_image && has_post_thumbnail()) { echo '<a class="m360-latest-news__thumb" href="' . esc_url(get_permalink()) . '">'; the_post_thumbnail($index === 1 ? 'medium_large' : 'thumbnail', ['loading'=>'lazy']); echo '</a>'; }
+        if ($show_image && has_post_thumbnail()) {
+            $image_size = ($layout === 'sidebar' || $index > 1) ? 'thumbnail' : 'medium_large';
+            echo '<a class="m360-latest-news__thumb" href="' . esc_url(get_permalink()) . '">';
+            the_post_thumbnail($image_size, ['loading' => 'lazy']);
+            echo '</a>';
+        }
         echo '<div class="m360-latest-news__body">';
         if ($show_category && $category instanceof WP_Term) { echo '<a class="m360-latest-news__category" href="' . esc_url(get_category_link($category)) . '">' . esc_html($category->name) . '</a>'; }
         echo '<h3 class="m360-latest-news__title"><a href="' . esc_url(get_permalink()) . '">' . esc_html(get_the_title()) . '</a></h3>';

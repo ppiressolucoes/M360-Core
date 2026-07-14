@@ -4,7 +4,7 @@
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Baseline oficial homologada: `v0.5.4 — Header Search & Ad Orchestration`.
-- Entrega consolidada: `v0.5.4 — Header Search & Ad Orchestration`.
+- Entrega em homologação: `v0.5.4.1 — Latest News Sidebar Mode`.
 - Próxima entrega planejada: `v0.5.5 — Breadcrumb Navigation UX`.
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
@@ -21,11 +21,8 @@ As seções históricas abaixo preservam a evolução original. Para novas imple
 3. `v0.5.2 — Multilingual Post Navigation`: Post Info individual entregue; evolução dos Breadcrumbs permanece como próximo incremento de navegação.
 4. `v0.5.3 — M360 Search Experience`: formulário robusto, acessível, multilíngue e reutilizável nas variantes hero, header e compact.
 5. `v0.5.4 — Header Search & Ad Orchestration`: campanha elegível, AdSense ou busca como fallback útil do cabeçalho.
-6. `v0.5.5 — Breadcrumb Navigation UX`: navegação hierárquica multilíngue, elegante, acessível e com schema.
-
-### Backlog identificado
-
-- Criar variante formal `sidebar` para `[m360_latest_news]`, com opção explícita de desativar a inserção automática de anúncios no bloco.
+6. `v0.5.4.1 — Latest News Sidebar Mode`: variante compacta, uniforme e com publicidade interna configurável.
+7. `v0.5.5 — Breadcrumb Navigation UX`: navegação hierárquica multilíngue, elegante, acessível e com schema.
 
 Toda evolução deve preservar PT-BR, EN-US, SEO, acessibilidade, responsividade, APIs e shortcodes homologados.
 
