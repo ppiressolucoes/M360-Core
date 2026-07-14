@@ -21,6 +21,7 @@ Entregar uma variante compacta do componente de últimas notícias para uso em b
 
 - validar a sidebar em PT-BR e EN-US;
 - confirmar cards uniformes no desktop e no mobile;
+- confirmar títulos das notícias com peso regular e boa legibilidade;
 - confirmar que `show_ads="false"` não renderiza o slot `latest-inline`;
 - confirmar que o shortcode legado preserva a entrega publicitária existente;
 - verificar imagens, categorias, datas e links das notícias.

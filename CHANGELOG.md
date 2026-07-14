@@ -3,6 +3,7 @@
 
 - nova variante `sidebar` para `[m360_latest_news]`;
 - cards compactos e uniformes, sem destaque ampliado para a primeira notícia;
+- títulos das notícias em peso regular no modo sidebar para leitura visual mais suave;
 - novo atributo `show_ads` para controlar a inserção automática do slot `latest-inline`;
 - contrato recomendado para barras laterais: `[m360_latest_news layout="sidebar" show_ads="false"]`;
 - compatibilidade preservada: o layout `list` e a publicidade continuam ativos por padrão.

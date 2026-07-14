@@ -161,9 +161,14 @@
     display: -webkit-box;
     overflow: hidden;
     font-size: 14px;
+    font-weight: 400;
     line-height: 1.25;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+}
+
+.m360-latest-news--sidebar .m360-latest-news__title a {
+    font-weight: 400 !important;
 }
 
 .m360-latest-news--sidebar .m360-latest-news__date {
