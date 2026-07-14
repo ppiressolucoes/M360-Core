@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_Inventory_Library
 {
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.1.0';
 
     /**
      * Official M360 commercial inventory registry.
@@ -16,6 +16,7 @@ final class M360_Ads_Inventory_Library
         return [
             // Home
             ['header-top', 'Header Top', 'Topo global do portal. Slot piloto homologado.', 'header', 'global', 'all', 'all', 728, 140],
+            ['header-adsense', 'Header AdSense', 'Fallback Google exclusivo do orquestrador do cabeçalho.', 'header-adsense', 'global', 'all', 'all', 728, 90],
             ['home-hero', 'Home Hero', 'Slot comercial na área hero da home.', 'hero', 'home', 'all', 'all', 1200, 250],
             ['home-after-highlight', 'Home After Highlight', 'Slot após o destaque principal da home.', 'after-highlight', 'home', 'all', 'all', 970, 250],
             ['home-inline-feed-1', 'Home Inline Feed 1', 'Primeiro slot inline no feed da home.', 'inline-1', 'home', 'all', 'all', 728, 90],

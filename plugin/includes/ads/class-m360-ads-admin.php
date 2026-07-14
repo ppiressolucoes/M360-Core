@@ -38,7 +38,7 @@ final class M360_Ads_Admin
         echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Manager</h1><p>Gestão inicial de inventário publicitário do Mengão 360.</p>';
         echo '<div class="m360-ads-admin__cards">';
         self::metric('Slots', $total_slots); self::metric('Slots ativos', $active_slots); self::metric('Slots ocupados', $assigned); self::metric('Campanhas', $total_campaigns); self::metric('Campanhas ativas', $active_campaigns); self::metric('Schema Ads', esc_html((string) get_option('m360_ads_db_version', '-')));
-        echo '</div><p><a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=m360-ads-inventory')) . '">Ver inventário piloto</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-adsense-ready')) . '">Checklist AdSense Ready</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-campaign-new')) . '">Nova campanha</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-slots')) . '">Ver slots</a></p></div>';
+        echo '</div><p><a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=m360-ads-inventory')) . '">Ver inventário piloto</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-adsense-ready')) . '">Checklist AdSense Ready</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-header-delivery')) . '">Header Delivery</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-campaign-new')) . '">Nova campanha</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-slots')) . '">Ver slots</a></p></div>';
     }
 
     public static function render_inventory(): void
