@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.5.4.3] — Current Post Exclusion
+
+- exclusão automática do artigo atualmente aberto no componente `[m360_latest_news]`;
+- comportamento aplicado aos layouts `list`, `compact` e `sidebar` em páginas individuais de posts;
+- quantidade configurada preservada com o próximo post elegível da consulta;
+- paginação recalculada sem contabilizar o artigo em leitura;
+- chave de cache isolada pelo ID do post atual para impedir resultados cruzados.
+
 ## [v0.5.4.2] — Latest News List UX
 
 - primeiro post ampliado como destaque editorial no layout `list`;

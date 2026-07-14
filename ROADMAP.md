@@ -4,7 +4,7 @@
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Baseline oficial homologada: `v0.5.4 — Header Search & Ad Orchestration`.
-- Entrega em homologação: `v0.5.4.2 — Latest News List UX`.
+- Entrega em homologação: `v0.5.4.3 — Current Post Exclusion`.
 - Próxima entrega planejada: `v0.5.5 — Breadcrumb Navigation UX`.
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
@@ -23,6 +23,7 @@ As seções históricas abaixo preservam a evolução original. Para novas imple
 5. `v0.5.4 — Header Search & Ad Orchestration`: campanha elegível, AdSense ou busca como fallback útil do cabeçalho.
 6. `v0.5.4.1 — Latest News Sidebar Mode`: variante compacta, uniforme e com publicidade interna configurável.
 7. `v0.5.4.2 — Latest News List UX`: destaque editorial e paginação opcional no layout de página.
+8. `v0.5.4.3 — Current Post Exclusion`: remoção automática do artigo em leitura das listas do componente.
 8. `v0.5.5 — Breadcrumb Navigation UX`: navegação hierárquica multilíngue, elegante, acessível e com schema.
 
 Toda evolução deve preservar PT-BR, EN-US, SEO, acessibilidade, responsividade, APIs e shortcodes homologados.
