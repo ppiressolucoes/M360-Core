@@ -35,6 +35,9 @@ A tag `v0.5.1` identifica a baseline imutável homologada. Novas mudanças devem
 - `v0.5.2`: Post Info multilíngue e Breadcrumbs evoluídos.
 - `v0.5.3`: M360 Search Experience.
 - `v0.5.4`: orquestração Header Search & Ads.
+- `v0.5.4.1`: modo sidebar do Últimas Notícias com publicidade configurável.
+- `v0.5.4.2`: destaque e paginação opcional do Últimas Notícias em layout de página.
+- `v0.5.4.3`: exclusão automática do post em leitura nas listas de últimas notícias.
 
 Consulte `docs/04-roadmap/M360_Roadmap_v0.5.2_v0.5.4.md`.
 

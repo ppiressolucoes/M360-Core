@@ -1,5 +1,31 @@
 # Changelog — M360 Core
 
+## [v0.5.4.3] — Current Post Exclusion
+
+- exclusão automática do artigo atualmente aberto no componente `[m360_latest_news]`;
+- comportamento aplicado aos layouts `list`, `compact` e `sidebar` em páginas individuais de posts;
+- quantidade configurada preservada com o próximo post elegível da consulta;
+- paginação recalculada sem contabilizar o artigo em leitura;
+- chave de cache isolada pelo ID do post atual para impedir resultados cruzados.
+
+## [v0.5.4.2] — Latest News List UX
+
+- primeiro post ampliado como destaque editorial no layout `list`;
+- título em negrito restrito ao primeiro post em destaque;
+- títulos dos demais posts em peso regular;
+- paginação opcional e multilíngue no rodapé do componente;
+- navegação paginada por `m360_news_page`, sem conflito com as rotas do tema;
+- compatibilidade preservada: paginação desativada por padrão e modo sidebar inalterado.
+## [v0.5.4.1] — Latest News Sidebar Mode
+
+- nova variante `sidebar` para `[m360_latest_news]`;
+- cards compactos e uniformes, sem destaque ampliado para a primeira notícia;
+- títulos das notícias em peso regular no modo sidebar para leitura visual mais suave;
+- novo atributo `show_ads` para controlar a inserção automática do slot `latest-inline`;
+- contrato recomendado para barras laterais: `[m360_latest_news layout="sidebar" show_ads="false"]`;
+- compatibilidade preservada: o layout `list` e a publicidade continuam ativos por padrão.
+- empacotamento Windows corrigido para preservar `m360-core/m360-core.php` e caminhos ZIP compatíveis com Linux.
+
 ## [v0.5.4] — Header Search & Ad Orchestration
 
 - novo shortcode `[m360_header_orchestrator]` para o cabeçalho;
