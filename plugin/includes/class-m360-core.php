@@ -20,6 +20,7 @@ require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-archive-engine.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-admin.php';
 require_once M360_CORE_PATH . 'includes/ads/class-m360-ads-creatives-admin.php';
 require_once M360_CORE_PATH . 'includes/search/class-m360-search-controller.php';
+require_once M360_CORE_PATH . 'includes/search/class-m360-search-form-component.php';
 require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php';
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
 require_once M360_CORE_PATH . 'includes/tag/class-m360-tag-controller.php';
@@ -96,6 +97,8 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-latest-news', M360_CORE_URL . 'assets/css/m360-latest-news.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-ads', M360_CORE_URL . 'assets/css/m360-ads.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-search', M360_CORE_URL . 'assets/css/search.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
+        wp_register_style('m360-core-search-form', M360_CORE_URL . 'assets/css/m360-search-form.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_script('m360-core-search-form', M360_CORE_URL . 'assets/js/m360-search-form.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-author', M360_CORE_URL . 'assets/css/author.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-category', M360_CORE_URL . 'assets/css/category.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-tag', M360_CORE_URL . 'assets/css/tag.css', ['m360-core-ui-polish', 'm360-core-ui-components', 'm360-core-navigation-components'], M360_CORE_VERSION);
@@ -117,6 +120,7 @@ final class M360_Core_Runtime_034
     {
         M360_Navigation_Shortcodes::register();
         M360_Post_Info_Component::register_shortcodes();
+        M360_Search_Form_Component::register_shortcodes();
         M360_UI_Components::register_shortcodes();
         M360_Latest_News_Component::register_shortcodes();
         M360_Slot_Renderer::register_shortcodes();

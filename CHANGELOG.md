@@ -1,5 +1,34 @@
 # Changelog — M360 Core
 
+## [v0.5.3.3] — Minimal Search Hero
+
+- título e subtítulo desativados por padrão no Search Hero;
+- campo de busca passa a ser o único elemento informativo do box;
+- redução das margens internas, altura, raio e sombra do componente;
+- opção `show_intro="true"` preservada para usos editoriais futuros.
+
+## [v0.5.3.2] — Elementor Search Column Width Hotfix
+
+- identificação automática do widget hospedeiro do shortcode no Elementor;
+- largura integral e comportamento flexível aplicados somente ao widget da busca;
+- correção do Search Hero compactado e alinhado à direita no cabeçalho PT-BR.
+
+## [v0.5.3.1] — Search Hero UX Polish
+
+- remoção do timbre superior para uma composição mais limpa;
+- redução das margens internas e da altura do bloco hero;
+- botão de busca incorporado ao campo de entrada;
+- alinhamento central do conteúdo em telas móveis;
+- descrição padrão revisada para `Pesquise e encontre conteúdos em todo o portal.`.
+
+## [v0.5.3] — M360 Search Experience
+
+- novo shortcode `[m360_search_form]` nas variantes `hero`, `header` e `compact`;
+- textos, destino e mensagens próprios para PT-BR e EN-US;
+- campo acessível, navegação por teclado e botão de busca responsivo;
+- bloqueio de consultas vazias, inclusive termos compostos apenas por espaços;
+- formulário compacto integrado aos resultados e variante hero no estado vazio.
+
 ## [v0.5.2.2] — Multilingual Date Archive
 
 - arquivos por dia, mês e ano incorporados ao M360 Core;

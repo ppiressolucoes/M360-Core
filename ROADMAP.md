@@ -3,9 +3,9 @@
 ## Baseline canônico — julho de 2026
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline oficial homologada: `v0.5.1 — AdSense Approval Readiness`.
-- Entrega em homologação: `v0.5.2 — Multilingual Post Navigation`.
-- Próxima entrega planejada: `v0.5.3 — M360 Search Experience`.
+- Baseline oficial homologada: `v0.5.3.3 — Minimal Search Hero`.
+- Entrega consolidada: `v0.5.3 — M360 Search Experience`.
+- Próxima entrega planejada: `v0.5.4 — Header Search & Ad Orchestration`.
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
 
@@ -19,7 +19,7 @@ As seções históricas abaixo preservam a evolução original. Para novas imple
 ### Próximas entregas
 
 3. `v0.5.2 — Multilingual Post Navigation`: Post Info individual entregue; evolução dos Breadcrumbs permanece como próximo incremento de navegação.
-4. `v0.5.3 — M360 Search Experience`: formulário robusto, acessível, multilíngue e reutilizável.
+4. `v0.5.3 — M360 Search Experience`: formulário robusto, acessível, multilíngue e reutilizável nas variantes hero, header e compact.
 5. `v0.5.4 — Header Search & Ad Orchestration`: campanha elegível, AdSense ou busca como fallback útil do cabeçalho.
 
 Toda evolução deve preservar PT-BR, EN-US, SEO, acessibilidade, responsividade, APIs e shortcodes homologados.
