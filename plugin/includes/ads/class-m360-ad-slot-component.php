@@ -24,7 +24,8 @@ final class M360_Ad_Slot_Component
         $slot = self::find_slot($slot_key);
         if (!$slot) { return self::empty_result($slot_key, $args, null); }
 
-        $campaign = self::find_campaign((int) $slot['id']);
+        $strict_provider = !empty($args['provider_strict']) ? sanitize_key((string) ($args['provider'] ?? '')) : '';
+        $campaign = self::find_campaign((int) $slot['id'], $strict_provider);
         if (!$campaign) { return self::empty_result($slot_key, $args, $slot); }
 
         $creative = self::find_creative((int) $campaign['id'], $slot_key, $slot);
@@ -86,7 +87,7 @@ final class M360_Ad_Slot_Component
         return is_array($row) ? $row : null;
     }
 
-    private static function find_campaign(int $slot_id): ?array
+    private static function find_campaign(int $slot_id, string $strict_provider = ''): ?array
     {
         global $wpdb;
         $campaigns = M360_Ads_DB::table('ad_campaigns');
@@ -94,7 +95,23 @@ final class M360_Ad_Slot_Component
         $language = self::language();
         $device = self::device();
         $now = current_time('mysql');
-        $sql = $wpdb->prepare("SELECT c.*, r.priority AS slot_priority FROM {$relations} r INNER JOIN {$campaigns} c ON c.id = r.campaign_id WHERE r.slot_id = %d AND r.is_active = 1 AND c.status = 'active' AND (c.language = %s OR c.language = 'all') AND (c.device = %s OR c.device = 'all') AND (c.start_at IS NULL OR c.start_at <= %s) AND (c.end_at IS NULL OR c.end_at >= %s) ORDER BY CASE WHEN c.language = %s THEN 0 ELSE 1 END ASC, r.priority DESC, c.priority DESC, c.id DESC LIMIT 1", $slot_id, $language, $device, $now, $now, $language);
+        $provider_types = [
+            'adsense' => ['adsense'],
+            'google-ad-manager' => ['gam'],
+            'house' => ['house'],
+            'affiliate' => ['affiliate'],
+            'sponsor' => ['sponsor'],
+            'internal' => ['image', 'html', 'script'],
+        ];
+        $provider_sql = '';
+        $params = [$slot_id, $language, $device, $now, $now];
+        if (isset($provider_types[$strict_provider])) {
+            $placeholders = implode(',', array_fill(0, count($provider_types[$strict_provider]), '%s'));
+            $provider_sql = " AND c.campaign_type IN ({$placeholders})";
+            array_push($params, ...$provider_types[$strict_provider]);
+        }
+        $params[] = $language;
+        $sql = $wpdb->prepare("SELECT c.*, r.priority AS slot_priority FROM {$relations} r INNER JOIN {$campaigns} c ON c.id = r.campaign_id WHERE r.slot_id = %d AND r.is_active = 1 AND c.status = 'active' AND (c.language = %s OR c.language = 'all') AND (c.device = %s OR c.device = 'all') AND (c.start_at IS NULL OR c.start_at <= %s) AND (c.end_at IS NULL OR c.end_at >= %s){$provider_sql} ORDER BY CASE WHEN c.language = %s THEN 0 ELSE 1 END ASC, r.priority DESC, c.priority DESC, c.id DESC LIMIT 1", ...$params);
         $row = $wpdb->get_row($sql, ARRAY_A);
         return is_array($row) ? $row : null;
     }

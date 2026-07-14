@@ -1,5 +1,14 @@
 # Changelog — M360 Core
 
+## [v0.5.4] — Header Search & Ad Orchestration
+
+- novo shortcode `[m360_header_orchestrator]` para o cabeçalho;
+- prioridade determinística: campanha elegível → AdSense elegível → busca → recolher;
+- novo slot exclusivo `header-adsense` com filtro estrito de provedor;
+- busca multilíngue homologada como fallback útil;
+- diagnóstico administrativo em `M360 Ads > Header Delivery`;
+- atualização automática do inventário publicitário para o novo slot.
+
 ## [v0.5.3.3] — Minimal Search Hero
 
 - título e subtítulo desativados por padrão no Search Hero;

@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_DB
 {
-    public const SCHEMA_VERSION = '0.4.4.1';
+    public const SCHEMA_VERSION = '0.5.4.0';
 
     public static function install(): void
     {

@@ -41,6 +41,7 @@ final class M360_Slot_Renderer
         $component_args = is_array($request['args'] ?? null) ? $request['args'] : $args;
         $component_args['context'] = sanitize_key((string) ($request['context'] ?? $context));
         $component_args['provider'] = self::normalize_provider((string) ($request['provider'] ?? $provider));
+        $component_args['provider_strict'] = (bool) ($component_args['provider_strict'] ?? false);
         $component_args['campaign'] = $request['campaign'] ?? null;
 
         $fallback = (string) ($component_args['fallback'] ?? '');
@@ -89,6 +90,7 @@ final class M360_Slot_Renderer
             'source' => sanitize_key((string) ($args['source'] ?? 'php')),
             'cache' => (bool) ($args['cache'] ?? false),
             'show_placeholder' => (bool) ($args['show_placeholder'] ?? false),
+            'provider_strict' => (bool) ($args['provider_strict'] ?? false),
         ];
 
         $filtered = apply_filters('m360_slot_render_args', $normalized, $args);

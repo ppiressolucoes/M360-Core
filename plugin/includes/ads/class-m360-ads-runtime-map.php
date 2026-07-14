@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_Ads_Runtime_Map
 {
     private const MAP = [
+        'header-top' => ['status'=>'runtime','source'=>'header-orchestrator','trigger'=>'Primeira etapa: campanha elegível'],
+        'header-adsense' => ['status'=>'runtime','source'=>'header-orchestrator','trigger'=>'Segunda etapa: fallback AdSense'],
         'article-inline-1' => ['status'=>'runtime','source'=>'inline-engine','trigger'=>'Após o segundo parágrafo'],
         'article-after-paragraph-2' => ['status'=>'legacy','source'=>'inline-engine','trigger'=>'Fallback compatível após o segundo parágrafo'],
         'search-inline' => ['status'=>'runtime','source'=>'archive-engine','trigger'=>'Após o terceiro resultado'],
