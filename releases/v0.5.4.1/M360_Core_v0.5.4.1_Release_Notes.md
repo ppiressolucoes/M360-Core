@@ -24,3 +24,6 @@ Entregar uma variante compacta do componente de últimas notícias para uso em b
 - confirmar que `show_ads="false"` não renderiza o slot `latest-inline`;
 - confirmar que o shortcode legado preserva a entrega publicitária existente;
 - verificar imagens, categorias, datas e links das notícias.
+## Compatibilidade do pacote
+
+O ZIP deve usar o identificador canônico `m360-core/m360-core.php` e caminhos internos com `/`, inclusive quando for gerado no Windows. O script `scripts/build-plugin-package.ps1` valida esse contrato antes da homologação.

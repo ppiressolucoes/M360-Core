@@ -6,6 +6,7 @@
 - novo atributo `show_ads` para controlar a inserção automática do slot `latest-inline`;
 - contrato recomendado para barras laterais: `[m360_latest_news layout="sidebar" show_ads="false"]`;
 - compatibilidade preservada: o layout `list` e a publicidade continuam ativos por padrão.
+- empacotamento Windows corrigido para preservar `m360-core/m360-core.php` e caminhos ZIP compatíveis com Linux.
 
 ## [v0.5.4] — Header Search & Ad Orchestration
 
