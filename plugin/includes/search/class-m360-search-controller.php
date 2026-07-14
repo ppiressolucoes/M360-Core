@@ -22,7 +22,7 @@ final class M360_Search_Controller
         ob_start();
         echo '<main class="m360-dynamic-view m360-search-view"><div class="m360-dynamic-view__container">';
         echo do_shortcode('[m360_breadcrumb]');
-        echo '<header class="m360-search-view__header"><span class="m360-search-view__eyebrow">' . esc_html($is_en ? 'Mengão 360 Search' : 'Busca Mengão 360') . '</span><h1>' . esc_html($title) . '</h1><p>' . esc_html($is_en ? 'Search term:' : 'Termo pesquisado:') . ' <strong>' . esc_html($query) . '</strong></p></header>';
+        echo '<header class="m360-search-view__header"><span class="m360-search-view__eyebrow">' . esc_html($is_en ? 'Mengão 360 Search' : 'Busca Mengão 360') . '</span><h1>' . esc_html($title) . '</h1><p>' . esc_html($is_en ? 'Search term:' : 'Termo pesquisado:') . ' <strong>' . esc_html($query) . '</strong></p>' . do_shortcode('[m360_search_form variant="compact" show_intro="false"]') . '</header>';
 
         if (have_posts()) {
             echo '<section class="m360-search-results" aria-label="' . esc_attr($title) . '">';
@@ -36,7 +36,7 @@ final class M360_Search_Controller
             echo '</section>' . self::pagination();
         } else {
             echo '<section class="m360-search-empty"><h2>' . esc_html($empty_title) . '</h2><p>' . esc_html($empty_text) . '</p>';
-            get_search_form();
+            echo do_shortcode('[m360_search_form variant="hero"]');
             echo M360_Ads_Archive_Engine::empty_state('search');
             echo '</section>';
         }
@@ -73,5 +73,12 @@ final class M360_Search_Controller
         if (wp_style_is('m360-core-foundation', 'registered')) { wp_enqueue_style('m360-core-foundation'); }
     }
 
-    private static function is_en(): bool { return str_starts_with((string) get_locale(), 'en'); }
+    private static function is_en(): bool
+    {
+        if (function_exists('pll_current_language')) {
+            $language = pll_current_language('slug');
+            if (is_string($language) && $language !== '') { return strtolower($language) === 'en'; }
+        }
+        return str_starts_with((string) determine_locale(), 'en');
+    }
 }

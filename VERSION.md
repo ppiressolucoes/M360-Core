@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.5.2.2
+0.5.3.3
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline evolutiva de código: `v0.5.2.2 — Multilingual Date Archive`.
+- Baseline evolutiva de código: `v0.5.3.3 — Minimal Search Hero`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Próxima linha: `v0.5.x — Plataforma Comercial M360`.
 
@@ -39,6 +39,18 @@
 - `0.5.2`: componente individual e multilíngue de informações do post.
 - `0.5.2.1`: recorte circular robusto do avatar e invalidação do cache dos assets.
 - `0.5.2.2`: arquivo multilíngue próprio para navegação por dia, mês e ano.
+- `0.5.3`: formulário de busca reutilizável, acessível e multilíngue.
+- `0.5.3.1`: refinamento visual do hero com botão incorporado e melhor proporção no cabeçalho.
+- `0.5.3.2`: correção da largura do widget de busca no contêiner Elementor PT-BR.
+- `0.5.3.3`: Search Hero minimalista com apenas o campo e o botão incorporado.
+
+## Componente de busca
+
+```text
+[m360_search_form variant="hero"]
+[m360_search_form variant="header"]
+[m360_search_form variant="compact"]
+```
 
 ## Componente Post Info
 
