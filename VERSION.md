@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.5.4.1
+0.5.4.2
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline evolutiva de código: `v0.5.4.1 — Latest News Sidebar Mode`.
+- Baseline evolutiva de código: `v0.5.4.2 — Latest News List UX`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Próxima linha: `v0.5.x — Plataforma Comercial M360`.
 
@@ -45,6 +45,7 @@
 - `0.5.3.3`: Search Hero minimalista com apenas o campo e o botão incorporado.
 - `0.5.4`: orquestração do cabeçalho entre campanha, AdSense, busca e recolhimento.
 - `0.5.4.1`: variante sidebar do componente de últimas notícias, com controle explícito da inserção de publicidade.
+- `0.5.4.2`: destaque editorial do primeiro item, títulos regulares na lista e paginação opcional.
 
 ## Componente Últimas Notícias
 
@@ -58,7 +59,9 @@ Uso recomendado em sidebar sem anúncio interno:
 
 ```text
 [m360_latest_news layout="sidebar" show_ads="false"]
+[m360_latest_news layout="list" pagination="true"]
 ```
+
 ## Componente de entrega do cabeçalho
 
 ```text

@@ -1,4 +1,13 @@
 # Changelog — M360 Core
+
+## [v0.5.4.2] — Latest News List UX
+
+- primeiro post ampliado como destaque editorial no layout `list`;
+- título em negrito restrito ao primeiro post em destaque;
+- títulos dos demais posts em peso regular;
+- paginação opcional e multilíngue no rodapé do componente;
+- navegação paginada por `m360_news_page`, sem conflito com as rotas do tema;
+- compatibilidade preservada: paginação desativada por padrão e modo sidebar inalterado.
 ## [v0.5.4.1] — Latest News Sidebar Mode
 
 - nova variante `sidebar` para `[m360_latest_news]`;

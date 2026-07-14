@@ -17,6 +17,7 @@ final class M360_Latest_News_Component
             'show_category' => 'true',
             'show_date' => 'true',
             'show_ads' => 'true',
+            'pagination' => 'false',
             'layout' => 'list',
             'cache' => 'true',
         ], $atts, 'm360_latest_news');
@@ -33,6 +34,7 @@ final class M360_Latest_News_Component
             'show_category' => true,
             'show_date' => true,
             'show_ads' => true,
+            'pagination' => false,
             'layout' => 'list',
             'cache' => true,
         ]);
@@ -49,8 +51,15 @@ final class M360_Latest_News_Component
         $show_category = filter_var($args['show_category'], FILTER_VALIDATE_BOOLEAN);
         $show_date = filter_var($args['show_date'], FILTER_VALIDATE_BOOLEAN);
         $show_ads = filter_var($args['show_ads'], FILTER_VALIDATE_BOOLEAN);
+        $pagination_enabled = $layout === 'list' && filter_var($args['pagination'], FILTER_VALIDATE_BOOLEAN);
+        $requested_page = isset($_GET['m360_news_page']) && is_scalar($_GET['m360_news_page'])
+            ? wp_unslash($_GET['m360_news_page'])
+            : 1;
+        $current_page = $pagination_enabled ? max(1, absint($requested_page)) : 1;
+        $pagination_base = is_singular() ? get_permalink(get_queried_object_id()) : home_url('/');
+        if (!is_string($pagination_base) || $pagination_base === '') { $pagination_base = home_url('/'); }
 
-        $cache_key = 'm360_latest_news_' . md5(wp_json_encode([$limit, $is_en, $layout, $show_image, $show_category, $show_date, $show_ads, M360_CORE_VERSION]));
+        $cache_key = 'm360_latest_news_' . md5(wp_json_encode([$limit, $is_en, $layout, $show_image, $show_category, $show_date, $show_ads, $pagination_enabled, $current_page, $pagination_base, M360_CORE_VERSION]));
         if ($cache_enabled) {
             $cached = get_transient($cache_key);
             if (is_string($cached) && $cached !== '') { return $cached; }
@@ -61,9 +70,10 @@ final class M360_Latest_News_Component
             'post_status' => 'publish',
             'posts_per_page' => $limit,
             'ignore_sticky_posts' => true,
-            'no_found_rows' => true,
+            'no_found_rows' => !$pagination_enabled,
             'orderby' => 'date',
             'order' => 'DESC',
+            'paged' => $current_page,
         ];
         if (function_exists('pll_current_language')) {
             $lang = pll_current_language('slug');
@@ -72,7 +82,7 @@ final class M360_Latest_News_Component
         $query = new WP_Query($query_args);
 
         ob_start();
-        echo '<section class="m360-ui m360-latest-news m360-latest-news--' . esc_attr($layout) . '" aria-label="' . esc_attr($title) . '">';
+        echo '<section id="m360-latest-news" class="m360-ui m360-latest-news m360-latest-news--' . esc_attr($layout) . '" aria-label="' . esc_attr($title) . '">';
         echo '<header class="m360-latest-news__header"><h2>' . esc_html($title) . '</h2></header>';
         if ($query->have_posts()) {
             echo '<div class="m360-latest-news__items">';
@@ -86,6 +96,9 @@ final class M360_Latest_News_Component
                 }
             }
             echo '</div>';
+            if ($pagination_enabled && $query->max_num_pages > 1) {
+                echo self::render_pagination($current_page, (int) $query->max_num_pages, $pagination_base, $is_en);
+            }
         } else {
             echo '<p class="m360-latest-news__empty">' . esc_html($is_en ? 'No recent news found.' : 'Nenhuma notícia recente encontrada.') . '</p>';
         }
@@ -94,6 +107,31 @@ final class M360_Latest_News_Component
         $html = (string) ob_get_clean();
         if ($cache_enabled) { set_transient($cache_key, $html, 10 * MINUTE_IN_SECONDS); }
         return $html;
+    }
+
+    private static function render_pagination(int $current_page, int $total_pages, string $base_url, bool $is_en): string
+    {
+        $placeholder = 999999999;
+        $base = str_replace(
+            (string) $placeholder,
+            '%#%',
+            esc_url_raw(add_query_arg('m360_news_page', $placeholder, $base_url))
+        );
+        $links = paginate_links([
+            'base' => $base,
+            'format' => '',
+            'current' => $current_page,
+            'total' => $total_pages,
+            'mid_size' => 1,
+            'end_size' => 1,
+            'prev_text' => $is_en ? 'Previous' : 'Anterior',
+            'next_text' => $is_en ? 'Next' : 'Próxima',
+            'type' => 'list',
+            'add_fragment' => '#m360-latest-news',
+        ]);
+        if (!is_string($links) || $links === '') { return ''; }
+        $label = $is_en ? 'Latest news pagination' : 'Paginação das últimas notícias';
+        return '<nav class="m360-latest-news__pagination" aria-label="' . esc_attr($label) . '">' . $links . '</nav>';
     }
 
     private static function render_item(int $index, bool $show_image, bool $show_category, bool $show_date, string $layout): string
