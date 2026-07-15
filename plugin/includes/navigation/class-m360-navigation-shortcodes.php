@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Navigation_Shortcodes
 {
+    private static bool $breadcrumb_schema_rendered = false;
+
     public static function register(): void
     {
         add_shortcode('m360_main_navigation', [self::class, 'main_navigation']);
@@ -29,47 +31,266 @@ final class M360_Navigation_Shortcodes
     public static function breadcrumb(array $atts = []): string
     {
         self::enqueue_assets();
-        $items = [];
-        $items[] = '<a href="' . esc_url(home_url(self::is_en() ? '/en/' : '/')) . '">' . esc_html(self::is_en() ? 'Home' : 'Início') . '</a>';
+        $atts = shortcode_atts([
+            'schema' => 'true',
+        ], $atts, 'm360_breadcrumb');
+
+        $is_en = self::is_en();
+        $labels = self::breadcrumb_labels($is_en);
+        $items = [[
+            'label' => $labels['home'],
+            'url' => self::language_home_url(),
+            'current' => is_front_page(),
+            'home' => true,
+        ]];
+
         if (is_author()) {
             $author = get_queried_object();
-            $items[] = '<span>' . esc_html(self::is_en() ? 'Author' : 'Autor') . '</span>';
-            if ($author instanceof WP_User) { $items[] = '<span aria-current="page">' . esc_html($author->display_name) . '</span>'; }
+            $items[] = self::breadcrumb_item($labels['author'], '', false, false);
+            if ($author instanceof WP_User) {
+                $items[] = self::breadcrumb_item($author->display_name, get_author_posts_url($author->ID), true);
+            }
         } elseif (is_category()) {
             $term = get_queried_object();
-            $items[] = '<span>' . esc_html(self::is_en() ? 'Category' : 'Categoria') . '</span>';
-            if ($term instanceof WP_Term) { $items[] = '<span aria-current="page">' . esc_html($term->name) . '</span>'; }
+            $items[] = self::breadcrumb_item($labels['category'], '', false, false);
+            if ($term instanceof WP_Term) {
+                $items = array_merge($items, self::term_ancestor_items($term));
+                $items[] = self::breadcrumb_item($term->name, self::term_url($term), true);
+            }
         } elseif (is_tag()) {
             $term = get_queried_object();
-            $items[] = '<span>' . esc_html('Tag') . '</span>';
-            if ($term instanceof WP_Term) { $items[] = '<span aria-current="page">' . esc_html($term->name) . '</span>'; }
+            $items[] = self::breadcrumb_item($labels['tag'], '', false, false);
+            if ($term instanceof WP_Term) {
+                $items[] = self::breadcrumb_item($term->name, self::term_url($term), true);
+            }
         } elseif (is_date()) {
-            $is_en = self::is_en();
             $year = (int) get_query_var('year');
             $month = (int) get_query_var('monthnum');
             $day = (int) get_query_var('day');
-            $items[] = '<span>' . esc_html($is_en ? 'Date archive' : 'Arquivo por data') . '</span>';
+            $items[] = self::breadcrumb_item($labels['date_archive'], '', false, false);
             if ($month > 0 || $day > 0) {
-                $items[] = '<a href="' . esc_url(get_year_link($year)) . '">' . esc_html((string) $year) . '</a>';
+                $items[] = self::breadcrumb_item((string) $year, get_year_link($year));
             }
             if ($day > 0 && $month > 0) {
-                $month_label = self::month_label($month, $is_en);
-                $items[] = '<a href="' . esc_url(get_month_link($year, $month)) . '">' . esc_html($month_label) . '</a>';
+                $items[] = self::breadcrumb_item(self::month_label($month, $is_en), get_month_link($year, $month));
             }
             $date_title = class_exists('M360_Date_Archive_Controller')
                 ? M360_Date_Archive_Controller::archive_title($is_en)
                 : get_the_archive_title();
-            $items[] = '<span aria-current="page">' . esc_html($date_title) . '</span>';
-        } elseif (is_singular()) {
-            $cats = get_the_category();
-            if (!empty($cats)) { $items[] = '<a href="' . esc_url(get_category_link($cats[0])) . '">' . esc_html($cats[0]->name) . '</a>'; }
-            $items[] = '<span aria-current="page">' . esc_html(get_the_title()) . '</span>';
+            $date_url = $day > 0 && $month > 0
+                ? get_day_link($year, $month, $day)
+                : ($month > 0 ? get_month_link($year, $month) : get_year_link($year));
+            $items[] = self::breadcrumb_item(wp_strip_all_tags((string) $date_title), $date_url, true);
         } elseif (is_search()) {
-            $items[] = '<span aria-current="page">' . esc_html((self::is_en() ? 'Search: ' : 'Busca: ') . get_search_query()) . '</span>';
-        } elseif (is_page()) {
-            $items[] = '<span aria-current="page">' . esc_html(get_the_title()) . '</span>';
+            $query = trim((string) get_search_query());
+            $items[] = self::breadcrumb_item($labels['search'] . ($query !== '' ? ': ' . $query : ''), get_search_link($query), true);
+        } elseif (is_404()) {
+            $items[] = self::breadcrumb_item($labels['not_found'], '', true);
+        } elseif (is_singular()) {
+            $post_id = (int) get_queried_object_id();
+            if (is_page()) {
+                $items = array_merge($items, self::page_ancestor_items($post_id));
+            } elseif (get_post_type($post_id) === 'post') {
+                $category = self::primary_category($post_id);
+                if ($category instanceof WP_Term) {
+                    $items = array_merge($items, self::term_ancestor_items($category));
+                    $items[] = self::breadcrumb_item($category->name, self::term_url($category));
+                }
+            } else {
+                $post_type = get_post_type_object((string) get_post_type($post_id));
+                if ($post_type && !empty($post_type->has_archive)) {
+                    $items[] = self::breadcrumb_item($post_type->labels->name, (string) get_post_type_archive_link($post_type->name));
+                }
+            }
+            $items[] = self::breadcrumb_item(get_the_title($post_id), get_permalink($post_id), true);
+        } elseif (is_post_type_archive()) {
+            $post_type_name = get_query_var('post_type');
+            if (is_array($post_type_name)) { $post_type_name = reset($post_type_name); }
+            $post_type = get_post_type_object((string) $post_type_name);
+            if ($post_type) {
+                $items[] = self::breadcrumb_item($post_type->labels->name, (string) get_post_type_archive_link($post_type->name), true);
+            }
+        } elseif (is_archive()) {
+            $items[] = self::breadcrumb_item(wp_strip_all_tags((string) get_the_archive_title()), '', true);
         }
-        return '<nav class="m360-breadcrumb m360-ui-breadcrumb-nav" aria-label="Breadcrumb"><ol><li>' . implode('</li><li>', $items) . '</li></ol></nav>';
+
+        $items = self::append_paged_item($items, $labels);
+        $html = self::render_breadcrumb_items($items, $labels);
+        $schema_enabled = filter_var($atts['schema'], FILTER_VALIDATE_BOOLEAN)
+            && (bool) apply_filters('m360_breadcrumb_schema_enabled', true, $items);
+
+        if ($schema_enabled && !self::$breadcrumb_schema_rendered) {
+            self::$breadcrumb_schema_rendered = true;
+            $html .= self::breadcrumb_schema($items);
+        }
+
+        return $html;
+    }
+
+    private static function breadcrumb_item(string $label, string $url = '', bool $current = false, bool $schema = true): array
+    {
+        return [
+            'label' => trim(wp_strip_all_tags($label)),
+            'url' => $url,
+            'current' => $current,
+            'schema' => $schema,
+            'home' => false,
+        ];
+    }
+
+    private static function render_breadcrumb_items(array $items, array $labels): string
+    {
+        $rendered = [];
+        foreach ($items as $item) {
+            $label = (string) ($item['label'] ?? '');
+            if ($label === '') { continue; }
+            $current = !empty($item['current']);
+            $url = (string) ($item['url'] ?? '');
+            $content = esc_html($label);
+
+            if (!empty($item['home'])) {
+                $content = '<span class="m360-breadcrumb__home-icon" aria-hidden="true"></span>'
+                    . '<span class="m360-breadcrumb__home-label">' . esc_html($label) . '</span>';
+            }
+
+            if (!$current && $url !== '') {
+                $content = '<a href="' . esc_url($url) . '">' . $content . '</a>';
+            } else {
+                $attributes = $current
+                    ? ' class="m360-breadcrumb__current" aria-current="page" title="' . esc_attr($label) . '"'
+                    : ' class="m360-breadcrumb__context"';
+                $content = '<span' . $attributes . '>' . $content . '</span>';
+            }
+            $rendered[] = '<li>' . $content . '</li>';
+        }
+
+        if (empty($rendered)) { return ''; }
+
+        return '<nav class="m360-breadcrumb m360-ui-breadcrumb-nav" aria-label="' . esc_attr($labels['aria']) . '">'
+            . '<ol>' . implode('', $rendered) . '</ol></nav>';
+    }
+
+    private static function breadcrumb_schema(array $items): string
+    {
+        $elements = [];
+        $position = 1;
+        foreach ($items as $item) {
+            if (isset($item['schema']) && !$item['schema']) { continue; }
+            $label = (string) ($item['label'] ?? '');
+            $url = (string) ($item['url'] ?? '');
+            if ($label === '' || $url === '') { continue; }
+            $elements[] = [
+                '@type' => 'ListItem',
+                'position' => $position++,
+                'name' => $label,
+                'item' => $url,
+            ];
+        }
+
+        if (count($elements) < 2) { return ''; }
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $elements,
+        ];
+
+        return '<script type="application/ld+json" class="m360-breadcrumb__schema">'
+            . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            . '</script>';
+    }
+
+    private static function page_ancestor_items(int $post_id): array
+    {
+        $items = [];
+        foreach (array_reverse(get_post_ancestors($post_id)) as $ancestor_id) {
+            $items[] = self::breadcrumb_item(get_the_title($ancestor_id), get_permalink($ancestor_id));
+        }
+        return $items;
+    }
+
+    private static function term_ancestor_items(WP_Term $term): array
+    {
+        $items = [];
+        foreach (array_reverse(get_ancestors($term->term_id, $term->taxonomy, 'taxonomy')) as $ancestor_id) {
+            $ancestor = get_term($ancestor_id, $term->taxonomy);
+            if ($ancestor instanceof WP_Term) {
+                $items[] = self::breadcrumb_item($ancestor->name, self::term_url($ancestor));
+            }
+        }
+        return $items;
+    }
+
+    private static function primary_category(int $post_id): ?WP_Term
+    {
+        $category_id = 0;
+        if (class_exists('WPSEO_Primary_Term')) {
+            $primary = new WPSEO_Primary_Term('category', $post_id);
+            $category_id = (int) $primary->get_primary_term();
+        }
+        $category_id = (int) apply_filters('m360_breadcrumb_primary_category_id', $category_id, $post_id);
+        if ($category_id > 0) {
+            $term = get_term($category_id, 'category');
+            if ($term instanceof WP_Term) { return $term; }
+        }
+        $categories = get_the_category($post_id);
+        return !empty($categories) && $categories[0] instanceof WP_Term ? $categories[0] : null;
+    }
+
+    private static function term_url(WP_Term $term): string
+    {
+        $url = get_term_link($term);
+        return is_wp_error($url) ? '' : (string) $url;
+    }
+
+    private static function append_paged_item(array $items, array $labels): array
+    {
+        $page = max((int) get_query_var('paged'), (int) get_query_var('page'));
+        if ($page < 2) { return $items; }
+        $last = array_key_last($items);
+        if ($last !== null) { $items[$last]['current'] = false; }
+        $items[] = self::breadcrumb_item(sprintf($labels['page'], $page), self::current_url(), true);
+        return $items;
+    }
+
+    private static function current_url(): string
+    {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        return home_url($request_uri);
+    }
+
+    private static function language_home_url(): string
+    {
+        if (function_exists('pll_home_url')) {
+            $language = function_exists('pll_current_language') ? (string) pll_current_language('slug') : '';
+            $url = $language !== '' ? pll_home_url($language) : pll_home_url();
+            if (is_string($url) && $url !== '') { return $url; }
+        }
+        return home_url(self::is_en() ? '/en/' : '/');
+    }
+
+    private static function breadcrumb_labels(bool $is_en): array
+    {
+        return $is_en ? [
+            'home' => 'Home',
+            'author' => 'Author',
+            'category' => 'Category',
+            'tag' => 'Tag',
+            'date_archive' => 'Date archive',
+            'search' => 'Search',
+            'not_found' => 'Page not found',
+            'page' => 'Page %d',
+            'aria' => 'Breadcrumb',
+        ] : [
+            'home' => 'Início',
+            'author' => 'Autor',
+            'category' => 'Categoria',
+            'tag' => 'Tag',
+            'date_archive' => 'Arquivo por data',
+            'search' => 'Busca',
+            'not_found' => 'Página não encontrada',
+            'page' => 'Página %d',
+            'aria' => 'Trilha de navegação',
+        ];
     }
 
     public static function section_navigation(array $atts = []): string
@@ -128,5 +349,12 @@ final class M360_Navigation_Shortcodes
         $months_pt = [1=>'janeiro',2=>'fevereiro',3=>'março',4=>'abril',5=>'maio',6=>'junho',7=>'julho',8=>'agosto',9=>'setembro',10=>'outubro',11=>'novembro',12=>'dezembro'];
         return $is_en ? ($months_en[$month] ?? '') : ($months_pt[$month] ?? '');
     }
-    private static function is_en(): bool { return str_starts_with((string)get_locale(), 'en'); }
+    private static function is_en(): bool
+    {
+        if (function_exists('pll_current_language')) {
+            $language = (string) pll_current_language('slug');
+            if ($language !== '') { return str_starts_with(strtolower($language), 'en'); }
+        }
+        return str_starts_with(strtolower((string) get_locale()), 'en');
+    }
 }

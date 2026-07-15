@@ -2,18 +2,21 @@
 
 ## Atualização canônica — julho de 2026
 
-- Release oficial homologada: `M360 Core v0.5.1 — AdSense Approval Readiness`.
-- Tag canônica: `v0.5.1`.
+- Release oficial homologada: `M360 Core v0.6.0.4 — M360 Privacy & Consent Foundation`.
+- Tag canônica: `v0.6.0.4`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Próxima entrega: `v0.5.2 — Multilingual Post Navigation`.
+- `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix` incorporada à baseline.
+- Linha `v0.6.0` consolidada após homologação funcional até `v0.6.0.4`.
 
-Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada e a baseline `v0.5.1` consolida a primeira etapa da Plataforma Comercial M360.
+Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada e a baseline `v0.5.4.3` consolida a etapa vigente da Plataforma Comercial e Experiência M360.
 
 ## Baseline v0.5.x consolidada
 
 - `v0.5.0`: Ads Manager Slot Management UX.
 - `v0.5.1`: AdSense Approval Readiness, auditoria e recolhimento de slots vazios.
-- Próximo ciclo: Post Info, Breadcrumbs, Search Experience e orquestração do cabeçalho.
+- `v0.5.2` a `v0.5.4.3`: Post Info, arquivos por data, busca, orquestração do cabeçalho e Latest News.
+- `v0.5.5`: Breadcrumb Navigation UX em homologação.
+- Próximo ciclo: M360 Privacy & Consent Foundation.
 
 Status: oficial
 Projeto: Mengão 360 | DW Esportivo
