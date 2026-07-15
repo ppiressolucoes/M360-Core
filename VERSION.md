@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.6.0.4
+0.6.0.5
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline evolutiva de código: `v0.6.0.4 — M360 Privacy & Consent Foundation`.
+- Baseline oficial homologada: `v0.6.0.5 — Post Language Switch & EN Sticky Menu Hotfix`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Linha evolutiva atual: `v0.6.x — Privacidade, consentimento e confiança operacional`.
 

@@ -3,10 +3,10 @@
 ## Baseline canônico — julho de 2026
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline oficial homologada: `v0.6.0.4 — M360 Privacy & Consent Foundation`.
+- Baseline oficial homologada: `v0.6.0.5 — Post Language Switch & EN Sticky Menu Hotfix`.
 - Próximo incremento: seleção e homologação de uma CMP certificada para os territórios sujeitos ao IAB TCF.
 
-As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.6.0.4`.
+As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.6.0.5`.
 
 ## v0.5.x — Plataforma Comercial e Experiência M360
 
