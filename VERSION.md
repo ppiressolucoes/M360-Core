@@ -3,13 +3,13 @@
 ## Baseline estável
 
 ```text
-0.5.4.3
+0.5.5.1
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline evolutiva de código: `v0.5.4.3 — Current Post Exclusion`.
+- Baseline evolutiva de código: `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
 - Próxima linha: `v0.5.x — Plataforma Comercial M360`.
 
@@ -47,6 +47,7 @@
 - `0.5.4.1`: variante sidebar do componente de últimas notícias, com controle explícito da inserção de publicidade.
 - `0.5.4.2`: destaque editorial do primeiro item, títulos regulares na lista e paginação opcional.
 - `0.5.4.3`: exclusão automática do artigo aberto das listas de últimas notícias.
+- `0.5.5`: breadcrumb hierárquico, multilíngue, acessível, responsivo e com `BreadcrumbList`.
 
 ## Componente Últimas Notícias
 

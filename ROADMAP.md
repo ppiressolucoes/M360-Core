@@ -3,9 +3,9 @@
 ## Baseline canônico — julho de 2026
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline oficial homologada: `v0.5.4 — Header Search & Ad Orchestration`.
-- Entrega em homologação: `v0.5.4.3 — Current Post Exclusion`.
-- Próxima entrega planejada: `v0.5.5 — Breadcrumb Navigation UX`.
+- Baseline oficial homologada: `v0.5.4.3 — Current Post Exclusion`.
+- Entrega em homologação: `v0.5.5 — Breadcrumb Navigation UX`.
+- Próxima linha evolutiva planejada: `v0.6.0 — M360 Privacy & Consent Foundation`.
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
 
@@ -24,9 +24,26 @@ As seções históricas abaixo preservam a evolução original. Para novas imple
 6. `v0.5.4.1 — Latest News Sidebar Mode`: variante compacta, uniforme e com publicidade interna configurável.
 7. `v0.5.4.2 — Latest News List UX`: destaque editorial e paginação opcional no layout de página.
 8. `v0.5.4.3 — Current Post Exclusion`: remoção automática do artigo em leitura das listas do componente.
-8. `v0.5.5 — Breadcrumb Navigation UX`: navegação hierárquica multilíngue, elegante, acessível e com schema.
+9. `v0.5.5 — Breadcrumb Navigation UX`: navegação hierárquica multilíngue, elegante, acessível e com schema.
 
 Toda evolução deve preservar PT-BR, EN-US, SEO, acessibilidade, responsividade, APIs e shortcodes homologados.
+
+## v0.6.0 — M360 Privacy & Consent Foundation
+
+Objetivo: implantar uma arquitetura híbrida de privacidade que utilize uma CMP certificada como motor de consentimento e mantenha no M360 Core uma camada independente de integração.
+
+Escopo básico planejado:
+
+- prova de conceito e seleção de CMP certificada pelo Google, com suporte a PT-BR e EN-US;
+- categorias M360 normalizadas: necessários, preferências, analytics, publicidade e mídia externa;
+- `M360 Consent Adapter` desacoplado do fornecedor escolhido;
+- integração com Google Consent Mode v2 e M360 Ads Manager;
+- central de preferências com aceite, rejeição, gestão e revogação;
+- inventário inicial de cookies, scripts e fornecedores;
+- diagnóstico administrativo de prontidão e carregamento condicionado;
+- validação jurídica dos textos, bases legais e prazos de retenção antes da publicação.
+
+Ficam fora do primeiro incremento: CMP própria, geolocalização própria, banco duplicado de provas de consentimento e automação jurídica avançada.
 
 ## Visão
 

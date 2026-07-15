@@ -1,5 +1,22 @@
 # Changelog — M360 Core
 
+## [v0.5.5.1] — Breadcrumb Mobile Overflow Hotfix
+
+- remoção da rolagem horizontal interna no breadcrumb em telas pequenas;
+- quebra responsiva do título da página atual, preservando a leitura dentro do viewport;
+- nova versão de assets para invalidar caches do navegador e de CDN.
+
+## [v0.5.5] — Breadcrumb Navigation UX
+
+- ajuste de homologação mobile: remoção da rolagem horizontal interna e quebra responsiva do título atual;
+- hierarquia real de páginas, categorias e tipos de conteúdo no shortcode `[m360_breadcrumb]`;
+- categoria primária do Yoast utilizada quando disponível, com filtro próprio para integrações futuras;
+- contextos multilíngues para post, página, busca, categoria, tag, autor, data, arquivo e página 404;
+- ícone de início, foco visível, item atual truncado de forma segura e navegação horizontal em telas pequenas;
+- HTML semântico com `nav`, lista ordenada, `aria-label` e `aria-current`;
+- `BreadcrumbList` em JSON-LD, emitido uma única vez por requisição e desativável por atributo ou filtro;
+- compatibilidade preservada com Elementor, Polylang, Yoast SEO e o shortcode existente.
+
 ## [v0.5.4.3] — Current Post Exclusion
 
 - exclusão automática do artigo atualmente aberto no componente `[m360_latest_news]`;
