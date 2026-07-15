@@ -1,5 +1,14 @@
 # Changelog — M360 Core
 
+## [v0.6.0.5] — Post Language Switch & EN Sticky Menu Hotfix
+
+- incorpora ao M360 Core o seletor de idioma baseado no vínculo real do Polylang;
+- navega sempre para a tradução publicada correspondente do post;
+- oculta o seletor em posts sem tradução vinculada, evitando troca apenas do cabeçalho e rodapé;
+- normaliza o componente legado existente e oferece o shortcode `[m360_language_switcher]`;
+- corrige o menu fixo EN-US ao reconhecer a classe real `.m360-header-topbar` usada pelo Elementor;
+- mantém compatibilidade com o script legado aplicado à classe `.m360-primary-menu-sticky`.
+
 ## [v0.6.0.4] — Compact Cookie Settings Launcher
 
 - reduz o tamanho do botão permanente de preferências;

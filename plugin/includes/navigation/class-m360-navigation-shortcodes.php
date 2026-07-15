@@ -342,6 +342,7 @@ final class M360_Navigation_Shortcodes
     {
         if (wp_style_is('m360-core-foundation','registered')) { wp_enqueue_style('m360-core-foundation'); }
         if (wp_style_is('m360-core-navigation-components','registered')) { wp_enqueue_style('m360-core-navigation-components'); }
+        if (wp_script_is('m360-core-navigation','registered')) { wp_enqueue_script('m360-core-navigation'); }
     }
     private static function month_label(int $month, bool $is_en): string
     {

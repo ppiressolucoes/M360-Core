@@ -11,6 +11,21 @@
     position: relative;
 }
 
+.m360-core-sticky-placeholder {
+    display: block;
+    height: 0;
+}
+
+.m360-core-sticky-target.m360-is-fixed {
+    position: fixed !important;
+    top: var(--m360-sticky-admin-offset, 0) !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 99999 !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .18);
+}
+
 .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu {
     display: flex !important;
     align-items: stretch;
