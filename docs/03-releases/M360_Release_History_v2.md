@@ -2,11 +2,11 @@
 
 ## Atualização canônica — julho de 2026
 
-- Release oficial homologada: `M360 Core v0.5.4.3 — Current Post Exclusion`.
-- Tag canônica: `v0.5.4.3`.
+- Release oficial homologada: `M360 Core v0.6.0.4 — M360 Privacy & Consent Foundation`.
+- Tag canônica: `v0.6.0.4`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Entrega em homologação: `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix`.
-- Próxima linha: `v0.6.0 — M360 Privacy & Consent Foundation`.
+- `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix` incorporada à baseline.
+- Linha `v0.6.0` consolidada após homologação funcional até `v0.6.0.4`.
 
 Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada e a baseline `v0.5.4.3` consolida a etapa vigente da Plataforma Comercial e Experiência M360.
 

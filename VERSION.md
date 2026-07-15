@@ -3,15 +3,15 @@
 ## Baseline estável
 
 ```text
-0.5.5.1
+0.6.0.4
 ```
 
 ## Estado operacional
 
 - Última release publicada em produção: `v0.4.4.0 — M360 AdSense Ready`.
-- Baseline evolutiva de código: `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix`.
+- Baseline evolutiva de código: `v0.6.0.4 — M360 Privacy & Consent Foundation`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Próxima linha: `v0.5.x — Plataforma Comercial M360`.
+- Linha evolutiva atual: `v0.6.x — Privacidade, consentimento e confiança operacional`.
 
 ## Ambiente alvo
 

@@ -3,11 +3,10 @@
 ## Baseline canônico — julho de 2026
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline oficial homologada: `v0.5.4.3 — Current Post Exclusion`.
-- Entrega em homologação: `v0.5.5 — Breadcrumb Navigation UX`.
-- Próxima linha evolutiva planejada: `v0.6.0 — M360 Privacy & Consent Foundation`.
+- Baseline oficial homologada: `v0.6.0.4 — M360 Privacy & Consent Foundation`.
+- Próximo incremento: seleção e homologação de uma CMP certificada para os territórios sujeitos ao IAB TCF.
 
-As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a linha `v0.5.x` descrita a seguir.
+As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.6.0.4`.
 
 ## v0.5.x — Plataforma Comercial e Experiência M360
 
@@ -42,6 +41,14 @@ Escopo básico planejado:
 - inventário inicial de cookies, scripts e fornecedores;
 - diagnóstico administrativo de prontidão e carregamento condicionado;
 - validação jurídica dos textos, bases legais e prazos de retenção antes da publicação.
+
+Primeiro incremento implementado:
+
+- painel administrativo, categorias e contrato independente;
+- modos CMP externa e fundação local de homologação;
+- Consent Mode v2 e integração opcional com Ads Manager;
+- central PT-BR/EN-US com aceite, rejeição, personalização e revogação;
+- APIs e filtros para adaptadores certificados futuros.
 
 Ficam fora do primeiro incremento: CMP própria, geolocalização própria, banco duplicado de provas de consentimento e automação jurídica avançada.
 

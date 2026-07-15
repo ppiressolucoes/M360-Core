@@ -31,6 +31,9 @@ final class M360_Ad_Slot_Component
         $creative = self::find_creative((int) $campaign['id'], $slot_key, $slot);
         $payload = $creative ?: $campaign;
         $provider = self::provider_from_payload($payload);
+        if (class_exists('M360_Consent_Manager') && !M360_Consent_Manager::can_deliver_provider($provider)) {
+            return self::empty_result($slot_key, $args, $slot);
+        }
         $content = $creative ? self::render_creative($creative) : self::render_campaign($campaign);
         $status = trim($content) !== '' ? 'filled' : 'empty';
         if ($status === 'empty') { return self::empty_result($slot_key, $args, $slot); }

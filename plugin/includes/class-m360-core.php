@@ -26,6 +26,7 @@ require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php'
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
 require_once M360_CORE_PATH . 'includes/tag/class-m360-tag-controller.php';
 require_once M360_CORE_PATH . 'includes/date/class-m360-date-archive-controller.php';
+require_once M360_CORE_PATH . 'includes/privacy/class-m360-consent-manager.php';
 
 final class M360_Core_Runtime_034
 {
@@ -46,6 +47,7 @@ final class M360_Core_Runtime_034
         update_option('m360_core_version', M360_CORE_VERSION, false);
         update_option('m360_core_activated_at', current_time('mysql'), false);
         M360_Ads_DB::install();
+        M360_Consent_Manager::activate();
     }
 
     public static function deactivate(): void
@@ -59,6 +61,7 @@ final class M360_Core_Runtime_034
         M360_Ads_DB::maybe_upgrade();
         M360_Ads_Admin::register();
         M360_Ads_Creatives_Admin::register();
+        M360_Consent_Manager::register();
         M360_Header_Orchestrator::register();
         M360_Ads_Inline_Engine::register();
         $this->init_view_engine();

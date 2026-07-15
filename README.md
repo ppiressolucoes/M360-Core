@@ -5,10 +5,10 @@ Framework oficial de interface, renderização e publicidade do Projeto Mengão 
 ## Estado atual
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Release oficial homologada: `v0.5.4.3 — Current Post Exclusion`.
-- Tag canônica: `v0.5.4.3`.
-- Entrega em homologação: `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix`.
-- Próxima linha planejada: `v0.6.0 — M360 Privacy & Consent Foundation`.
+- Release oficial homologada: `v0.6.0.4 — M360 Privacy & Consent Foundation`.
+- Tag canônica: `v0.6.0.4`.
+- Linha `v0.6.0` consolidada após homologação funcional em PT-BR, EN-US, desktop e mobile.
+- Próximo incremento: seleção e homologação do adaptador de CMP certificada para produção.
 
 ## Fonte única da verdade
 

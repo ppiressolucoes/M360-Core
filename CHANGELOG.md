@@ -1,5 +1,43 @@
 # Changelog — M360 Core
 
+## [v0.6.0.4] — Compact Cookie Settings Launcher
+
+- reduz o tamanho do botão permanente de preferências;
+- adota os rótulos curtos `Ajustar cookies` e `Cookie settings`;
+- preserva o posicionamento inferior esquerdo e a hierarquia do modal.
+
+## [v0.6.0.3] — Consent Modal Proportion & Launcher Position Hotfix
+
+- reduz e limita o modal de preferências de forma proporcional ao viewport;
+- centraliza o painel e adiciona rolagem interna apenas quando necessária;
+- compacta o espaçamento das categorias sem prejudicar a legibilidade;
+- move o botão permanente de configurações para o canto inferior esquerdo;
+- evita concorrência visual com a âncora de retorno ao topo.
+
+## [v0.6.0.2] — Consent UI Contrast & Layering Hotfix
+
+- isola os botões da interface de consentimento das regras visuais do tema;
+- restaura os rótulos de rejeitar, gerenciar e cancelar em PT-BR e EN-US;
+- garante contraste explícito dos botões primários e secundários;
+- posiciona a camada de consentimento acima do seletor flutuante de idiomas;
+- preserva a disposição responsiva dos controles no mobile.
+
+## [v0.6.0.1] — Consent Frontend Initialization Hotfix
+
+- corrige a ordem de inicialização entre o JavaScript e o HTML do banner no `wp_footer`;
+- aguarda o DOM completo antes de localizar e ativar a interface de consentimento;
+- antecipa a renderização do componente para compatibilidade com a fila de scripts do WordPress;
+- renomeia o modo para `Interface própria M360 — homologação controlada`.
+
+## [v0.6.0] — M360 Privacy & Consent Foundation
+
+- contrato de consentimento independente de fornecedor;
+- categorias normalizadas e APIs PHP/JavaScript;
+- Consent Mode v2 com negação padrão e atualização após decisão;
+- central multilíngue local para homologação;
+- integração opcional com AdSense/GAM e diagnóstico administrativo;
+- operação desativada por padrão e sem alegação de certificação CMP.
+
 ## [v0.5.5.1] — Breadcrumb Mobile Overflow Hotfix
 
 - remoção da rolagem horizontal interna no breadcrumb em telas pequenas;

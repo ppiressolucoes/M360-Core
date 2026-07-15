@@ -42,6 +42,7 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 |---|---|---|
 | Sprint v0.4.4.0 — M360 AdSense Ready | `docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md` | Planejamento, aceite e entregas da preparação AdSense Ready / Inventory Engine |
 | Sprint v0.5.5 — Breadcrumb Navigation UX | `docs/01-sprints/Sprint_v0.5.5_Breadcrumb_Navigation_UX.md` | Hierarquia, internacionalização, acessibilidade, responsividade e schema do breadcrumb |
+| Sprint v0.6.0 — Privacy & Consent Foundation | `docs/01-sprints/Sprint_v0.6.0_M360_Privacy_Consent_Foundation.md` | Contrato independente, Consent Mode v2, central e integração CMP |
 
 ## 6. Releases
 
@@ -51,15 +52,20 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 | M360 Core v0.4.4.x Release Checklist | `releases/v0.4.4.0/M360_Core_v0.4.4.0_Release_Checklist.md` | Checklist operacional da release v0.4.4.x |
 | M360 Core v0.4.4.5 Release Notes | `releases/v0.4.4.5/M360_Core_v0.4.4.5_Release_Notes.md` | Baseline estável e encerramento da linha AdSense Ready |
 | M360 Core v0.5.5 Release Notes | `releases/v0.5.5/M360_Core_v0.5.5_Release_Notes.md` | Breadcrumb Navigation UX e preparação da linha v0.6.0 |
+| M360 Core v0.6.0 Release Notes | `releases/v0.6.0/M360_Core_v0.6.0_Release_Notes.md` | Privacy & Consent Foundation |
+| M360 Core v0.6.0.1 Release Notes | `releases/v0.6.0.1/M360_Core_v0.6.0.1_Release_Notes.md` | Consent Frontend Initialization Hotfix |
+| M360 Core v0.6.0.2 Release Notes | `releases/v0.6.0.2/M360_Core_v0.6.0.2_Release_Notes.md` | Consent UI Contrast & Layering Hotfix |
+| M360 Core v0.6.0.3 Release Notes | `releases/v0.6.0.3/M360_Core_v0.6.0.3_Release_Notes.md` | Proporção do modal e posição do botão permanente |
+| M360 Core v0.6.0.4 Release Notes | `releases/v0.6.0.4/M360_Core_v0.6.0.4_Release_Notes.md` | Consolidação homologada da Privacy & Consent Foundation |
 
 ### Baseline canônico
 
 ```text
-Release homologada: v0.5.4.3 — Current Post Exclusion
-Tag canônica: v0.5.4.3
+Release homologada: v0.6.0.4 — M360 Privacy & Consent Foundation
+Tag canônica: v0.6.0.4
 Arquitetura: M360 Platform Architecture v2.2
-Entrega em homologação: v0.5.5 — Breadcrumb Navigation UX
-Próxima linha: v0.6.0 — M360 Privacy & Consent Foundation
+Baseline incorporada: v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix
+Linha consolidada: v0.6.0.4 — M360 Privacy & Consent Foundation
 ```
 
 ## 7. Operações

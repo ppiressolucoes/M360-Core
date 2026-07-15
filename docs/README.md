@@ -46,9 +46,9 @@ docs/
 
 - M360 Platform Architecture v2.2.
 - M360 Release History v2.2.
-- M360 Core v0.5.4.3 como baseline oficial homologada.
-- v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix em homologação.
-- v0.6.0 — M360 Privacy & Consent Foundation como próxima linha evolutiva.
+- M360 Core v0.6.0.4 como baseline oficial homologada.
+- v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix incorporada à baseline.
+- v0.6.0 — Privacy & Consent Foundation consolidada com os hotfixes até v0.6.0.4.
 
 Documentos históricos e snapshots anteriores permanecem preservados, mas não substituem esta baseline.
 
