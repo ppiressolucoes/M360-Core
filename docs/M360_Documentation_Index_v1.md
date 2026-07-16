@@ -11,7 +11,7 @@ Este índice organiza os documentos mestres, documentos de módulo, sprints, rel
 
 A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decisão ADR-0007 passa a orientar a evolução do M360 Core como camada oficial de interface da Plataforma Mengão 360.
 
-A partir da Sprint `v0.6.1 — M360 Editorial Source Connector Pilot`, a decisão ADR-0008 passa a orientar a camada de aquisição técnica de fontes editoriais externas.
+A partir da Sprint `v0.6.3 — M360 Editorial Source Connector Pilot`, a decisão ADR-0008 passa a orientar a camada de aquisição técnica de fontes editoriais externas.
 
 ## 2. Documentos mestres da plataforma
 
@@ -47,7 +47,7 @@ A partir da Sprint `v0.6.1 — M360 Editorial Source Connector Pilot`, a decisã
 | Sprint v0.4.4.0 — M360 AdSense Ready | `docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md` | Planejamento, aceite e entregas da preparação AdSense Ready / Inventory Engine |
 | Sprint v0.5.5 — Breadcrumb Navigation UX | `docs/01-sprints/Sprint_v0.5.5_Breadcrumb_Navigation_UX.md` | Hierarquia, internacionalização, acessibilidade, responsividade e schema do breadcrumb |
 | Sprint v0.6.0 — Privacy & Consent Foundation | `docs/01-sprints/Sprint_v0.6.0_M360_Privacy_Consent_Foundation.md` | Contrato independente, Consent Mode v2, central e integração CMP |
-| Sprint v0.6.1 — Editorial Source Connector Pilot | `docs/01-sprints/Sprint_v0.6.1_M360_Editorial_Source_Connector_Pilot.md` | Piloto funcional, caminho feliz NETFLA, segurança mínima e etapas evolutivas |
+| Sprint v0.6.3 — Editorial Source Connector Pilot | `docs/01-sprints/Sprint_v0.6.3_M360_Editorial_Source_Connector_Pilot.md` | Piloto funcional, caminho feliz NETFLA, segurança mínima e etapas evolutivas |
 
 ## 6. Releases
 
@@ -71,7 +71,7 @@ Tag canônica: v0.6.0.4
 Arquitetura: M360 Platform Architecture v2.2
 Baseline incorporada: v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix
 Linha consolidada: v0.6.0.4 — M360 Privacy & Consent Foundation
-Próxima frente aprovada: v0.6.1 — M360 Editorial Source Connector Pilot
+Próxima frente aprovada: v0.6.3 — M360 Editorial Source Connector Pilot
 ```
 
 ## 7. Operações
