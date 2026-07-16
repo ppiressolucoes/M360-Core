@@ -11,6 +11,8 @@ Este índice organiza os documentos mestres, documentos de módulo, sprints, rel
 
 A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decisão ADR-0007 passa a orientar a evolução do M360 Core como camada oficial de interface da Plataforma Mengão 360.
 
+A partir da Sprint `v0.6.3 — M360 Editorial Source Connector Pilot`, a decisão ADR-0008 passa a orientar a camada de aquisição técnica de fontes editoriais externas.
+
 ## 2. Documentos mestres da plataforma
 
 | Documento | Caminho | Função |
@@ -26,6 +28,7 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 | ADR | Caminho | Decisão |
 |---|---|---|
 | ADR-0007 — M360 Core Interface Architecture | `docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md` | Consolida o M360 Core como camada oficial de interface da plataforma |
+| ADR-0008 — M360 Editorial Source Connector | `docs/00-platform/ADR-0008_M360_Editorial_Source_Connector.md` | Institui o conector único, orientado a dados, para descoberta e coleta bruta de fontes editoriais |
 
 ## 4. Documentos de módulo
 
@@ -35,6 +38,7 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 | M360 Ads Inline Engine | `docs/01-modules/M360_Ads_Inline_Engine_v1.md` | Guia técnico da inserção automática de anúncios inline em artigos |
 | M360 Ads Archive Engine | `docs/01-modules/M360_Ads_Archive_Engine_v1.md` | Publicidade nas listagens controladas pelo M360 Core |
 | M360 Universal Slot Renderer | `docs/01-modules/M360_Universal_Slot_Renderer_v1.md` | Pipeline único homologado na baseline v0.4.4.5 |
+| M360 Editorial Source Connector | `docs/01-modules/M360_Editorial_Source_Connector_v1.md` | Especificação normativa do conector de fontes editoriais, API, segurança, dados e evolução |
 
 ## 5. Sprints
 
@@ -43,6 +47,7 @@ A partir da Sprint `v0.4.4.x — M360 AdSense Ready / Inventory Engine`, a decis
 | Sprint v0.4.4.0 — M360 AdSense Ready | `docs/02-sprints/Sprint_v0.4.4.0_M360_AdSense_Ready.md` | Planejamento, aceite e entregas da preparação AdSense Ready / Inventory Engine |
 | Sprint v0.5.5 — Breadcrumb Navigation UX | `docs/01-sprints/Sprint_v0.5.5_Breadcrumb_Navigation_UX.md` | Hierarquia, internacionalização, acessibilidade, responsividade e schema do breadcrumb |
 | Sprint v0.6.0 — Privacy & Consent Foundation | `docs/01-sprints/Sprint_v0.6.0_M360_Privacy_Consent_Foundation.md` | Contrato independente, Consent Mode v2, central e integração CMP |
+| Sprint v0.6.3 — Editorial Source Connector Pilot | `docs/01-sprints/Sprint_v0.6.3_M360_Editorial_Source_Connector_Pilot.md` | Piloto funcional, caminho feliz NETFLA, segurança mínima e etapas evolutivas |
 
 ## 6. Releases
 
@@ -66,6 +71,7 @@ Tag canônica: v0.6.0.4
 Arquitetura: M360 Platform Architecture v2.2
 Baseline incorporada: v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix
 Linha consolidada: v0.6.0.4 — M360 Privacy & Consent Foundation
+Próxima frente aprovada: v0.6.3 — M360 Editorial Source Connector Pilot
 ```
 
 ## 7. Operações
@@ -109,10 +115,24 @@ A **M360 Inventory Library** é o documento oficial para qualquer evolução que
 - Sponsor;
 - Marketplace Comercial M360.
 
-## 10. Regra de governança
+## 10. Referência arquitetural do Editorial Source Connector
+
+O **M360 Editorial Source Connector** é o documento oficial para evoluções que envolvam:
+
+- descoberta de notícias em fontes externas;
+- acesso intermediado a fontes restritas;
+- RSS, Atom e JSON de aquisição editorial;
+- coleta de conteúdo bruto;
+- allowlist de hosts;
+- cache e telemetria de fontes;
+- contrato entre WordPress e n8n.
+
+## 11. Regra de governança
 
 Toda evolução estrutural deverá atualizar este índice quando criar ou promover um documento para referência oficial.
 
 Nenhum documento mestre deve ficar isolado do índice documental do projeto.
 
 Toda sprint visual, comercial ou de interface deve verificar aderência ao ADR-0007 antes da codificação.
+
+Toda evolução de aquisição editorial deve verificar aderência ao ADR-0008 antes da codificação.
