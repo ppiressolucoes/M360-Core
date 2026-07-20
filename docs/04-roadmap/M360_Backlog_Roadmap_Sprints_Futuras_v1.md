@@ -2,25 +2,59 @@
 
 Versão: v1.0
 
+Atualização canônica: 2026-07-16
+
+Baseline de referência: `M360 Core v0.6.5.4`
+
+Newsletter: objetivo inicial concluído; evoluções avançadas permanecem adiadas.
+
 ## P0 — Alta prioridade
 
-1. Produto comercial Mega Bolão 360.
-2. Landing page comercial e SEO.
-3. Versionamento dos artefatos estáveis.
+1. Obter e auditar os pacotes-fonte `M360 Home Editorial` e `M360 Semantic Relations`.
+2. Implementar `v0.7.0 — M360 Publisher Platform Foundation`.
+3. Incorporar SEO Technical Readiness aos contratos do futuro módulo `Content Discovery & SEO`.
+4. Manter versionamento, documentação e rollback dos artefatos estáveis.
 
 ## P1 — Crescimento e operação
 
-5. Painel operacional DW.
-6. SEO programático de competições.
-7. Expansão de novas competições.
-8. Ranking avançado do Bolão.
+5. `v0.7.1 — Editorial Layout & Home`.
+6. `v0.7.2 — Content Discovery & SEO`.
+7. `v0.7.3 — Portable Newsletter, Ads & Consent`.
+8. Piloto progressivo no Portal Energia Limpa — PEL.
+9. CMP certificada para monetização e regiões sujeitas ao IAB TCF.
 
 ## P2 — Evolutivas acumulativas
 
-9. Refatoração da engine HTML.
-10. Templates HTML em banco ou subworkflows.
-11. Automação editorial.
-12. Auditoria avançada de i18n e dados.
+10. Produto comercial Mega Bolão 360 e sua landing page.
+11. Painel Operacional DW.
+12. SEO programático e expansão de competições.
+13. Auditoria avançada de i18n e dados.
+
+## P3 — Evolução técnica sem bloqueio de negócio
+
+14. Refatoração da engine HTML.
+15. Templates HTML em banco ou subworkflows.
+16. Automações editoriais adicionais.
+
+## Linha estratégica — M360 Publisher Platform
+
+- decisão normativa: `ADR-0008`;
+- estratégia: `M360 Publisher Platform — Estratégia de Evolução v1`;
+- baseline de origem: `v0.6.5.4`;
+- Home Editorial será absorvido como `Editorial Layout & Home`;
+- Semantic Relations será absorvido como `Content Discovery & SEO`;
+- PEL será a segunda implementação e prova de portabilidade;
+- Bolão, DW Esportivo, ETLs e regras esportivas permanecem externos;
+- nenhum plugin precursor será desativado antes de migração homologada e reversível.
+
+## Frente concluída — Newsletter M360
+
+- baseline consolidada: `v0.6.5.4`;
+- captação, consentimento, Double Opt-In, cancelamento, sincronização e auditoria homologados;
+- prontidão de entrega `7/7`;
+- componentes PT-BR/EN-US e posicionamento validados;
+- MailPoet configurado para envio diário das seis notícias mais recentes;
+- analytics avançado, preferências e múltiplos provedores adiados para uma futura reabertura do módulo.
 
 ## Sprint futura A — Versionamento e Operação Estável
 

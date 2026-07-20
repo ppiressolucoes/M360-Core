@@ -1,5 +1,92 @@
 # Changelog — M360 Core
 
+## [v0.7.0] — Publisher Platform Foundation
+
+- adiciona contrato formal para módulos internos;
+- adiciona registro com dependências, feature flags, ciclo de vida, permissões, configurações, assets e schema por módulo;
+- adiciona boot ordenado, detecção de dependências circulares e health report;
+- adiciona Site Profile portável, validado e sem dados pessoais ou credenciais;
+- adiciona importação e exportação segura do Site Profile em JSON, com validação de versão e campos obrigatórios;
+- adiciona painel M360 Platform com diagnóstico de ambiente, módulos e plugins precursores;
+- preserva integralmente Home Editorial, Semantic Relations e os recursos da baseline v0.6.5.4;
+- não executa absorção funcional nem migração de dados dos plugins precursores.
+
+## [v0.6.5.4] — Newsletter UX Consolidation
+
+- substitui a marca textual do rodapé por ícone informativo acessível;
+- reforça contraste, legibilidade e espaçamento da mensagem de cancelamento;
+- mantém mensagens próprias em PT-BR e EN-US;
+- consolida a linha Newsletter Subscription Placement & UX após homologação.
+
+## [v0.6.5.3] — Newsletter Cancellation Fine Print
+
+- adiciona ao rodapé do formulário a informação de que o usuário pode cancelar quando quiser;
+- disponibiliza a mensagem em PT-BR e EN-US.
+
+## [v0.6.5.2] — Newsletter EN-US Localization Hotfix
+
+- adiciona textos configuráveis EN-US para título, descrição, consentimento e CTA;
+- traduz rótulos de nome e e-mail no ambiente inglês;
+- envia o idioma da página ao endpoint REST;
+- traduz respostas de sucesso, validação, antispam, limite e indisponibilidade;
+- preserva o posicionamento após Related News e Related Topics.
+
+## [v0.6.5.1] — Placement Order & Settings Preservation Hotfix
+
+- preserva configurações de Delivery Readiness ao salvar o formulário;
+- altera a atualização para mesclar campos com a opção existente;
+- move a inserção automática para o final da cadeia `the_content`, após blocos relacionados que utilizem o mesmo filtro;
+- mantém a origem `article_end` e todas as variantes da v0.6.5.
+
+## [v0.6.5] — Newsletter Subscription Placement & UX
+
+- variantes `card`, `compact`, `inline` e `footer` no shortcode;
+- inserção automática opcional ao final dos artigos;
+- título, descrição, CTA e período de ocultação configuráveis;
+- origens normalizadas para home, artigo, sidebar, rodapé, arquivo e uso manual;
+- métricas administrativas de registros por origem;
+- cookie funcional para ocultação temporária após solicitação bem-sucedida;
+- CSS responsivo e estados acessíveis preservados.
+
+## [v0.6.4] — Newsletter Delivery Readiness
+
+- checklist operacional de sete verificações para prontidão de entrega;
+- cadastro do remetente e responsável editorial;
+- declarações administrativas de DKIM e DMARC configurados;
+- registro UTC do último teste de envio aprovado, válido por 30 dias;
+- alertas de erros do provedor nas últimas 24 horas e bloqueios nos últimos sete dias;
+- evento de auditoria `delivery_readiness_updated`;
+- documentação do fluxo editorial e de homologação.
+
+## [v0.6.3] — Newsletter Configuration & Form Hardening
+
+- seleção administrativa da lista MailPoet, com migração padrão para ID `3`;
+- texto e versão de consentimento configuráveis;
+- limites por IP e janela de bloqueio configuráveis;
+- honeypot e tempo mínimo de preenchimento auditados;
+- bloqueio de duplo envio, estado `aria-busy` e foco acessível na resposta;
+- validação da lista MailPoet antes de salvar;
+- integração preservada com Double Opt-In, auditoria e sincronização da v0.6.2.
+
+## [v0.6.2] — Newsletter Operations & Audit
+
+- painel administrativo com métricas e diagnóstico do MailPoet/lista ID `3`;
+- sincronização manual protegida por capacidade e nonce;
+- trilha append-only de eventos com e-mail mascarado e hash SHA-256;
+- visibilidade da última/próxima execução e resultado do WP-Cron;
+- detecção de falhas do provedor e eventos de mudança de estado;
+- retenção padrão de auditoria por 365 dias e limpeza de tokens expirados;
+- schema Newsletter atualizado para a versão `2`.
+
+## [v0.6.1.3] — Newsletter Foundation Consolidation
+
+- formulário próprio `[m360_newsletter_form]` e adaptador desacoplado do MailPoet;
+- lista MailPoet ID `3` com Double Opt-In gerenciado pelo provedor;
+- auditoria do consentimento e sincronização de `pending`, `confirmed`, `unsubscribed` e `blocked`;
+- reinscrição, rate limit por e-mail/IP e eventos somente em mudanças reais de estado;
+- remoção do descadastro REST baseado somente em e-mail;
+- consolidação das correções `v0.6.1.1` e `v0.6.1.2`.
+
 ## [v0.6.0.5] — Post Language Switch & EN Sticky Menu Hotfix
 
 - incorpora ao M360 Core o seletor de idioma baseado no vínculo real do Polylang;

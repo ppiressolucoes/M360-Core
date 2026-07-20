@@ -5,10 +5,10 @@ Framework oficial de interface, renderização e publicidade do Projeto Mengão 
 ## Estado atual
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Release oficial homologada: `v0.6.0.4 — M360 Privacy & Consent Foundation`.
-- Tag canônica: `v0.6.0.4`.
-- Linha `v0.6.0` consolidada após homologação funcional em PT-BR, EN-US, desktop e mobile.
-- Próximo incremento: seleção e homologação do adaptador de CMP certificada para produção.
+- Release oficial homologada: `v0.7.0 — Publisher Platform Foundation`.
+- Tag canônica: `v0.7.0`.
+- Linha Newsletter consolidada após homologação funcional em PT-BR e EN-US, com prontidão de entrega `7/7`.
+- Linha estratégica vigente: `v0.7.x — M360 Publisher Platform`.
 
 ## Fonte única da verdade
 
@@ -19,7 +19,7 @@ Este repositório é a base oficial de código, arquitetura, decisões, releases
 3. `docs/M360_Documentation_Index_v1.md`;
 4. arquitetura, ADRs, runbooks e release notes relacionados ao escopo.
 
-A tag `v0.5.4.3` identifica a baseline imutável homologada. Novas mudanças devem ser entregues por branch e Pull Request, sem alterar tags existentes.
+A tag `v0.7.0` identifica a baseline imutável homologada. Novas mudanças devem ser entregues por branch e Pull Request, sem alterar tags existentes.
 
 ## Componentes consolidados
 
@@ -30,19 +30,22 @@ A tag `v0.5.4.3` identifica a baseline imutável homologada. Novas mudanças dev
 - M360 Ads Context, Inline e Archive Engines.
 - APIs e shortcodes publicitários compatíveis com PT-BR e EN-US.
 - Gestão visual de slots, diagnóstico de runtime e auditoria AdSense Readiness.
+- Privacy & Consent Foundation com contrato independente de CMP.
+- Newsletter M360 com consentimento independente, Double Opt-In, MailPoet, sincronização, auditoria, proteção, prontidão e componentes PT-BR/EN-US.
+- Publisher Platform Foundation com kernel modular, Site Profile portável, diagnóstico e preservação dos plugins precursores.
 
 ## Próximas evoluções
 
-- `v0.5.2`: Post Info multilíngue e Breadcrumbs evoluídos.
-- `v0.5.3`: M360 Search Experience.
-- `v0.5.4`: orquestração Header Search & Ads.
-- `v0.5.4.1`: modo sidebar do Últimas Notícias com publicidade configurável.
-- `v0.5.4.2`: destaque e paginação opcional do Últimas Notícias em layout de página.
-- `v0.5.4.3`: exclusão automática do post em leitura nas listas de últimas notícias.
-- `v0.5.5`: Breadcrumb Navigation UX hierárquico, multilíngue, acessível e com schema.
-- `v0.6.0`: fundação híbrida de privacidade e consentimento com adaptador independente de CMP.
+- `v0.7.1`: absorção generalizada do Home Editorial;
+- `v0.7.2`: absorção generalizada do Semantic Relations e SEO Technical Readiness;
+- `v0.7.3`: portabilidade de Newsletter, Ads e Consent;
+- piloto progressivo no Portal Energia Limpa — PEL;
+- seleção de CMP certificada, conforme estratégia de monetização e regiões atendidas;
+- Mega Bolão 360 MVP Comercial;
+- Painel Operacional DW;
+- SEO programático e expansão de competições.
 
-Consulte `docs/04-roadmap/M360_Roadmap_v0.5.2_v0.5.4.md`.
+Consulte `ROADMAP.md` e `docs/04-roadmap/M360_Backlog_Roadmap_Sprints_Futuras_v1.md`.
 
 ## Fluxo de desenvolvimento
 

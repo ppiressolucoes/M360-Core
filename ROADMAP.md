@@ -3,10 +3,42 @@
 ## Baseline canônico — julho de 2026
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline oficial homologada: `v0.6.0.5 — Post Language Switch & EN Sticky Menu Hotfix`.
-- Próximo incremento: seleção e homologação de uma CMP certificada para os territórios sujeitos ao IAB TCF.
+- Baseline oficial homologada: `v0.7.0 — Publisher Platform Foundation`.
+- Próxima linha estratégica: `v0.7.x — M360 Publisher Platform`.
+- Etapa atual: `v0.7.0 — Publisher Platform Foundation` homologada em produção; próxima entrega `v0.7.1 — Editorial Layout & Home`.
+- SEO Technical Readiness passa a compor a baseline e os contratos do módulo `Content Discovery & SEO`.
 
-As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.6.0.5`.
+As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.7.0`.
+
+## v0.7.x — M360 Publisher Platform
+
+Objetivo: transformar as capacidades homologadas do M360 em uma camada editorial modular, independente de nicho e aplicável progressivamente ao Portal Energia Limpa — PEL.
+
+Sequência:
+
+1. auditoria dos plugins precursores;
+2. `v0.7.0 — Publisher Platform Foundation`;
+3. `v0.7.1 — Editorial Layout & Home`;
+4. `v0.7.2 — Content Discovery & SEO`;
+5. `v0.7.3 — Portable Newsletter, Ads & Consent`;
+6. piloto progressivo no PEL.
+
+O Bolão, DW Esportivo, ETLs e regras esportivas permanecem fora do núcleo portável.
+
+## v0.6.3 — Newsletter Configuration & Form Hardening
+
+Objetivo: retirar configurações operacionais do código e fortalecer o formulário público sem alterar o fluxo MailPoet homologado.
+
+Escopo planejado:
+
+- seleção administrativa da lista MailPoet, eliminando o ID `3` fixo no adaptador;
+- validação da lista antes de salvar e fallback seguro quando indisponível;
+- honeypot, tempo mínimo de preenchimento e rate limit configurável;
+- mensagens claras para sucesso, duplicidade, indisponibilidade e excesso de tentativas;
+- estado de carregamento, bloqueio de duplo envio e foco acessível no retorno;
+- configuração do texto e da versão de consentimento;
+- diagnóstico do formulário no painel Newsletter;
+- preservação da auditoria, Double Opt-In e cancelamento assinado já homologados.
 
 ## v0.5.x — Plataforma Comercial e Experiência M360
 

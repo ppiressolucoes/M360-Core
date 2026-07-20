@@ -28,6 +28,20 @@ require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.
 require_once M360_CORE_PATH . 'includes/tag/class-m360-tag-controller.php';
 require_once M360_CORE_PATH . 'includes/date/class-m360-date-archive-controller.php';
 require_once M360_CORE_PATH . 'includes/privacy/class-m360-consent-manager.php';
+require_once M360_CORE_PATH . 'includes/newsletter/interface-m360-newsletter-provider.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-settings.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-mailpoet-adapter.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-db.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-service.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-audit.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-admin.php';
+require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-component.php';
+require_once M360_CORE_PATH . 'includes/platform/interface-m360-module.php';
+require_once M360_CORE_PATH . 'includes/platform/class-m360-site-profile.php';
+require_once M360_CORE_PATH . 'includes/platform/class-m360-module-registry.php';
+require_once M360_CORE_PATH . 'includes/platform/class-m360-publisher-foundation-module.php';
+require_once M360_CORE_PATH . 'includes/platform/class-m360-platform-admin.php';
+require_once M360_CORE_PATH . 'includes/platform/class-m360-platform.php';
 
 final class M360_Core_Runtime_034
 {
@@ -49,20 +63,35 @@ final class M360_Core_Runtime_034
         update_option('m360_core_activated_at', current_time('mysql'), false);
         M360_Ads_DB::install();
         M360_Consent_Manager::activate();
+        M360_Newsletter_DB::install();
+        M360_Newsletter_Settings::activate();
+        M360_Platform::activate();
+        M360_Newsletter_Component::register_rewrite_rules();
+        flush_rewrite_rules();
     }
 
     public static function deactivate(): void
     {
         update_option('m360_core_deactivated_at', current_time('mysql'), false);
+        wp_clear_scheduled_hook('m360_newsletter_sync_pending');
+        wp_clear_scheduled_hook('m360_newsletter_daily_cleanup');
+        M360_Platform::deactivate();
+        flush_rewrite_rules();
     }
 
     public function boot(): void
     {
         load_plugin_textdomain('m360-core', false, dirname(plugin_basename(M360_CORE_FILE)) . '/languages');
         M360_Ads_DB::maybe_upgrade();
+        M360_Newsletter_DB::maybe_upgrade();
+        M360_Newsletter_Settings::activate();
+        M360_Platform::instance()->register();
         M360_Ads_Admin::register();
         M360_Ads_Creatives_Admin::register();
         M360_Consent_Manager::register();
+        M360_Newsletter_Audit::register();
+        M360_Newsletter_Admin::register();
+        M360_Newsletter_Component::register();
         M360_Language_Switcher::register();
         M360_Header_Orchestrator::register();
         M360_Ads_Inline_Engine::register();
@@ -119,7 +148,7 @@ final class M360_Core_Runtime_034
     public function register_admin_assets(string $hook = ''): void
     {
         $hook = (string) $hook;
-        if (strpos($hook, 'm360-ads') !== false) {
+        if (strpos($hook, 'm360-ads') !== false || strpos($hook, 'm360-newsletter') !== false) {
             wp_enqueue_style('m360-core-ads-admin', M360_CORE_URL . 'assets/css/m360-ads-admin.css', [], M360_CORE_VERSION);
             wp_enqueue_style('m360-core-ads-slots-manager', M360_CORE_URL . 'assets/css/m360-ads-slots-manager.css', ['m360-core-ads-admin'], M360_CORE_VERSION);
             wp_enqueue_media();
@@ -138,6 +167,7 @@ final class M360_Core_Runtime_034
         M360_Latest_News_Component::register_shortcodes();
         M360_Slot_Renderer::register_shortcodes();
         M360_Ads_Context_Renderer::register_shortcodes();
+        M360_Newsletter_Component::register_shortcodes();
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
     }

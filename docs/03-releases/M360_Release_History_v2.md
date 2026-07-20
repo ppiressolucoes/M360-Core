@@ -2,13 +2,14 @@
 
 ## Atualização canônica — julho de 2026
 
-- Release oficial homologada: `M360 Core v0.6.0.4 — M360 Privacy & Consent Foundation`.
-- Tag canônica: `v0.6.0.4`.
+- Release oficial homologada: `M360 Core v0.7.0 — Publisher Platform Foundation`.
+- Tag canônica: `v0.7.0`.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- `v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix` incorporada à baseline.
-- Linha `v0.6.0` consolidada após homologação funcional até `v0.6.0.4`.
+- `v0.6.4 — Newsletter Delivery Readiness` incorporada à baseline com prontidão `7/7`.
+- Linha `v0.6.5.4` consolidada após validação do posicionamento, localização PT-BR/EN-US, preservação das configurações e rodapé informativo acessível.
+- Linha `v0.7.0` homologada em produção em 20/07/2026 com kernel saudável, Site Profile validado e plugins precursores preservados.
 
-Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. A linha `v0.4.4.x` está encerrada e a baseline `v0.5.4.3` consolida a etapa vigente da Plataforma Comercial e Experiência M360.
+Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. As linhas anteriores permanecem como histórico, e a baseline `v0.7.0` consolida a etapa vigente do M360 Core.
 
 ## Baseline v0.5.x consolidada
 

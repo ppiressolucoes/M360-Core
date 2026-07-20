@@ -4,8 +4,16 @@ Status: oficial e vigente
 Projeto: Mengão 360 | DW Esportivo
 Produto central: M360 Core
 Função: bíblia técnica, arquitetural e operacional da plataforma
-Baseline estável: M360 Core v0.5.1 — AdSense Approval Readiness
-Próxima entrega: v0.5.2 — Multilingual Post Navigation
+Baseline estável: M360 Core v0.6.5.4 — Newsletter Subscription Placement & UX
+Próxima linha planejada: v0.7.x — M360 Publisher Platform
+
+## Atualização canônica — Publisher Platform
+
+O `ADR-0008` define a evolução do M360 Core para uma plataforma editorial modular e reutilizável. O Home Editorial será generalizado como `Editorial Layout & Home`, e o Semantic Relations como `Content Discovery & SEO`.
+
+O Portal Mengão 360 permanece como ambiente precursor. O Portal Energia Limpa — PEL será a segunda implementação, adotando capacidades de forma progressiva e sem migração abrupta. DW Esportivo, Bolão, ETLs e regras esportivas permanecem externos ao núcleo portável.
+
+Esta atualização prevalece sobre trechos históricos que apresentem a independência permanente dos dois plugins editoriais.
 
 ## 1. Visão executiva
 
