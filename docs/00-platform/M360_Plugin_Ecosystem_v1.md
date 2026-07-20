@@ -6,7 +6,9 @@ Função: registrar os plugins precursores e seus limites de responsabilidade em
 
 ## 1. Visão
 
-Antes da consolidação do M360 Core como camada oficial de interface, três plugins especializados estabeleceram capacidades essenciais de produto, internacionalização editorial e SEO. Eles permanecem módulos independentes do ecossistema e não devem ter suas regras absorvidas indiscriminadamente pelo Core.
+Antes da consolidação do M360 Core como camada oficial de interface, três plugins especializados estabeleceram capacidades essenciais de produto, internacionalização editorial e SEO.
+
+A partir do ADR-0008, o Home Editorial e o Semantic Relations passam a ser precursores de módulos portáveis da M360 Publisher Platform. Eles continuarão independentes durante a transição e somente serão desativados depois de auditoria, migração, homologação e validação de rollback. O Bolão permanece um produto independente.
 
 ## 2. Mengão 360 — Bolão
 
@@ -33,7 +35,7 @@ Responsabilidades:
 - composição localizada de cabeçalho, conteúdo e rodapé;
 - suporte à experiência editorial PT-BR / EN-US.
 
-Papel precursor: o isolamento das Homes por idioma demonstrou a necessidade de uma camada própria de interface. O M360 Core consolida esse princípio nos componentes globais reutilizáveis, preservando o Home Editorial como responsável pela composição editorial da página inicial.
+Papel precursor: o isolamento das Homes por idioma demonstrou a necessidade de uma camada própria de interface. Sua capacidade será generalizada e absorvida gradualmente como `M360 Editorial Layout & Home`, sem referências obrigatórias ao tema, ao Mengão 360 ou ao nicho esportivo.
 
 ## 4. M360 Semantic Relations
 
@@ -47,7 +49,7 @@ Responsabilidades:
 - renderizar no front-end snapshots semânticos persistidos;
 - não executar IA durante a renderização pública.
 
-Limite: o M360 Core fornece a camada visual e os pontos de integração; o Semantic Relations permanece responsável pela geração, persistência, diagnóstico e entrega dos dados semânticos.
+Evolução planejada: suas capacidades serão generalizadas e absorvidas como `M360 Content Discovery & SEO`. O plugin precursor permanece responsável pela operação atual até que relações, snapshots, diagnósticos e renderização estejam migrados e homologados no módulo interno.
 
 ## 5. Relação entre os módulos
 
@@ -70,17 +72,24 @@ Conteúdo / relações internas / snapshots
             ↓
 SEO, descoberta e Search Console
 
-Todos os módulos
+Home Editorial + Semantic Relations
+            ↓ auditoria e migração reversível
+     M360 Publisher Platform
             ↓
-        M360 Core
-            ↓
-Interface global, componentes e experiência multilíngue
+Interface, SEO, internacionalização, Newsletter, Ads e produtividade
+
+Bolão / DW Esportivo
+            ↓ contratos e APIs
+     permanecem externos ao núcleo portável
 ```
 
 ## 6. Regra de evolução
 
-- cada plugin mantém seu domínio de negócio e ciclo de versão;
+- o Bolão mantém domínio de negócio e ciclo de versão próprios;
 - integrações devem ocorrer por APIs, shortcodes, hooks ou contratos documentados;
-- o M360 Core não deve duplicar regras de Bolão, composição editorial ou semântica;
-- alterações no Core devem verificar regressões nos três plugins precursores;
-- novos recursos da Plataforma Comercial devem preservar esses limites.
+- Home Editorial e Semantic Relations não serão copiados indiscriminadamente: serão generalizados como módulos internos;
+- os plugins precursores permanecem ativos até a homologação de seus substitutos;
+- alterações devem verificar regressões, duplicidade de cron, shortcodes, schema, assets e HTML;
+- nenhuma regra do DW Esportivo, Bolão ou futebol entra no núcleo portável;
+- o Portal Energia Limpa — PEL será a segunda implementação e prova de portabilidade;
+- a referência normativa da transição é o `ADR-0008`.

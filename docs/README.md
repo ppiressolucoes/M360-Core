@@ -46,9 +46,12 @@ docs/
 
 - M360 Platform Architecture v2.2.
 - M360 Release History v2.2.
-- M360 Core v0.6.0.4 como baseline oficial homologada.
-- v0.5.5.1 — Breadcrumb Mobile Overflow Hotfix incorporada à baseline.
-- v0.6.0 — Privacy & Consent Foundation consolidada com os hotfixes até v0.6.0.4.
+- M360 Core v0.6.5.4 como baseline oficial homologada.
+- v0.6.0 — Privacy & Consent Foundation incorporada à baseline.
+- v0.6.1 a v0.6.5.4 — Newsletter Foundation, Operations, Configuration, Delivery Readiness e Placement & UX consolidadas.
+- ADR-0008 — evolução planejada para M360 Publisher Platform modular.
+- v0.7.0 — Publisher Platform Foundation homologada em produção em 20/07/2026.
+- Portal Energia Limpa — PEL definido como segunda implementação progressiva.
 
 Documentos históricos e snapshots anteriores permanecem preservados, mas não substituem esta baseline.
 
