@@ -23,8 +23,11 @@ final class M360_Platform
         if ($this->registered) { return; }
         $this->registered = true;
         $this->registry->register(new M360_Publisher_Foundation_Module());
+        $this->registry->register(new M360_Editorial_Layout_Module());
+        $this->registry->register(new M360_Content_Discovery_Module());
         do_action('m360_platform_register_modules', $this->registry);
         M360_Platform_Admin::register($this->registry);
+        M360_Content_Discovery_Admin::register($this->registry);
         add_action('init', [$this, 'boot_modules'], -100);
     }
 

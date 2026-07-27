@@ -28,6 +28,8 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 |---|---|---|
 | ADR-0007 — M360 Core Interface Architecture | `docs/00-platform/ADR-0007_M360_Core_Interface_Architecture.md` | Consolida o M360 Core como camada oficial de interface da plataforma |
 | ADR-0008 — M360 Publisher Platform Modularization | `docs/00-platform/ADR-0008_M360_Publisher_Platform_Modularization.md` | Define a absorção do Home Editorial e Semantic Relations e os limites do núcleo portável |
+| ADR-0009 — Stability Before Decoupling | `docs/00-platform/ADR-0009_M360_Stability_Before_Decoupling.md` | Condiciona a portabilidade à absorção e estabilização dos precursores |
+| ADR-0010 — Portable Safe Bootstrap | `docs/00-platform/ADR-0010_Portable_Safe_Bootstrap.md` | Define novas instalações sem ownership público automático e upgrades compatíveis |
 
 ## 4. Documentos de módulo
 
@@ -53,6 +55,9 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | Sprint v0.6.4 — Newsletter Delivery Readiness | `docs/01-sprints/Sprint_v0.6.4_Newsletter_Delivery_Readiness.md` | Checklist operacional de entrega e evidências 7/7 |
 | Sprint v0.6.5 — Newsletter Subscription Placement & UX | `docs/01-sprints/Sprint_v0.6.5_Newsletter_Subscription_Placement_UX.md` | Posicionamento, origens, localização e UX dos cards |
 | Sprint v0.7.0 — M360 Publisher Platform Foundation | `docs/01-sprints/Sprint_v0.7.0_M360_Publisher_Platform_Foundation.md` | Kernel modular, Site Profile, diagnósticos e preparação da absorção dos plugins precursores |
+| Sprint v0.7.1 — Editorial Layout & Home | `docs/01-sprints/Sprint_v0.7.1_Editorial_Layout_Home.md` | Absorção e cutover do Home Editorial |
+| Sprint v0.7.2 — Content Discovery & SEO | `docs/01-sprints/Sprint_v0.7.2_Content_Discovery_SEO.md` | Contratos, shadow, renderer, writer, backfill e desativação do Semantic Relations |
+| Sprint v0.7.4.0 — Portable Deployment Hardening | `docs/01-sprints/Sprint_v0.7.4.0_Portable_Deployment_Hardening.md` | Bootstrap seguro, gates públicos e preparação multiplataforma |
 
 ## 6. Releases
 
@@ -73,6 +78,11 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | M360 Core v0.6.4 Release Notes | `releases/v0.6.4/M360_Core_v0.6.4_Release_Notes.md` | Newsletter Delivery Readiness |
 | M360 Core v0.6.5.4 Release Notes | `releases/v0.6.5.4/M360_Core_v0.6.5.4_Release_Notes.md` | Baseline consolidada da Newsletter Subscription Placement & UX |
 | M360 Core v0.7.0 Release Notes | `releases/v0.7.0/M360_Core_v0.7.0_Release_Notes.md` | Baseline homologada da Publisher Platform Foundation |
+| Consolidação Editorial e Discovery | `docs/03-releases/M360_Consolidacao_Operacional_2026-07-22.md` | Histórico operacional da absorção dos precursores |
+| Cutover Content Discovery & SEO | `docs/03-releases/M360_Content_Discovery_SEO_Cutover_2026-07-24.md` | Evidência final de cobertura 100%, ownership automático e precursor desativado |
+| Homologação Portable Deployment Hotfix | `docs/03-releases/M360_Portable_Deployment_Hotfix_Homologation_2026-07-27.md` | Evidência do upgrade v0.7.4.0.1 no Mengão 360 |
+| M360 Core v0.7.4.0 Release Notes | `releases/v0.7.4.0/M360_Core_v0.7.4.0_Release_Notes.md` | Portable Deployment Hardening e preservação de upgrades existentes |
+| M360 Core v0.7.4.0.1 Release Notes | `releases/v0.7.4.0.1/M360_Core_v0.7.4.0.1_Release_Notes.md` | Hotfix de detecção robusta e diagnóstico da política de implantação |
 
 ### Baseline canônico
 
@@ -83,6 +93,9 @@ Arquitetura: M360 Platform Architecture v2.2 + ADR-0008
 Baseline incorporada: v0.6.4 — Newsletter Delivery Readiness
 Linha Newsletter incorporada: v0.6.5.4 — Newsletter Subscription Placement & UX
 Linha consolidada: v0.7.0 — Publisher Platform Foundation
+Release operacional homologada: v0.7.4.0.1 — Existing Installation Detection Hotfix
+Próxima frente: staging do Portal Energia Limpa em portable-safe
+Cutover semântico: cobertura 100%, ownership automatic, precursor desativado
 ```
 
 ## 7. Operações
@@ -91,7 +104,10 @@ Linha consolidada: v0.7.0 — Publisher Platform Foundation
 |---|---|---|
 | M360 Core Plugin Publication Workflow | `docs/04-operations/M360_Core_Plugin_Publication_Workflow_v1.md` | Workflow de publicação, build ZIP e rollback |
 | Governança do Repositório | `docs/04-operations/M360_Repository_Governance_v1.md` | Fonte da verdade, branches, tags e manutenção |
+| Handoff do staging PEL | `docs/06-runbooks/M360_PEL_Staging_Start_Handoff.md` | Contexto, limites, primeira entrega e texto de abertura da nova tarefa |
 | M360 Newsletter — Runbook de Entrega Editorial | `docs/06-runbooks/M360_Newsletter_Editorial_Delivery_Runbook.md` | Operação diária do MailPoet, revisão, envio e pós-envio |
+| M360 Writer & Backfill Cutover | `docs/06-runbooks/M360_Writer_Backfill_Cutover_Runbook.md` | Operação e evidência homologada do writer, backfill e desativação do precursor |
+| M360 Portable Deployment | `docs/06-runbooks/M360_Portable_Deployment_Runbook.md` | Instalação segura, gates, piloto e rollback em outro portal |
 
 ## Roadmap vigente
 

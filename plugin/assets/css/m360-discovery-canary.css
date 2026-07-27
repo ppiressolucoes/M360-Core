@@ -1,0 +1,271 @@
+.m360-discovery-canary {
+    --m360-discovery-accent: #e31b23;
+    --m360-discovery-text: #202124;
+    color: var(--m360-discovery-text);
+    font-family: inherit;
+    margin: 28px 0;
+}
+
+.m360-discovery-canary__title {
+    border-bottom: 2px solid #202124;
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
+    font-weight: 800;
+    letter-spacing: .025em;
+    line-height: 1.2;
+    margin: 0 0 20px;
+    padding: 0 0 10px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.m360-discovery-canary__title::after {
+    background: var(--m360-discovery-accent);
+    bottom: -2px;
+    content: "";
+    height: 4px;
+    left: 0;
+    position: absolute;
+    width: min(180px, 34%);
+}
+
+.m360-discovery-canary__cards {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.m360-discovery-canary__card {
+    background: #fff;
+    border: 1px solid #dedede;
+    border-radius: 6px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.m360-discovery-canary__card-link {
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+}
+
+.m360-discovery-canary__thumbnail {
+    aspect-ratio: 16 / 9;
+    display: block;
+    height: auto;
+    object-fit: cover;
+    width: 100%;
+}
+
+.m360-discovery-canary__card-title {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.35;
+    padding: 14px;
+}
+
+.m360-discovery-canary__meta {
+    color: #686868;
+    display: block;
+    font-size: .8rem;
+    line-height: 1.35;
+    padding: 0 14px 12px;
+}
+
+.m360-discovery-canary__cta {
+    align-items: center;
+    align-self: flex-start;
+    border: 1px solid var(--m360-discovery-accent);
+    border-radius: 4px;
+    color: var(--m360-discovery-accent);
+    display: inline-flex;
+    font-size: .78rem;
+    font-weight: 800;
+    justify-content: center;
+    letter-spacing: .04em;
+    margin: auto 14px 14px;
+    min-height: 34px;
+    padding: 7px 13px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.m360-discovery-canary__card-link:hover .m360-discovery-canary__card-title,
+.m360-discovery-canary__card-link:focus-visible .m360-discovery-canary__card-title,
+.m360-discovery-canary__term a:hover,
+.m360-discovery-canary__term a:focus-visible,
+.m360-discovery-canary__inline-link:hover,
+.m360-discovery-canary__inline-link:focus-visible {
+    color: var(--m360-discovery-accent);
+}
+
+.m360-discovery-canary--read-more {
+    background: #f4f4f4;
+    border: 1px solid #d8d8d8;
+    border-left: 4px solid var(--m360-discovery-text);
+    border-radius: 10px;
+    padding: 18px 20px;
+}
+
+.m360-discovery-canary__inline-label {
+    color: var(--m360-discovery-accent);
+    flex: 0 0 auto;
+    font-size: clamp(1.12rem, 2vw, 1.4rem);
+    font-weight: 900;
+    letter-spacing: .025em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.m360-discovery-canary__inline-row {
+    align-items: center;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 120px minmax(0, 1fr);
+    margin-top: 13px;
+}
+
+.m360-discovery-canary__inline-thumb {
+    display: block;
+    line-height: 0;
+}
+
+.m360-discovery-canary__inline-thumb img,
+.m360-discovery-canary__inline-thumb span {
+    background: #ddd;
+    border-radius: 6px;
+    display: block;
+    height: 88px;
+    object-fit: cover;
+    width: 120px;
+}
+
+.m360-discovery-canary__inline-body {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.m360-discovery-canary__inline-link {
+    color: inherit;
+    font-size: 1.12rem;
+    font-weight: 850;
+    line-height: 1.3;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.m360-discovery-canary__inline-body .m360-discovery-canary__meta {
+    padding: 7px 0 0;
+}
+
+.m360-discovery-canary__inline-body .m360-discovery-canary__cta {
+    margin: 10px 0 0;
+}
+
+.m360-discovery-canary .m360-discovery-canary__terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.m360-discovery-canary .m360-discovery-canary__term {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.m360-discovery-canary .m360-discovery-canary__term a {
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--m360-discovery-accent);
+    border-radius: 999px;
+    color: var(--m360-discovery-accent);
+    display: inline-flex;
+    font-size: .95rem;
+    font-weight: 800;
+    justify-content: center;
+    line-height: 1.2;
+    min-height: 42px;
+    padding: 10px 17px;
+    text-decoration: none;
+    transition: background-color .18s ease, color .18s ease, transform .18s ease;
+}
+
+.m360-discovery-canary .m360-discovery-canary__term a:hover,
+.m360-discovery-canary .m360-discovery-canary__term a:focus-visible {
+    background: var(--m360-discovery-accent);
+    color: #fff;
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.m360-discovery-canary .m360-discovery-canary__term a:focus-visible {
+    box-shadow: 0 0 0 3px rgb(227 27 35 / 22%);
+}
+
+.m360-discovery-canary--diagnostic {
+    background: #fff3cd;
+    border-left: 4px solid #dba617;
+    padding: 12px 16px;
+}
+
+.m360-discovery-context-link {
+    color: var(--m360-discovery-accent, #e31b23);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+.m360-discovery-auto-footer {
+    margin-top: 34px;
+}
+
+.m360-discovery-auto-footer .m360-discovery-canary + .m360-discovery-canary {
+    margin-top: 38px;
+}
+
+@media (max-width: 767px) {
+    .m360-discovery-canary__cards {
+        grid-template-columns: 1fr;
+    }
+
+    .m360-discovery-canary__inline-row {
+        align-items: start;
+        gap: 12px;
+        grid-template-columns: 88px minmax(0, 1fr);
+    }
+
+    .m360-discovery-canary__inline-thumb img,
+    .m360-discovery-canary__inline-thumb span {
+        height: 66px;
+        width: 88px;
+    }
+
+    .m360-discovery-canary__inline-link {
+        font-size: .95rem;
+    }
+
+    .m360-discovery-canary__inline-label {
+        font-size: 1.08rem;
+    }
+
+    .m360-discovery-canary .m360-discovery-canary__term a {
+        font-size: .9rem;
+        min-height: 40px;
+        padding: 9px 14px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .m360-discovery-canary__cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

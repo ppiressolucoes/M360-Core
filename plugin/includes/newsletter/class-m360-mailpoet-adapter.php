@@ -4,10 +4,11 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_MailPoet_Adapter implements M360_Newsletter_Provider_Interface
 {
     private int $list_id;
-    public function __construct(?int $list_id=null) { $settings=M360_Newsletter_Settings::get(); $this->list_id=$list_id?:max(1,(int)$settings['list_id']); }
+    public function __construct(?int $list_id=null) { $settings=M360_Newsletter_Settings::get(); $this->list_id=$list_id!==null?absint($list_id):absint($settings['list_id']); }
 
     public function subscribe(string $email, string $name, array $context = [])
     {
+        if ($this->list_id < 1) { return new WP_Error('m360_mailpoet_list_missing', ($context['lang']??'')==='en'?'Select a MailPoet list before enabling subscriptions.':__('Selecione uma lista MailPoet antes de ativar inscrições.', 'm360-core')); }
         if (!class_exists('MailPoet\\API\\API')) { return new WP_Error('m360_mailpoet_missing', ($context['lang']??'')==='en'?'MailPoet is not available.':__('MailPoet não está ativo.', 'm360-core')); }
         try {
             $data = ['email' => $email];
@@ -19,6 +20,7 @@ final class M360_MailPoet_Adapter implements M360_Newsletter_Provider_Interface
 
     public function confirm(string $email)
     {
+        if ($this->list_id < 1) { return ['provider_id' => '', 'provider' => 'mailpoet_pending_setup']; }
         if (!class_exists('MailPoet\\API\\API')) { return ['provider_id' => '', 'provider' => 'mailpoet_pending_setup']; }
         try {
             $subscriber = \MailPoet\API\API::MP('v1')->addSubscriber(['email' => $email], [$this->list_id], ['send_confirmation_email' => false]);

@@ -5,7 +5,7 @@ final class M360_Ads_DB
 {
     public const SCHEMA_VERSION = '0.5.4.0';
 
-    public static function install(): void
+    public static function install(bool $seed_legacy_inventory = false): void
     {
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -113,7 +113,9 @@ final class M360_Ads_DB
         ) {$charset_collate};");
 
         self::seed_inventory_library();
-        self::seed_production_pilot();
+        if ($seed_legacy_inventory) {
+            self::seed_production_pilot();
+        }
         self::ensure_upload_dir();
         update_option('m360_ads_inventory_library_version', M360_Ads_Inventory_Library::VERSION, false);
         update_option('m360_ads_inventory_seeded_at', current_time('mysql'), false);

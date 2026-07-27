@@ -18,7 +18,7 @@ final class M360_Newsletter_Settings
     {
         $current=self::get();
         $settings=array_merge($current,[
-            'list_id'=>max(1,absint($input['list_id']??$current['list_id'])),
+            'list_id'=>absint($input['list_id']??$current['list_id']),
             'consent_version'=>sanitize_key((string)($input['consent_version']??$current['consent_version'])),
             'consent_text_pt'=>sanitize_text_field((string)($input['consent_text_pt']??$current['consent_text_pt'])),
             'consent_text_en'=>sanitize_text_field((string)($input['consent_text_en']??$current['consent_text_en'])),
@@ -53,6 +53,7 @@ final class M360_Newsletter_Settings
     }
     private static function defaults(): array
     {
-        return ['list_id'=>3,'consent_version'=>'v0.6.1','consent_text_pt'=>'Concordo em receber a Newsletter M360.','consent_text_en'=>'I agree to receive the M360 Newsletter.','minimum_form_seconds'=>2,'ip_limit'=>5,'ip_window_minutes'=>10,'article_end_enabled'=>false,'form_title'=>'Receba as notícias do Mengão 360','form_description'=>'As principais notícias do Flamengo diretamente no seu e-mail.','form_button'=>'Inscrever-me','form_title_en'=>'Get the latest Mengão 360 news','form_description_en'=>'The latest Flamengo news delivered directly to your inbox.','form_button_en'=>'Subscribe','hide_days'=>30,'sender_email'=>'','editorial_owner'=>'','dkim_confirmed'=>false,'dmarc_confirmed'=>false,'sending_test_confirmed'=>false,'sending_test_at'=>''];
+        $site_name = sanitize_text_field((string) get_bloginfo('name'));
+        return ['list_id'=>0,'consent_version'=>'v1','consent_text_pt'=>'Concordo em receber a newsletter deste portal.','consent_text_en'=>'I agree to receive this publisher newsletter.','minimum_form_seconds'=>2,'ip_limit'=>5,'ip_window_minutes'=>10,'article_end_enabled'=>false,'form_title'=>'Receba nossas atualizações','form_description'=>'Conteúdo editorial entregue diretamente no seu e-mail.','form_button'=>'Inscrever-me','form_title_en'=>'Get our latest updates','form_description_en'=>'Publisher updates delivered directly to your inbox.','form_button_en'=>'Subscribe','hide_days'=>30,'sender_email'=>'','editorial_owner'=>$site_name,'dkim_confirmed'=>false,'dmarc_confirmed'=>false,'sending_test_confirmed'=>false,'sending_test_at'=>''];
     }
 }

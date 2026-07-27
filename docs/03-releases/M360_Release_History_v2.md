@@ -8,6 +8,32 @@
 - `v0.6.4 — Newsletter Delivery Readiness` incorporada à baseline com prontidão `7/7`.
 - Linha `v0.6.5.4` consolidada após validação do posicionamento, localização PT-BR/EN-US, preservação das configurações e rodapé informativo acessível.
 - Linha `v0.7.0` homologada em produção em 20/07/2026 com kernel saudável, Site Profile validado e plugins precursores preservados.
+- Linha operacional `v0.7.1.15` homologada em 22/07/2026 com Newsroom, seções, widgets e ticker assumidos pelo Core na Home EN-US.
+- `M360 Home Editorial 0.1.2` desativado no WordPress sem impacto visível e preservado para rollback.
+- `M360 Semantic Relations 0.9.0` permaneceu ativo durante shadow, comparação, canário e backfill da linha `v0.7.2`.
+- `v0.7.2 — Contracts & Legacy Read` preparada em 22/07/2026 como candidata de homologação, com módulo desativado por padrão, adapter somente leitura e preflight agregado; sem writer, cron, shortcode, HTML público ou alteração do storage legado.
+- `v0.7.2.1 — Portable Storage & Shadow Generator` preparada após o preflight saudável da v0.7.2, com storage InnoDB exclusivo, provider WordPress e geração administrativa sem saída pública.
+- `v0.7.2.1` homologada integralmente em PT-BR e EN-US: geração manual e assíncrona promoveram snapshots do Core com um run `active` e um `superseded` por locale; em cada idioma, 4 internal links, 6 related posts e 4 topics ativos, com histórico superseded equivalente e zero impacto visual.
+- Inventário remanescente do precursor: relações legadas `candidate` e um evento `m360_sr_retry_post`; preservados para comparação na v0.7.2.2, sem drenagem nesta etapa.
+- `v0.7.2.2 — Comparator & Diagnostics` preparada como candidata de homologação, com comparação administrativa e transitória de snapshots Core/precursor, bloqueio de locale cruzado e destinos inválidos, sem renderer público.
+- `v0.7.2.2.1` corrige a normalização de taxonomias do Comparator: `category` e `post_tag` legados passam a ser comparados como `term`; divergência estrutural de `internal_link` passa a `review`, sem falso bloqueio.
+- `v0.7.2.2.1` foi homologada em 23/07/2026: os posts 7804 (PT-BR) e 7807 (EN-US) retornaram `review`, com `0 / 0` destinos inválidos/locale cruzado. A divergência real de `internal_link` foi isolada.
+- `v0.7.2.3 — Internal Link Contract & Shadow Parity` formaliza `internal_link` como destino portátil `term`, remove posts desse tipo no gerador shadow e preserva o precursor 0.9.0 como writer e renderer exclusivo.
+- `v0.7.2.4.4 — Locale-safe Renderer Canary` corrige títulos e destinos por locale, prioriza o post público corrente em templates compartilhados e oferece blocos explícitos `read_more`, `related_posts` com miniaturas e `topics`, sem auto append.
+- `v0.7.2.4.5 — Semantic Renderer Cutover Candidate` adiciona modo automático reversível, até três links contextuais, “Leia também”, três cards finais completos e tópicos clicáveis, preservando o precursor como writer.
+- `v0.7.2.4.6 — Semantic Renderer Visual Polish` reforça o título do bloco intermediário e transforma tags/categorias relacionadas em botões de alto contraste, sem alterar snapshots, writer ou modo público salvo.
+- `v0.7.2.5 — Scheduler, Writer & Backfill Cutover` transfere ao Core a geração assíncrona em publicação/atualização, adiciona idempotência, retry, cobertura e backfill em lotes, preservando o precursor e suas tabelas para rollback.
+- `v0.7.2.5.1 — Discovery Operations Console` reorganiza o painel em operação, diagnóstico e compatibilidade avançada, adiciona progresso visual e rearme automático do backfill após atualização.
+- `v0.7.3.0 — Unified Admin Dashboard` consolida toda a administração sob um único menu M360 Dashboard, com abas por domínio, rotas internas compatíveis e retirada do artefato visual Inventário Piloto sem remoção da infraestrutura de Ads.
+- `v0.7.3.0.1 — Hidden Routes Access Hotfix` registra as funcionalidades como páginas administrativas ocultas e corrige o bloqueio de acesso provocado pela remoção direta do submenu global.
+- Em 24/07/2026, o backfill do Content Discovery foi concluído com `2.278 / 2.278` posts cobertos, `0` ausentes, `2.256` gerados e `17` inalterados.
+- O módulo foi homologado como `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`; novas publicações passaram a ser processadas automaticamente pelo Core.
+- `M360 Semantic Relations 0.9.0` foi desativado sem impacto observado. Plugin e tabelas legadas permanecem preservados temporariamente para rollback, sem autorização de exclusão.
+- `v0.7.4.0 — Portable Deployment Hardening` abre a fase de crescimento multiplataforma com bootstrap seguro em instalações novas, compatibilidade automática para upgrades e gates explícitos de ownership público; aguarda homologação WordPress.
+- A homologação inicial da `v0.7.4.0` no Mengão 360 confirmou módulos saudáveis, mas revelou que a ausência histórica da opção `m360_core_version` classificava o upgrade como `portable-safe`; a política foi corrigida administrativamente para `legacy-compatible`, com todas as capacidades anteriores preservadas.
+- `v0.7.4.0.1 — Existing Installation Detection Hotfix` passa a reconhecer instalações históricas por opções e tabelas persistentes, preserva perfis já salvos e registra no Dashboard a origem da classificação.
+- Em 27/07/2026, a `v0.7.4.0.1` foi homologada no Mengão 360: versão correta, política `legacy-compatible`, origem `preserved-existing-profile` e módulos Publisher Platform Foundation, Editorial Layout & Home e Content Discovery & SEO em estado `healthy`.
+- A homologação encerra o gate de compatibilidade do ambiente precursor e libera a preparação do staging do Portal Energia Limpa; nenhuma instalação ou mudança no PEL em produção foi autorizada.
 
 Esta atualização prevalece sobre estados intermediários preservados nas seções históricas abaixo. As linhas anteriores permanecem como histórico, e a baseline `v0.7.0` consolida a etapa vigente do M360 Core.
 

@@ -3,25 +3,33 @@
 ## Baseline estável
 
 ```text
-0.7.0
+0.7.4.0.1
 ```
 
 ## Estado operacional
 
-- Última release publicada em produção: `v0.7.0 — Publisher Platform Foundation`.
-- Baseline oficial homologada: `v0.7.0 — Publisher Platform Foundation`.
-- Arquitetura vigente: `M360 Platform Architecture v2.2`, complementada pelo `ADR-0008`.
+- Release operacional homologada no WordPress: `v0.7.4.0.1 — Existing Installation Detection Hotfix`.
+- Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
+- Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
+- Content Discovery & SEO homologado com saúde `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`.
+- Evidência final do backfill: `2.278` publicados, `2.278` cobertos, `0` ausentes, `2.256` gerados e `17` inalterados.
+- `M360 Semantic Relations 0.9.0` desativado no WordPress em 24/07/2026, sem impacto observado; permanece instalado e com tabelas preservadas para rollback durante a janela de observação.
+- Writer e renderer do Core processam automaticamente novas publicações.
+- Arquitetura vigente: `M360 Platform Architecture v2.2`, complementada por `ADR-0008` e `ADR-0009`.
 - Linha homologada atual: `v0.7.x — M360 Publisher Platform`.
-- Próxima entrega planejada: `v0.7.1 — Editorial Layout & Home`.
+- Novas instalações iniciam em `portable-safe`; upgrades M360 existentes são reconhecidos por múltiplas evidências e preservam `legacy-compatible`.
+- Perfis de runtime já gravados nunca são sobrescritos pelo hotfix.
+- Homologação do upgrade concluída no Mengão 360 com política `legacy-compatible`, origem `preserved-existing-profile` e três módulos `healthy`.
+- Próximo gate planejado: instalação limpa no staging do PEL sem saída pública.
 
 ## Ambiente alvo
 
 - WordPress 6.8+
 - PHP 8+
-- Elementor
-- Polylang
-- Yoast SEO
-- LiteSpeed Cache
+- Elementor: integração opcional; não é requisito do núcleo portátil.
+- Polylang: integração recomendada para múltiplos idiomas.
+- MailPoet: provider opcional da Newsletter.
+- Plugin de SEO e cache: preservados por ambiente.
 
 ## Linha v0.4 consolidada
 

@@ -11,7 +11,7 @@ final class M360_Newsletter_Admin
         add_action('admin_post_m360_newsletter_save_delivery', [self::class,'save_delivery']);
     }
     public static function menu(): void
-    { add_submenu_page('m360-ads-manager','M360 Newsletter','Newsletter','manage_options','m360-newsletter-operations',[self::class,'render']); }
+    { add_submenu_page(null,'M360 Newsletter','Newsletter','manage_options','m360-newsletter-operations',[self::class,'render']); }
 
     public static function manual_sync(): void
     {
@@ -64,7 +64,7 @@ final class M360_Newsletter_Admin
         if (!empty($_GET['delivery_error'])) { echo '<div class="notice notice-error is-dismissible"><p>Informe um remetente válido e o responsável editorial.</p></div>'; }
         echo '<div class="m360-ads-admin__cards">';
         self::metric('Pendentes',$counts['pending']); self::metric('Confirmados',$counts['confirmed']); self::metric('Cancelados',$counts['unsubscribed']); self::metric('Bloqueados',$counts['blocked']);
-        self::metric('MailPoet',!empty($health['available'])?'Ativo':'Indisponível'); self::metric('Lista #3',!empty($health['list_available'])?'Disponível':'Não encontrada');
+        self::metric('MailPoet',!empty($health['available'])?'Ativo':'Indisponível'); self::metric($health['list_id'] ? 'Lista #' . absint($health['list_id']) : 'Lista não configurada',!empty($health['list_available'])?'Disponível':'Seleção obrigatória');
         echo '</div>';
         $healthy=!empty($health['available'])&&!empty($health['list_available'])&&$next;
         echo '<div class="notice ' . ($healthy?'notice-success':'notice-warning') . ' inline"><p><strong>Diagnóstico:</strong> MailPoet ' . (!empty($health['available'])?'ativo':'indisponível') . '; lista ' . esc_html((string)($health['list_name']??'#3')) . ' ' . (!empty($health['list_available'])?'localizada':'não localizada') . '; WP-Cron ' . ($next?'agendado':'sem agendamento') . '.</p></div>';
