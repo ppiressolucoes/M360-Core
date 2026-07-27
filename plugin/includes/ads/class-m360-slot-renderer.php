@@ -14,6 +14,13 @@ final class M360_Slot_Renderer
 
     public static function render(string $slot_key, array $args = []): string
     {
+        if (
+            class_exists('M360_Runtime_Profile')
+            && !M360_Runtime_Profile::enabled('ads_runtime')
+            && !is_admin()
+        ) {
+            return '';
+        }
         $slot_key = sanitize_key($slot_key);
         if ($slot_key === '') { return ''; }
 

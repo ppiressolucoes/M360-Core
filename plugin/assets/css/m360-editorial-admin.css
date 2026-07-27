@@ -1,0 +1,13 @@
+.m360-editorial-admin__form{max-width:1100px;margin:20px 0;padding:0;border:1px solid #c3c4c7;border-radius:4px;background:#fff}
+.m360-editorial-admin__form>summary{padding:16px 20px;font-size:15px;font-weight:600;cursor:pointer}
+.m360-editorial-admin__form>form{padding:0 20px 20px;border-top:1px solid #e2e4e7}
+.m360-editorial-admin__dropdown{position:relative;width:min(460px,100%);border:1px solid #8c8f94;border-radius:3px;background:#fff}
+.m360-editorial-admin__dropdown>summary{padding:9px 12px;cursor:pointer}
+.m360-editorial-admin__options{display:grid;max-height:260px;padding:8px;overflow:auto;border-top:1px solid #ddd;gap:2px}
+.m360-editorial-admin__options label{padding:7px 8px;border-radius:3px}
+.m360-editorial-admin__options label:hover{background:#f0f0f1}
+.m360-editorial-admin__list{max-width:1100px}
+.m360-editorial-admin__list code{white-space:nowrap}
+.m360-editorial-admin__delete{display:inline-block;margin:0}
+.m360-editorial-admin__delete .submit{display:inline;margin:0;padding:0}
+@media(max-width:782px){.m360-editorial-admin__list{display:block;overflow-x:auto}.m360-editorial-admin__form .form-table th{padding-bottom:4px}.m360-editorial-admin__form .form-table td{padding-top:4px}}

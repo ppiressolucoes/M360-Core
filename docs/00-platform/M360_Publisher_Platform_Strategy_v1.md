@@ -120,6 +120,14 @@ O `Site Profile` conterá somente configurações portáveis: identidade, idioma
 - validar Newsletter, Ads e Consent com perfil independente;
 - preparar instalação paralela no PEL.
 
+Estado atualizado em 24/07/2026:
+
+- `v0.7.4.0` implementa o bootstrap `portable-safe`;
+- `v0.7.4.0.1` endurece a distinção entre upgrade histórico e instalação nova por múltiplas evidências, sem sobrescrever Runtime Profiles existentes;
+- upgrades existentes recebem `legacy-compatible`;
+- capacidades com saída pública passam a exigir gate explícito;
+- o piloto PEL permanece restrito a staging até homologação.
+
 ### Fase 5 — Piloto PEL
 
 - inventário técnico do portal;

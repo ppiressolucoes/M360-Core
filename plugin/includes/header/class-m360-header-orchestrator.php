@@ -38,7 +38,7 @@ final class M360_Header_Orchestrator
     public static function admin_menu(): void
     {
         add_submenu_page(
-            'm360-ads-manager',
+            null,
             'Header Orchestration',
             'Header Delivery',
             'manage_options',

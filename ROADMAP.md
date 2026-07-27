@@ -3,16 +3,16 @@
 ## Baseline canônico — julho de 2026
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline oficial homologada: `v0.7.0 — Publisher Platform Foundation`.
-- Próxima linha estratégica: `v0.7.x — M360 Publisher Platform`.
-- Etapa atual: `v0.7.0 — Publisher Platform Foundation` homologada em produção; próxima entrega `v0.7.1 — Editorial Layout & Home`.
+- Baseline canônica imutável: `v0.7.0 — Publisher Platform Foundation`.
+- Release operacional homologada: `v0.7.4.0.1 — Existing Installation Detection Hotfix`.
+- Etapa atual: bootstrap seguro e preflight do primeiro piloto multiplataforma no staging do Portal Energia Limpa.
 - SEO Technical Readiness passa a compor a baseline e os contratos do módulo `Content Discovery & SEO`.
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.7.0`.
 
 ## v0.7.x — M360 Publisher Platform
 
-Objetivo: transformar as capacidades homologadas do M360 em uma camada editorial modular, independente de nicho e aplicável progressivamente ao Portal Energia Limpa — PEL.
+Objetivo: transformar as capacidades homologadas do M360 em uma camada editorial modular e independente de nicho.
 
 Sequência:
 
@@ -20,10 +20,28 @@ Sequência:
 2. `v0.7.0 — Publisher Platform Foundation`;
 3. `v0.7.1 — Editorial Layout & Home`;
 4. `v0.7.2 — Content Discovery & SEO`;
-5. `v0.7.3 — Portable Newsletter, Ads & Consent`;
-6. piloto progressivo no PEL.
+5. `v0.7.3.0 — Unified Admin Dashboard`;
+6. `v0.7.3.0.1 — Hidden Routes Access Hotfix`;
+7. `v0.7.4.0 — Portable Deployment Hardening`;
+8. `v0.7.4.0.1 — Existing Installation Detection Hotfix`;
+9. piloto progressivo de Internacionalização e Content Discovery & SEO em um segundo portal;
+10. estabilização multiplataforma e política de retenção do legado;
+11. evolução modular de Newsletter, Ads e Consent.
 
 O Bolão, DW Esportivo, ETLs e regras esportivas permanecem fora do núcleo portável.
+
+### Fase de crescimento multiplataforma
+
+O M360 Core passa a atender múltiplas instalações WordPress a partir de uma única base de código. O Portal Energia Limpa é o primeiro piloto planejado, sem exclusividade arquitetural: novas evoluções e manutenções devem beneficiar o Mengão 360, o PEL e futuros projetos do portfólio.
+
+Princípios:
+
+- novas instalações iniciam sem ownership público automático;
+- tema, SEO técnico, AdSense, MailPoet e CMP existentes são preservados até cutover específico;
+- configurações portáteis são separadas de conteúdo, pessoas, campanhas e segredos;
+- cada capacidade possui ativação, homologação e rollback próprios;
+- nenhuma regra esportiva integra o núcleo genérico;
+- a primeira onda externa prioriza Polylang, Editorial selecionado e Discovery em shadow.
 
 ## v0.6.3 — Newsletter Configuration & Form Hardening
 

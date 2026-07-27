@@ -14,13 +14,12 @@ final class M360_Ads_Admin
 
     public static function admin_menu(): void
     {
-        add_menu_page('M360 Ads Manager', 'M360 Ads', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard'], 'dashicons-megaphone', 58);
-        add_submenu_page('m360-ads-manager', 'Dashboard', 'Dashboard', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard']);
-        add_submenu_page('m360-ads-manager', 'Inventário Piloto', 'Inventário Piloto', 'manage_options', 'm360-ads-inventory', [self::class, 'render_inventory']);
-        add_submenu_page('m360-ads-manager', 'AdSense Ready', 'AdSense Ready', 'manage_options', 'm360-ads-adsense-ready', [self::class, 'render_adsense_ready']);
-        add_submenu_page('m360-ads-manager', 'Slots', 'Slots', 'manage_options', 'm360-ads-slots', [self::class, 'render_slots']);
-        add_submenu_page('m360-ads-manager', 'Campanhas', 'Campanhas', 'manage_options', 'm360-ads-campaigns', [self::class, 'render_campaigns']);
-        add_submenu_page('m360-ads-manager', 'Nova Campanha', 'Nova Campanha', 'manage_options', 'm360-ads-campaign-new', [self::class, 'render_campaign_form']);
+        add_submenu_page(null, 'M360 Ads', 'M360 Ads', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard']);
+        add_submenu_page(null, 'Inventário legado', 'Inventário legado', 'manage_options', 'm360-ads-inventory', [self::class, 'redirect_inventory_to_slots']);
+        add_submenu_page(null, 'AdSense Ready', 'AdSense Ready', 'manage_options', 'm360-ads-adsense-ready', [self::class, 'render_adsense_ready']);
+        add_submenu_page(null, 'Slots', 'Slots', 'manage_options', 'm360-ads-slots', [self::class, 'render_slots']);
+        add_submenu_page(null, 'Campanhas', 'Campanhas', 'manage_options', 'm360-ads-campaigns', [self::class, 'render_campaigns']);
+        add_submenu_page(null, 'Nova Campanha', 'Nova Campanha', 'manage_options', 'm360-ads-campaign-new', [self::class, 'render_campaign_form']);
     }
 
     public static function render_dashboard(): void
@@ -35,16 +34,23 @@ final class M360_Ads_Admin
         $total_campaigns = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$campaigns}");
         $active_campaigns = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$campaigns} WHERE status = 'active'");
         $assigned = (int) $wpdb->get_var("SELECT COUNT(DISTINCT slot_id) FROM {$relations} WHERE is_active = 1");
-        echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Manager</h1><p>Gestão inicial de inventário publicitário do Mengão 360.</p>';
+        echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Manager</h1><p>Gestão portável de inventário, campanhas, criativos e providers publicitários.</p>';
         echo '<div class="m360-ads-admin__cards">';
         self::metric('Slots', $total_slots); self::metric('Slots ativos', $active_slots); self::metric('Slots ocupados', $assigned); self::metric('Campanhas', $total_campaigns); self::metric('Campanhas ativas', $active_campaigns); self::metric('Schema Ads', esc_html((string) get_option('m360_ads_db_version', '-')));
-        echo '</div><p><a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=m360-ads-inventory')) . '">Ver inventário piloto</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-adsense-ready')) . '">Checklist AdSense Ready</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-privacy-consent')) . '">Privacy &amp; Consent</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-header-delivery')) . '">Header Delivery</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-campaign-new')) . '">Nova campanha</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-slots')) . '">Ver slots</a></p></div>';
+        echo '</div><p><a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=m360-ads-slots')) . '">Gerenciar slots</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-adsense-ready')) . '">Checklist AdSense Ready</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-privacy-consent')) . '">Privacy &amp; Consent</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-header-delivery')) . '">Header Delivery</a> <a class="button" href="' . esc_url(admin_url('admin.php?page=m360-ads-campaign-new')) . '">Nova campanha</a></p></div>';
+    }
+
+    public static function redirect_inventory_to_slots(): void
+    {
+        self::guard();
+        wp_safe_redirect(add_query_arg(['page' => 'm360-ads-slots', 'm360_notice' => 'inventory_consolidated'], admin_url('admin.php')));
+        exit;
     }
 
     public static function render_inventory(): void
     {
         self::guard();
-        echo '<div class="wrap m360-ads-admin"><h1>M360 Ads Pilot — Production Inventory</h1><p>Estes são os quatro espaços atuais migrados para renderização pelo M360 Ads Manager. Substitua as chamadas manuais do tema pelos shortcodes ou pela API PHP abaixo.</p>';
+        echo '<div class="wrap m360-ads-admin"><h1>M360 Ads — Inventário legado</h1><p>Rota preservada apenas para compatibilidade administrativa. A gestão definitiva ocorre em Slots.</p>';
         echo '<div class="m360-ads-inventory-grid">';
         foreach (M360_Ads_DB::pilot_slots() as $slot_key => $label) { self::inventory_card($slot_key, $label); }
         echo '</div></div>';
@@ -299,7 +305,7 @@ final class M360_Ads_Admin
     {
         $code = sanitize_key((string) ($_GET['m360_notice'] ?? ''));
         $type = sanitize_key((string) ($_GET['m360_notice_type'] ?? 'success'));
-        $messages = ['campaign_saved'=>'Campanha salva com sucesso.','campaign_deleted'=>'Campanha excluida com sucesso.','campaign_not_found'=>'Campanha nao encontrada.','title_required'=>'Informe o titulo da campanha.','invalid_datetime'=>'Use uma data valida no formato AAAA-MM-DD HH:MM:SS.','invalid_period'=>'A data final deve ser posterior a data inicial.','database_error'=>'Nao foi possivel concluir a operacao no banco de dados.','slot_not_found'=>'Slot nao encontrado.','slot_assignment_saved'=>'Vinculo do slot salvo com sucesso.','slot_assignments_saved'=>'Vinculos dos slots salvos com sucesso.'];
+        $messages = ['inventory_consolidated'=>'O Inventário Piloto foi consolidado nesta gestão definitiva de Slots.','campaign_saved'=>'Campanha salva com sucesso.','campaign_deleted'=>'Campanha excluida com sucesso.','campaign_not_found'=>'Campanha nao encontrada.','title_required'=>'Informe o titulo da campanha.','invalid_datetime'=>'Use uma data valida no formato AAAA-MM-DD HH:MM:SS.','invalid_period'=>'A data final deve ser posterior a data inicial.','database_error'=>'Nao foi possivel concluir a operacao no banco de dados.','slot_not_found'=>'Slot nao encontrado.','slot_assignment_saved'=>'Vinculo do slot salvo com sucesso.','slot_assignments_saved'=>'Vinculos dos slots salvos com sucesso.'];
         if (!isset($messages[$code])) { return; }
         $class = $type === 'error' ? 'notice notice-error' : 'notice notice-success is-dismissible';
         echo '<div class="' . esc_attr($class) . '"><p>' . esc_html($messages[$code]) . '</p></div>';

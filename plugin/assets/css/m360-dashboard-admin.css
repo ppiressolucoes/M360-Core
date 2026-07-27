@@ -1,0 +1,148 @@
+.m360-dashboard {
+    --m360-dashboard-accent: #3157e8;
+    max-width: 1440px;
+}
+
+.m360-dashboard__heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin: 20px 0 18px;
+}
+
+.m360-dashboard__heading h1 {
+    font-size: 30px;
+    font-weight: 650;
+    margin: 0 0 6px;
+}
+
+.m360-dashboard__heading p,
+.m360-dashboard__lead {
+    color: #50575e;
+    font-size: 15px;
+    margin: 0;
+}
+
+.m360-dashboard__version {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 7px 12px;
+}
+
+.m360-dashboard__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.m360-dashboard__tabs .nav-tab {
+    margin-left: 0;
+}
+
+.m360-dashboard__section {
+    margin-top: 24px;
+}
+
+.m360-dashboard__section > h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.m360-dashboard__metrics,
+.m360-dashboard__cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 20px;
+}
+
+.m360-dashboard__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.m360-dashboard__metric,
+.m360-dashboard__card {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 20px;
+}
+
+.m360-dashboard__metric {
+    border-top: 4px solid var(--m360-dashboard-accent);
+}
+
+.m360-dashboard__metric span,
+.m360-dashboard__metric small {
+    color: #646970;
+    display: block;
+}
+
+.m360-dashboard__metric strong {
+    display: block;
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 10px 0 8px;
+}
+
+.m360-dashboard__card {
+    display: flex;
+    flex-direction: column;
+}
+
+.m360-dashboard__card h3 {
+    font-size: 17px;
+    margin: 0 0 8px;
+}
+
+.m360-dashboard__card p {
+    color: #50575e;
+    flex: 1;
+    line-height: 1.55;
+    margin: 0 0 18px;
+}
+
+.m360-dashboard__card .button {
+    align-self: flex-start;
+}
+
+@media (max-width: 1100px) {
+    .m360-dashboard__metrics,
+    .m360-dashboard__cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .m360-dashboard__heading {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .m360-dashboard__version {
+        align-self: flex-start;
+    }
+
+    .m360-dashboard__metrics,
+    .m360-dashboard__cards {
+        grid-template-columns: 1fr;
+    }
+
+    .m360-dashboard__tabs {
+        border-bottom: 0;
+    }
+
+    .m360-dashboard__tabs .nav-tab {
+        border-bottom: 1px solid #c3c4c7;
+        flex: 1 1 calc(50% - 4px);
+        margin-bottom: 0;
+        text-align: center;
+    }
+}

@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_Site_Profile
 {
     private const OPTION = 'm360_site_profile';
-    private const SCHEMA_VERSION = 1;
+    private const SCHEMA_VERSION = 2;
 
     public static function activate(): void
     {
@@ -23,6 +23,7 @@ final class M360_Site_Profile
             'vertical' => 'publisher',
             'default_locale' => $locale,
             'supported_locales' => [$locale],
+            'runtime' => M360_Runtime_Profile::get(),
         ];
     }
 
@@ -34,7 +35,21 @@ final class M360_Site_Profile
 
     public static function update(array $input): bool
     {
-        return update_option(self::OPTION, self::sanitize($input), false);
+        $previous_runtime = M360_Runtime_Profile::get();
+        $clean = self::sanitize($input);
+        $runtime_updated = M360_Runtime_Profile::update($clean['runtime']);
+        $profile_updated = update_option(self::OPTION, $clean, false);
+        if ($previous_runtime !== $clean['runtime']) {
+            if (
+                !empty($previous_runtime['capabilities']['newsletter_runtime'])
+                && empty($clean['runtime']['capabilities']['newsletter_runtime'])
+            ) {
+                wp_clear_scheduled_hook('m360_newsletter_sync_pending');
+                wp_clear_scheduled_hook('m360_newsletter_daily_cleanup');
+            }
+            flush_rewrite_rules(false);
+        }
+        return $profile_updated || $runtime_updated || self::get() === $clean;
     }
 
     public static function sanitize(array $input): array
@@ -56,6 +71,9 @@ final class M360_Site_Profile
             'vertical' => sanitize_key((string) ($input['vertical'] ?? 'publisher')) ?: 'publisher',
             'default_locale' => $default_locale,
             'supported_locales' => array_slice($locales, 0, 20),
+            'runtime' => M360_Runtime_Profile::sanitize(
+                is_array($input['runtime'] ?? null) ? $input['runtime'] : M360_Runtime_Profile::get()
+            ),
         ];
     }
 
@@ -65,12 +83,13 @@ final class M360_Site_Profile
         if (!is_array($decoded) || json_last_error() !== JSON_ERROR_NONE) {
             return new WP_Error('m360_profile_json', 'JSON de perfil inválido.');
         }
-        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales'];
+        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','runtime'];
         $unknown = array_diff(array_keys($decoded), $allowed);
         if ($unknown) {
             return new WP_Error('m360_profile_keys', 'O perfil contém campos não permitidos: ' . implode(', ', $unknown));
         }
-        if ((int) ($decoded['schema_version'] ?? 0) !== self::SCHEMA_VERSION) {
+        $incoming_schema = (int) ($decoded['schema_version'] ?? 0);
+        if (!in_array($incoming_schema, [1, self::SCHEMA_VERSION], true)) {
             return new WP_Error('m360_profile_schema', 'Versão de schema do Site Profile incompatível.');
         }
         $required = ['site_key','site_name','vertical','default_locale','supported_locales'];
@@ -78,6 +97,10 @@ final class M360_Site_Profile
         if ($missing) {
             return new WP_Error('m360_profile_required', 'O perfil não contém todos os campos obrigatórios.');
         }
+        if ($incoming_schema === 1) {
+            $decoded['runtime'] = M360_Runtime_Profile::get();
+        }
+        $decoded['schema_version'] = self::SCHEMA_VERSION;
         self::update($decoded);
         return self::get();
     }

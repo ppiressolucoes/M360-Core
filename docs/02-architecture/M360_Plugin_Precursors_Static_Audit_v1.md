@@ -182,6 +182,9 @@ O plugin mantém diversas opções `m360_sr_*` para idioma, layouts, auto append
 9. Ausência de rotina de desativação/uninstall exige estratégia explícita de preservação e limpeza.
 10. O renderer inline utiliza `<h1>` para uma notícia relacionada e deve ser corrigido para não competir com o título principal.
 11. A documentação interna contém histórico até versões posteriores ao nome da pasta recebida, reforçando a necessidade de normalizar pacotes e releases.
+12. A opção `m360_sr_shadow_mode` é salva e exibida no admin, mas não é consultada pelo gerador, hooks ou renderer do fonte `0.9.0`; ela não pode ser usada como garantia de shadow mode efetivo.
+13. O `M360_SR_Link_Catalog` usa o catálogo DW de forma exclusiva para `topic` e `internal_link`; somente `related_post` é calculado diretamente no WordPress. A substituição do provider exige comparação de qualidade, não apenas troca de infraestrutura.
+14. O protótipo separado `work/m360-semantic-relations/` declarado como `0.1.0` usa os mesmos nomes de tabelas com schema incompatível e não deve ser instalado sobre o ambiente `0.9.0`.
 
 ### Segurança observada
 

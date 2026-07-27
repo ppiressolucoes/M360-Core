@@ -9,8 +9,18 @@ final class M360_Consent_Manager
 
     public static function register(): void
     {
+        self::register_admin();
+        self::register_frontend();
+    }
+
+    public static function register_admin(): void
+    {
         add_action('admin_menu', [self::class, 'register_admin_page'], 30);
         add_action('admin_post_m360_save_privacy_settings', [self::class, 'save_settings']);
+    }
+
+    public static function register_frontend(): void
+    {
         add_action('wp_head', [self::class, 'render_consent_mode_defaults'], 0);
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_assets'], 20);
         add_action('wp_footer', [self::class, 'render_local_interface'], 5);
@@ -80,7 +90,7 @@ final class M360_Consent_Manager
     public static function register_admin_page(): void
     {
         add_submenu_page(
-            'm360-ads-manager',
+            null,
             'M360 Privacy & Consent',
             'Privacy & Consent',
             'manage_options',

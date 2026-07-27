@@ -1,5 +1,49 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.1] — Existing Installation Detection Hotfix
+
+- substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;
+- classifica upgrades históricos sem Runtime Profile como `legacy-compatible`;
+- mantém instalações realmente novas em `portable-safe`;
+- preserva integralmente qualquer Runtime Profile já gravado ou ajustado pelo administrador;
+- registra a origem da política, evidências, versão e data da classificação;
+- exibe o diagnóstico da transição no M360 Dashboard;
+- não altera módulos, Site Profile, conteúdo, schemas, filas, snapshots ou configurações dos providers.
+- homologada no Mengão 360 em 27/07/2026 com política `legacy-compatible`, origem `preserved-existing-profile` e módulos Foundation, Editorial e Discovery & SEO `healthy`.
+
+## [v0.7.4.0] — Portable Deployment Hardening
+
+- adiciona política de runtime `portable-safe` e `legacy-compatible`;
+- preserva automaticamente o comportamento de instalações M360 existentes;
+- inicia instalações novas sem takeover de templates ou ownership público automático;
+- adiciona gates para templates públicos, Ads, Ads automático, Newsletter e Consent;
+- evolui o Site Profile para schema 2 com política exportável e importação retrocompatível do schema 1;
+- impede seed de campanhas e criativos esportivos em instalações novas;
+- remove a presunção da lista MailPoet `#3` e adota defaults editoriais genéricos;
+- adiciona diagnóstico de política, Polylang e MailPoet no Dashboard;
+- registra ADR, sprint, runbook e release notes da fase de crescimento multiplataforma;
+- mantém o Portal Energia Limpa fora de produção até homologação específica.
+
+## [v0.7.3.0.1] — Hidden Routes Access Hotfix
+
+- corrige o bloqueio “Sem permissão para acessar esta página” ao abrir funcionalidades pelos cards;
+- registra páginas especializadas como rotas administrativas ocultas, sem removê-las do controle de acesso do WordPress;
+- mantém somente `M360 Dashboard` na navegação lateral;
+- preserva destaque visual do Dashboard durante a navegação pelas rotas internas;
+- não altera permissões, dados, front-end, backfill ou configurações.
+- homologação operacional de 24/07/2026: Content Discovery com cobertura `100%`, backfill `completed`, ownership `automatic` e precursor Semantic Relations desativado sem impacto.
+
+## [v0.7.3.0] — Unified Admin Dashboard
+
+- consolida `M360 Platform` e `M360 Ads` em um único item lateral `M360 Dashboard`;
+- organiza a gestão em abas de visão geral, Editorial, Discovery & SEO, Ads, Newsletter e Privacidade & Plataforma;
+- preserva os slugs e callbacks administrativos existentes como rotas internas compatíveis;
+- mantém páginas de criação e edição acessíveis sem ocupar a navegação principal;
+- remove o Inventário Piloto da experiência administrativa e redireciona sua URL histórica para Slots;
+- preserva Inventory Library, slots, campanhas, criativos, tabelas, shortcodes e APIs do runtime;
+- adiciona indicadores de saúde modular e cobertura Discovery à visão geral;
+- não altera front-end, schemas, snapshots, fila, cursor ou agendamento do backfill.
+
 ## [v0.7.0] — Publisher Platform Foundation
 
 - adiciona contrato formal para módulos internos;
