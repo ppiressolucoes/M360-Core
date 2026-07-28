@@ -140,6 +140,11 @@ Diretrizes:
 
 Status: em execução, sem número de release. Esta seção substitui, para execução corrente, a antiga “Sprint futura C — Mega Bolão 360 MVP Comercial”; autoatendimento e monetização permanecem no backlog posterior.
 
+Separação obrigatória: Mega Bolão 360 e M360 Core são plugins independentes.
+O Core atende o domínio editorial; o Bolão atende o domínio esportivo e o
+DW/ETL de competições. Não haverá incorporação de código, dependência de runtime,
+pacote ZIP compartilhado ou migrations cruzadas.
+
 Marco 0 — discovery e baseline: concluído em 28/07/2026.
 
 - baseline real do plugin publicado em `ppiressolucoes/m360-bolao`, commit `5c7e4e4`;

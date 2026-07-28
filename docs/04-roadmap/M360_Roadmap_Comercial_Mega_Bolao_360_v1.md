@@ -105,6 +105,12 @@ Palavras-chave:
 
 Frente atual: **Sprint Comercial C.1 — Mega Bolão 360 Multi-Competition Foundation**, sem número de release. A versão `v0.7.0` permanece reservada ao M360 Publisher Platform.
 
+Arquitetura de produto: o M360 Core é o plugin editorial e o Mega Bolão 360 é
+o plugin esportivo integrado ao DW/ETL de competições. Eles permanecem
+independentes e paralelos, cada um com repositório, código, banco de domínio,
+administração, versionamento, release e pacote ZIP próprios. Nenhum será
+incorporado ao outro e não haverá dependência de runtime.
+
 O primeiro incremento será administrado pelo portal. Autoatendimento, planos e monetização continuam neste roadmap, mas não fazem parte da fundação C.1.
 
 Escopo da fundação:

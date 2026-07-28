@@ -2,6 +2,10 @@
 
 ## [Unreleased — Comercial C.1] — Mega Bolão 360 Multi-Competition Foundation
 
+- registra somente governança de portfólio: o Mega Bolão 360 é um plugin
+  esportivo independente e não integra o código, pacote ou runtime do M360 Core;
+- mantém repositório, versão, migrations, administração, releases e ZIP
+  exclusivos para cada plugin;
 - mantém esta frente sem número de release; `v0.7.0` continua reservado ao M360 Publisher Platform;
 - conclui em 28/07/2026 o marco 0 de discovery e versionamento do baseline;
 - publica o plugin recuperado em `ppiressolucoes/m360-bolao`, commit `5c7e4e4`;
