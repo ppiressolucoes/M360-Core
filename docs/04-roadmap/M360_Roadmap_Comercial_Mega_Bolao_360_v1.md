@@ -100,3 +100,44 @@ Palavras-chave:
 3. Plano pago preparado.
 4. Pagamento/assinatura.
 5. Ranking avançado e compartilhamento.
+
+## Atualização canônica — 28/07/2026
+
+Frente atual: **Sprint Comercial C.1 — Mega Bolão 360 Multi-Competition Foundation**, sem número de release. A versão `v0.7.0` permanece reservada ao M360 Publisher Platform.
+
+O primeiro incremento será administrado pelo portal. Autoatendimento, planos e monetização continuam neste roadmap, mas não fazem parte da fundação C.1.
+
+Escopo da fundação:
+
+1. recuperar e versionar o baseline real do plugin;
+2. criar bolões administrados por competição e temporada elegíveis no DW;
+3. isolar participantes, palpites, apuração e ranking por bolão;
+4. suportar pontos corridos, grupos + ida/volta e mata-mata;
+5. bloquear palpites no cliente e no servidor quando o confronto estiver indefinido, iniciado ou finalizado;
+6. sincronizar de forma idempotente após o ETL;
+7. preservar ligas, convites e ranking já validados;
+8. manter PT-BR/EN-US, auditoria, homologação e rollback;
+9. preservar intervenções urgentes por override temporário, auditado e conciliado.
+
+Competições da fundação:
+
+- Brasileirão Série A 2026;
+- Copa Libertadores 2026;
+- Copa do Brasil 2026.
+
+A Copa do Mundo FIFA 2026 permanece como baseline operacional e cenário de regressão.
+
+Situação do marco 0:
+
+- repositório: `ppiressolucoes/m360-bolao`;
+- commit de produção: `5c7e4e4`;
+- tag: `baseline-production-0.1.0-assets-0.1.4`;
+- PR documental: `m360-bolao#1`;
+- issue de aceite e governança: `M360-Core#24`.
+
+Fronteira de dados:
+
+- DW Esportivo e ETL são a única fonte de verdade para jogos, times, horários, status e resultados oficiais;
+- o WordPress não altera diretamente `fato_jogos`, dimensões ou resultados oficiais;
+- atraso da API pode ser tratado por override temporário com autor, motivo, validade, trilha de auditoria e reconciliação automática;
+- dumps, dados de produção e segredos não integram o repositório.

@@ -1,5 +1,16 @@
 # Changelog — M360 Core
 
+## [Unreleased — Comercial C.1] — Mega Bolão 360 Multi-Competition Foundation
+
+- mantém esta frente sem número de release; `v0.7.0` continua reservado ao M360 Publisher Platform;
+- conclui em 28/07/2026 o marco 0 de discovery e versionamento do baseline;
+- publica o plugin recuperado em `ppiressolucoes/m360-bolao`, commit `5c7e4e4`;
+- cria a tag imutável `baseline-production-0.1.0-assets-0.1.4`;
+- registra documentação técnica no PR `m360-bolao#1`;
+- inventaria o schema-only do DW sem incluir dumps, dados ou segredos no Git;
+- define o DW/ETL como fonte de verdade esportiva e preserva a intervenção manual por override temporário, auditado e conciliado;
+- não altera código ou release do M360 Core.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;

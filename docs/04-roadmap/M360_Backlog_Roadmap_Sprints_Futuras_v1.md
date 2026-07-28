@@ -2,7 +2,7 @@
 
 Versão: v1.0
 
-Atualização canônica: 2026-07-16
+Atualização canônica: 2026-07-28
 
 Baseline de referência: `M360 Core v0.6.5.4`
 
@@ -135,3 +135,31 @@ Diretrizes:
 - Separar componentes.
 - Avaliar templates em banco.
 - Avaliar subworkflows.
+
+## Atualização canônica — Sprint Comercial C.1
+
+Status: em execução, sem número de release. Esta seção substitui, para execução corrente, a antiga “Sprint futura C — Mega Bolão 360 MVP Comercial”; autoatendimento e monetização permanecem no backlog posterior.
+
+Marco 0 — discovery e baseline: concluído em 28/07/2026.
+
+- baseline real do plugin publicado em `ppiressolucoes/m360-bolao`, commit `5c7e4e4`;
+- tag imutável `baseline-production-0.1.0-assets-0.1.4`;
+- documentação de descoberta e fronteiras arquiteturais no PR `m360-bolao#1`;
+- schema-only do DW inventariado sem versionar dump, dados ou segredos;
+- divergência registrada: cabeçalho do plugin `0.1.0`, constante/assets `0.1.4`;
+- intervenção manual preservada como requisito operacional, a ser implementada por override temporário, auditado e conciliado.
+
+Próximos marcos:
+
+1. migrações seguras para múltiplos bolões por competição e temporada;
+2. catálogo administrado de competições elegíveis a partir do DW;
+3. engine para pontos corridos, grupos + ida/volta e mata-mata;
+4. bloqueio de palpites no cliente e no servidor;
+5. homologação assistida em Brasileirão Série A, Copa Libertadores e Copa do Brasil.
+
+Fora do escopo desta fundação:
+
+- criação de bolão pelo usuário;
+- pagamentos, assinaturas e planos;
+- novas modalidades;
+- edição direta de fatos esportivos no WordPress.
