@@ -11,6 +11,13 @@
 - publica o plugin recuperado em `ppiressolucoes/m360-bolao`, commit `5c7e4e4`;
 - cria a tag imutável `baseline-production-0.1.0-assets-0.1.4`;
 - registra documentação técnica no PR `m360-bolao#1`;
+- implementa no repositório independente o marco 1 da fundação no commit
+  `m360-bolao@c8f645c`, sem incorporar runtime ao M360 Core;
+- registra migração controlada, catálogo DW somente leitura, administração,
+  isolamento por bolão, sincronização idempotente e override auditável;
+- remove do plugin esportivo a escrita direta do painel em `fato_jogos`;
+- mantém migração em banco, regressão da Copa, três competições, rollback e ZIP
+  como gates de homologação ainda pendentes;
 - inventaria o schema-only do DW sem incluir dumps, dados ou segredos no Git;
 - define o DW/ETL como fonte de verdade esportiva e preserva a intervenção manual por override temporário, auditado e conciliado;
 - não altera código ou release do M360 Core.

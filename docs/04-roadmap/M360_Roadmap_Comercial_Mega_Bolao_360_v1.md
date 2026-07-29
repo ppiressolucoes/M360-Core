@@ -141,6 +141,23 @@ Situação do marco 0:
 - PR documental: `m360-bolao#1`;
 - issue de aceite e governança: `M360-Core#24`.
 
+Situação do marco 1 — fundação implementada:
+
+- commit funcional: `m360-bolao@c8f645c`;
+- draft PR: `m360-bolao#1`;
+- migração C.1 explícita, idempotente e desabilitada por padrão;
+- catálogo de competições elegíveis lido do DW;
+- administração e estados de bolão;
+- isolamento de participantes, palpites, rankings e ligas;
+- bloqueio de palpites no cliente e no AJAX;
+- sincronização pós-ETL com hash, chave idempotente e lock;
+- override temporário com fonte, validade, auditoria e reconciliação;
+- escrita direta em `fato_jogos` removida do painel.
+
+O marco 1 está pronto para homologação, não para produção. Permanecem pendentes
+o lint PHP nativo, a migração em cópia do banco, a regressão da Copa, os três
+modelos esportivos, o rollback e o ZIP próprio.
+
 Fronteira de dados:
 
 - DW Esportivo e ETL são a única fonte de verdade para jogos, times, horários, status e resultados oficiais;

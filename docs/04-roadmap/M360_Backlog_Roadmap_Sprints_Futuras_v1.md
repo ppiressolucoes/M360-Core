@@ -154,13 +154,24 @@ Marco 0 — discovery e baseline: concluído em 28/07/2026.
 - divergência registrada: cabeçalho do plugin `0.1.0`, constante/assets `0.1.4`;
 - intervenção manual preservada como requisito operacional, a ser implementada por override temporário, auditado e conciliado.
 
+Marco 1 — implementação da fundação: concluído em branch em 28/07/2026.
+
+- commit `m360-bolao@c8f645c` no draft PR `m360-bolao#1`;
+- migração controlada e backfill do baseline;
+- catálogo DW somente leitura e administração de bolões;
+- engine comum para os três modelos esportivos;
+- isolamento por `bolao_competicao_id`;
+- guard de palpites no cliente e no servidor;
+- sincronização pós-ETL idempotente;
+- overrides temporários auditáveis, sem escrita em `fato_jogos`.
+
 Próximos marcos:
 
-1. migrações seguras para múltiplos bolões por competição e temporada;
-2. catálogo administrado de competições elegíveis a partir do DW;
-3. engine para pontos corridos, grupos + ida/volta e mata-mata;
-4. bloqueio de palpites no cliente e no servidor;
-5. homologação assistida em Brasileirão Série A, Copa Libertadores e Copa do Brasil.
+1. lint PHP e migração em cópia do banco de produção;
+2. regressão completa do bolão da Copa;
+3. homologação assistida em Brasileirão Série A, Copa Libertadores e Copa do Brasil;
+4. ensaio de rollback;
+5. ZIP independente de homologação.
 
 Fora do escopo desta fundação:
 
