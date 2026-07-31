@@ -21,6 +21,12 @@
 - inventaria o schema-only do DW sem incluir dumps, dados ou segredos no Git;
 - define o DW/ETL como fonte de verdade esportiva e preserva a intervenção manual por override temporário, auditado e conciliado;
 - não altera código ou release do M360 Core.
+- registra em 31/07/2026 a migração C.1 e a abertura controlada do primeiro
+  bolão multi-competição, para o Brasileirão Série A 2026;
+- registra a validação de pontos corridos, palpite autenticado, acesso anônimo,
+  visibilidade `ADMIN`/`PUBLICO` e experiência PT-BR/EN-US;
+- registra o corretivo independente Mega Bolão 360 v0.1.7 para invalidação
+  do cache público, sem alterar código ou release do M360 Core.
 
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 

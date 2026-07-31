@@ -164,3 +164,20 @@ Fronteira de dados:
 - o WordPress não altera diretamente `fato_jogos`, dimensões ou resultados oficiais;
 - atraso da API pode ser tratado por override temporário com autor, motivo, validade, trilha de auditoria e reconciliação automática;
 - dumps, dados de produção e segredos não integram o repositório.
+
+## Atualização canônica — 31/07/2026
+
+Marco 2 — migração e abertura controlada do primeiro bolão multi-competição:
+
+- migração C.1 aplicada em produção e novamente bloqueada;
+- protótipo da Copa do Mundo preservado como `ENCERRADO`;
+- Bolão Brasileirão Série A 2026 criado, aberto e publicado pelo fluxo administrado;
+- gate do DW aprovado com 380 jogos, 170 futuros, confrontos definidos e horários presentes;
+- gravação e recuperação de palpite validadas;
+- visibilidade restrita `ADMIN` e publicação explícita `PUBLICO` validadas;
+- experiência PT-BR e EN-US validada para usuários autenticados e visitantes;
+- pacote corretivo v0.1.7 preparado para invalidar o cache público após mudanças de estado ou visibilidade.
+
+O modelo de pontos corridos está homologado. Permanecem como próximos marcos:
+sincronização/apuração pós-ETL em janela real, isolamento após apuração,
+overrides temporários e os modelos Libertadores e Copa do Brasil.

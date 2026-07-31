@@ -179,3 +179,21 @@ Fora do escopo desta fundação:
 - pagamentos, assinaturas e planos;
 - novas modalidades;
 - edição direta de fatos esportivos no WordPress.
+
+### Marco 2 — produção controlada (31/07/2026)
+
+Concluído:
+
+- migração C.1 e regressão do bolão encerrado da Copa;
+- criação, abertura restrita e publicação do Bolão Brasileirão Série A 2026;
+- gate de elegibilidade do DW para pontos corridos;
+- palpite autenticado, acesso anônimo e PT-BR/EN-US;
+- correção preventiva de invalidação do cache LiteSpeed na v0.1.7.
+
+Próxima prioridade:
+
+1. sincronização e apuração pós-ETL idempotente em janela real;
+2. validar isolamento de participantes e rankings após apuração;
+3. homologar override temporário e reconciliação;
+4. homologar Libertadores e Copa do Brasil;
+5. consolidar rollback e release independente do Mega Bolão 360.
