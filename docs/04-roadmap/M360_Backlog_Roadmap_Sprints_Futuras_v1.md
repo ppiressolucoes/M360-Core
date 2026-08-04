@@ -197,3 +197,40 @@ Próxima prioridade:
 3. homologar override temporário e reconciliação;
 4. homologar Libertadores e Copa do Brasil;
 5. consolidar rollback e release independente do Mega Bolão 360.
+
+
+## Sprint Comercial C.2 — Mega Bolão 360 Product Hub
+
+Status: em implementação a partir de 03/08/2026.
+
+Esta sprint promove e substitui a antiga “Sprint futura D — Landing Page Mega
+Bolão 360” como próxima prioridade comercial da frente esportiva.
+
+Backlog priorizado:
+
+1. shortcode dinâmico do Product Hub;
+2. catálogo DW de competições monitoradas;
+3. cards de bolões abertos, encerrados, bloqueados e futuros;
+4. resolução de páginas PT-BR/EN-US e CTAs;
+5. hero, como funciona, contrato de dados e FAQ;
+6. responsividade, acessibilidade e isolamento CSS;
+7. SEO e dados estruturados;
+8. pré-homologação controlada no WordPress;
+9. validação anônima e autenticada;
+10. rollback e pacote canônico independente.
+
+Dependências: C.1 homologada, DW/ETL operacional e bolões administrados pelo
+portal. O M360 Core editorial não é dependência de runtime.
+
+### Catálogo internacional após C.2
+
+Preparar, por prioridade comercial e disponibilidade real no DW, UEFA Champions
+League, Bundesliga, Eredivisie, Primera División/La Liga, Ligue 1, Championship,
+Primeira Liga, European Championship, Serie A italiana e Premier League.
+
+Cada entrada depende de dimensão/temporada, modelo esportivo suportado, carga em
+`fato_jogos`, traduções PT-BR/EN-US, gate de abertura e publicação administrada.
+
+### Pós-homologação visual do Product Hub
+
+Validar navegação móvel, SEO/schema.org, métricas de interação dos CTAs e ordenação comercial configurável dos cards.

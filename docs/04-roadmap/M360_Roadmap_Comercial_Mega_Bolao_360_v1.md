@@ -181,3 +181,41 @@ Marco 2 — migração e abertura controlada do primeiro bolão multi-competiç�
 O modelo de pontos corridos está homologado. Permanecem como próximos marcos:
 sincronização/apuração pós-ETL em janela real, isolamento após apuração,
 overrides temporários e os modelos Libertadores e Copa do Brasil.
+
+
+## Atualização canônica — 03/08/2026
+
+### Sprint Comercial C.2 — Mega Bolão 360 Product Hub
+
+A antiga “Sprint futura D — Landing Page Mega Bolão 360” foi promovida para o
+próximo marco ativo após a fundação C.1.
+
+Escopo aprovado:
+
+1. landing PT-BR e EN-US em páginas próprias do portal;
+2. catálogo dinâmico das competições assistidas pelo DW/ETL;
+3. estados ABERTO, ENCERRADO, BLOQUEADO e EM BREVE;
+4. CTA somente para bolões públicos;
+5. agenda, contagens e próximo jogo em leitura do DW;
+6. conteúdo comercial, SEO, FAQ e benefícios do produto;
+7. shortcode mantido no plugin independente Mega Bolão 360.
+
+Shortcode canônico:
+
+    [mega_bolao_360_home idioma="pt-BR"]
+    [mega_bolao_360_home idioma="en-US"]
+
+Fora do escopo C.2: criação de bolão pelo usuário, planos, pagamentos,
+assinaturas e escrita de fatos esportivos no WordPress.
+
+### Ajuste do catálogo C.2 — 03/08/2026
+
+- inclusão automática de todo bolão ativo administrado pelo portal;
+- correção do card do Brasileirão Série A quando o slug do DW divergir do catálogo inicial;
+- expansão preparada pelos códigos `CL`, `BL1`, `DED`, `PD`, `FL1`, `ELC`, `PPL`, `EC`, `SA` e `PL`;
+- exibição futura condicionada a competição ativa, modelo suportado e calendário carregado no DW;
+- cobertura da fonte externa não substitui o gate do DW/ETL nem publica bolões automaticamente.
+
+### Product Hub 0.2.2 — composição visual
+
+Menu interno, widgets operacionais, blocos de benefícios, FAQ ampliado e contêiner responsivo de até 1200 px preparados para homologação controlada.
