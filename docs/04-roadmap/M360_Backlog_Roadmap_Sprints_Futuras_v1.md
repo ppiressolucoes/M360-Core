@@ -234,3 +234,12 @@ Cada entrada depende de dimensão/temporada, modelo esportivo suportado, carga e
 ### Pós-homologação visual do Product Hub
 
 Validar navegação móvel, SEO/schema.org, métricas de interação dos CTAs e ordenação comercial configurável dos cards.
+
+
+## Sprint Comercial C.3 — Fundação em execução
+
+1. shortcodes componíveis e retrocompatibilidade;
+2. edição da ordem pelo Elementor/Gutenberg;
+3. cards Free, Jogador e Dirigente sem cobrança;
+4. URLs de CTA configuráveis;
+5. próximo gate: catálogo administrativo, limites numéricos e entitlement no servidor.

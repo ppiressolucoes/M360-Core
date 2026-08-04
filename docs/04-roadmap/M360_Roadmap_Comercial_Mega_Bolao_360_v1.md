@@ -219,3 +219,8 @@ assinaturas e escrita de fatos esportivos no WordPress.
 ### Product Hub 0.2.2 — composição visual
 
 Menu interno, widgets operacionais, blocos de benefícios, FAQ ampliado e contêiner responsivo de até 1200 px preparados para homologação controlada.
+
+
+## Sprint Comercial C.3 — Composable Product Hub
+
+Status: iniciada em 03/08/2026. A landing passa a oferecer componentes independentes para Elementor/Gutenberg, menu ampliado, catálogo visual Free/Jogador/Dirigente e CTA configurável. Os cards de planos não ativam cobrança nem autorização; limites reais permanecem no próximo gate de entitlement.
