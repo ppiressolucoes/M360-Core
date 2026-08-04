@@ -100,3 +100,127 @@ Palavras-chave:
 3. Plano pago preparado.
 4. Pagamento/assinatura.
 5. Ranking avançado e compartilhamento.
+
+## Atualização canônica — 28/07/2026
+
+Frente atual: **Sprint Comercial C.1 — Mega Bolão 360 Multi-Competition Foundation**, sem número de release. A versão `v0.7.0` permanece reservada ao M360 Publisher Platform.
+
+Arquitetura de produto: o M360 Core é o plugin editorial e o Mega Bolão 360 é
+o plugin esportivo integrado ao DW/ETL de competições. Eles permanecem
+independentes e paralelos, cada um com repositório, código, banco de domínio,
+administração, versionamento, release e pacote ZIP próprios. Nenhum será
+incorporado ao outro e não haverá dependência de runtime.
+
+O primeiro incremento será administrado pelo portal. Autoatendimento, planos e monetização continuam neste roadmap, mas não fazem parte da fundação C.1.
+
+Escopo da fundação:
+
+1. recuperar e versionar o baseline real do plugin;
+2. criar bolões administrados por competição e temporada elegíveis no DW;
+3. isolar participantes, palpites, apuração e ranking por bolão;
+4. suportar pontos corridos, grupos + ida/volta e mata-mata;
+5. bloquear palpites no cliente e no servidor quando o confronto estiver indefinido, iniciado ou finalizado;
+6. sincronizar de forma idempotente após o ETL;
+7. preservar ligas, convites e ranking já validados;
+8. manter PT-BR/EN-US, auditoria, homologação e rollback;
+9. preservar intervenções urgentes por override temporário, auditado e conciliado.
+
+Competições da fundação:
+
+- Brasileirão Série A 2026;
+- Copa Libertadores 2026;
+- Copa do Brasil 2026.
+
+A Copa do Mundo FIFA 2026 permanece como baseline operacional e cenário de regressão.
+
+Situação do marco 0:
+
+- repositório: `ppiressolucoes/m360-bolao`;
+- commit de produção: `5c7e4e4`;
+- tag: `baseline-production-0.1.0-assets-0.1.4`;
+- PR documental: `m360-bolao#1`;
+- issue de aceite e governança: `M360-Core#24`.
+
+Situação do marco 1 — fundação implementada:
+
+- commit funcional: `m360-bolao@c8f645c`;
+- draft PR: `m360-bolao#1`;
+- migração C.1 explícita, idempotente e desabilitada por padrão;
+- catálogo de competições elegíveis lido do DW;
+- administração e estados de bolão;
+- isolamento de participantes, palpites, rankings e ligas;
+- bloqueio de palpites no cliente e no AJAX;
+- sincronização pós-ETL com hash, chave idempotente e lock;
+- override temporário com fonte, validade, auditoria e reconciliação;
+- escrita direta em `fato_jogos` removida do painel.
+
+O marco 1 está pronto para homologação, não para produção. Permanecem pendentes
+o lint PHP nativo, a migração em cópia do banco, a regressão da Copa, os três
+modelos esportivos, o rollback e o ZIP próprio.
+
+Fronteira de dados:
+
+- DW Esportivo e ETL são a única fonte de verdade para jogos, times, horários, status e resultados oficiais;
+- o WordPress não altera diretamente `fato_jogos`, dimensões ou resultados oficiais;
+- atraso da API pode ser tratado por override temporário com autor, motivo, validade, trilha de auditoria e reconciliação automática;
+- dumps, dados de produção e segredos não integram o repositório.
+
+## Atualização canônica — 31/07/2026
+
+Marco 2 — migração e abertura controlada do primeiro bolão multi-competição:
+
+- migração C.1 aplicada em produção e novamente bloqueada;
+- protótipo da Copa do Mundo preservado como `ENCERRADO`;
+- Bolão Brasileirão Série A 2026 criado, aberto e publicado pelo fluxo administrado;
+- gate do DW aprovado com 380 jogos, 170 futuros, confrontos definidos e horários presentes;
+- gravação e recuperação de palpite validadas;
+- visibilidade restrita `ADMIN` e publicação explícita `PUBLICO` validadas;
+- experiência PT-BR e EN-US validada para usuários autenticados e visitantes;
+- pacote corretivo v0.1.7 preparado para invalidar o cache público após mudanças de estado ou visibilidade.
+
+O modelo de pontos corridos está homologado. Permanecem como próximos marcos:
+sincronização/apuração pós-ETL em janela real, isolamento após apuração,
+overrides temporários e os modelos Libertadores e Copa do Brasil.
+
+
+## Atualização canônica — 03/08/2026
+
+### Sprint Comercial C.2 — Mega Bolão 360 Product Hub
+
+A antiga “Sprint futura D — Landing Page Mega Bolão 360” foi promovida para o
+próximo marco ativo após a fundação C.1.
+
+Escopo aprovado:
+
+1. landing PT-BR e EN-US em páginas próprias do portal;
+2. catálogo dinâmico das competições assistidas pelo DW/ETL;
+3. estados ABERTO, ENCERRADO, BLOQUEADO e EM BREVE;
+4. CTA somente para bolões públicos;
+5. agenda, contagens e próximo jogo em leitura do DW;
+6. conteúdo comercial, SEO, FAQ e benefícios do produto;
+7. shortcode mantido no plugin independente Mega Bolão 360.
+
+Shortcode canônico:
+
+    [mega_bolao_360_home idioma="pt-BR"]
+    [mega_bolao_360_home idioma="en-US"]
+
+Fora do escopo C.2: criação de bolão pelo usuário, planos, pagamentos,
+assinaturas e escrita de fatos esportivos no WordPress.
+
+### Ajuste do catálogo C.2 — 03/08/2026
+
+- inclusão automática de todo bolão ativo administrado pelo portal;
+- correção do card do Brasileirão Série A quando o slug do DW divergir do catálogo inicial;
+- expansão preparada pelos códigos `CL`, `BL1`, `DED`, `PD`, `FL1`, `ELC`, `PPL`, `EC`, `SA` e `PL`;
+- exibição futura condicionada a competição ativa, modelo suportado e calendário carregado no DW;
+- cobertura da fonte externa não substitui o gate do DW/ETL nem publica bolões automaticamente.
+
+### Product Hub 0.2.2 — composição visual
+
+Menu interno, widgets operacionais, blocos de benefícios, FAQ ampliado e contêiner responsivo de até 1200 px preparados para homologação controlada.
+
+
+## Sprint Comercial C.3 — Composable Product Hub
+
+Status: iniciada em 03/08/2026. A landing passa a oferecer componentes independentes para Elementor/Gutenberg, menu ampliado, catálogo visual Free/Jogador/Dirigente e CTA configurável. Os cards de planos não ativam cobrança nem autorização; limites reais permanecem no próximo gate de entitlement.

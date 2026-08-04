@@ -10,6 +10,24 @@
 
 As seções históricas abaixo preservam a evolução original. Para novas implementações, prevalece a baseline `v0.7.0`.
 
+## Frente comercial paralela — Mega Bolão 360
+
+- Identificação: **Sprint Comercial C.1 — Mega Bolão 360 Multi-Competition Foundation**.
+- Versionamento: sem número de release até a conclusão da descoberta e definição da próxima versão real do plugin; `v0.7.0` permanece reservado ao M360 Publisher Platform.
+- Repositório canônico: `ppiressolucoes/m360-bolao`.
+- Produto independente: o Mega Bolão 360 não é módulo do M360 Core e mantém
+  código, bootstrap, administração, migrations, assets, releases e ZIP próprios.
+- Coexistência sem acoplamento: nenhum plugin depende do runtime do outro; uma
+  eventual integração deverá usar contrato público, opcional e versionado.
+- Marco 0 concluído em 28/07/2026: baseline de produção publicado no commit `5c7e4e4` e tag `baseline-production-0.1.0-assets-0.1.4`.
+- Marco 1 implementado em 28/07/2026 no commit `m360-bolao@c8f645c`:
+  migração controlada, engine administrada, isolamento por bolão, guard de
+  palpites, sincronização pós-ETL e override auditável.
+- Próximo marco: homologar migração e regressão da Copa em cópia de produção,
+  seguido por Brasileirão Série A, Copa Libertadores e Copa do Brasil.
+- Fronteira: o DW/ETL continua como fonte de verdade esportiva; intervenções manuais serão overrides temporários, auditados e conciliados, nunca escrita direta do WordPress em `fato_jogos`.
+- Acompanhamento: issue `M360-Core#24` e draft PR funcional `m360-bolao#1`.
+
 ## v0.7.x — M360 Publisher Platform
 
 Objetivo: transformar as capacidades homologadas do M360 em uma camada editorial modular e independente de nicho.

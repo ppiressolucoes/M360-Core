@@ -1,5 +1,33 @@
 # Changelog — M360 Core
 
+## [Unreleased — Comercial C.1] — Mega Bolão 360 Multi-Competition Foundation
+
+- registra somente governança de portfólio: o Mega Bolão 360 é um plugin
+  esportivo independente e não integra o código, pacote ou runtime do M360 Core;
+- mantém repositório, versão, migrations, administração, releases e ZIP
+  exclusivos para cada plugin;
+- mantém esta frente sem número de release; `v0.7.0` continua reservado ao M360 Publisher Platform;
+- conclui em 28/07/2026 o marco 0 de discovery e versionamento do baseline;
+- publica o plugin recuperado em `ppiressolucoes/m360-bolao`, commit `5c7e4e4`;
+- cria a tag imutável `baseline-production-0.1.0-assets-0.1.4`;
+- registra documentação técnica no PR `m360-bolao#1`;
+- implementa no repositório independente o marco 1 da fundação no commit
+  `m360-bolao@c8f645c`, sem incorporar runtime ao M360 Core;
+- registra migração controlada, catálogo DW somente leitura, administração,
+  isolamento por bolão, sincronização idempotente e override auditável;
+- remove do plugin esportivo a escrita direta do painel em `fato_jogos`;
+- mantém migração em banco, regressão da Copa, três competições, rollback e ZIP
+  como gates de homologação ainda pendentes;
+- inventaria o schema-only do DW sem incluir dumps, dados ou segredos no Git;
+- define o DW/ETL como fonte de verdade esportiva e preserva a intervenção manual por override temporário, auditado e conciliado;
+- não altera código ou release do M360 Core.
+- registra em 31/07/2026 a migração C.1 e a abertura controlada do primeiro
+  bolão multi-competição, para o Brasileirão Série A 2026;
+- registra a validação de pontos corridos, palpite autenticado, acesso anônimo,
+  visibilidade `ADMIN`/`PUBLICO` e experiência PT-BR/EN-US;
+- registra o corretivo independente Mega Bolão 360 v0.1.7 para invalidação
+  do cache público, sem alterar código ou release do M360 Core.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;
