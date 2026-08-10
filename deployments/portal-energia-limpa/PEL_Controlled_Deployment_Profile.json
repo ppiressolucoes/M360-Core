@@ -1,0 +1,33 @@
+{
+  "profile_version": "0.1.0",
+  "target": "portal-energia-limpa",
+  "core_package": {
+    "version": "0.7.4.0.1",
+    "sha256": "DD614F644E78A047999EF0B93C184AC9E7C1826B99CB915614FA83B94C2BCFE8"
+  },
+  "site_profile": {
+    "site_key": "portal-energia-limpa",
+    "site_name": "Portal Energia Limpa",
+    "vertical": "clean-energy-publisher",
+    "default_locale": "pt-BR",
+    "supported_locales": ["pt-BR", "en-US"]
+  },
+  "runtime": {
+    "mode": "portable-safe",
+    "public_views": false,
+    "ads_runtime": false,
+    "ads_auto_insert": false,
+    "newsletter_runtime": false,
+    "consent_runtime": false
+  },
+  "editorial": {"enabled": true, "mode": "hybrid", "ownership": "explicit-shortcodes-only"},
+  "discovery": {
+    "enabled": true,
+    "mode": "shadow",
+    "generation_strategy": "manual",
+    "writer_mode": "manual",
+    "public_render_mode": "shortcode",
+    "contextual_links_max": 3,
+    "legacy_read_fallback": false
+  }
+}

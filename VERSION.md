@@ -6,9 +6,16 @@
 0.7.4.0.1
 ```
 
+## Próxima versão candidata
+
+```text
+0.7.4.0.2
+```
+
 ## Estado operacional
 
 - Release operacional homologada no WordPress: `v0.7.4.0.1 — Existing Installation Detection Hotfix`.
+- Próxima revisão candidata: `v0.7.4.0.2 — Plugin Identity & PEL Controlled Deployment`.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
 - Content Discovery & SEO homologado com saúde `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`.
