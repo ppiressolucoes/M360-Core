@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 PEL Controlled Deployment
  * Description: Perfil operacional controlado do M360 Core para o Portal Energia Limpa.
- * Version: 0.1.1
+ * Version: 0.1.2
  * Requires at least: 6.0
  * Requires PHP: 8.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_PEL_Controlled_Deployment
 {
     private const OPTION = 'm360_pel_controlled_deployment';
-    private const VERSION = '0.1.1';
+    private const VERSION = '0.1.2';
 
     public static function register(): void
     {
@@ -20,7 +20,7 @@ final class M360_PEL_Controlled_Deployment
         add_action('admin_post_m360_pel_apply_profile', [self::class, 'apply_profile']);
         add_action('init', [self::class, 'register_shortcodes'], 30);
         add_action('wp_enqueue_scripts', [self::class, 'register_assets']);
-        add_filter('get_search_form', [self::class, 'filter_native_search_form'], 20, 2);
+        add_filter('get_search_form', [self::class, 'filter_native_search_form'], 999, 2);
     }
 
     public static function register_shortcodes(): void
@@ -65,7 +65,7 @@ final class M360_PEL_Controlled_Deployment
         return '<form class="m360-pel-search-form" role="search" method="get" action="' . $action . '">'
             . '<label class="screen-reader-text" for="m360-pel-search-q">' . esc_html($button) . '</label>'
             . '<input id="m360-pel-search-q" type="search" name="m360q" required value="' . esc_attr(self::request_text('m360q')) . '" placeholder="' . esc_attr($placeholder) . '">'
-            . '<button type="submit">' . esc_html($button) . '</button></form>';
+            . '<button type="submit" formaction="' . $action . '">' . esc_html($button) . '</button></form>';
     }
 
     public static function search_results(array $atts = []): string

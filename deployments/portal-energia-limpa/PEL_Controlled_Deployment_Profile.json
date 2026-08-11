@@ -1,5 +1,5 @@
 {
-  "profile_version": "0.1.1",
+  "profile_version": "0.1.2",
   "target": "portal-energia-limpa",
   "core_package": {
     "version": "0.7.4.0.1",
