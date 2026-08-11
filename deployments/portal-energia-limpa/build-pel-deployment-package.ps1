@@ -1,5 +1,5 @@
 param(
-    [string] $Version = '0.1.0'
+    [string] $Version = '0.1.1'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -23,7 +23,7 @@ try {
         [void] $archive.CreateEntry('m360-pel-controlled-deployment/')
         Get-ChildItem -LiteralPath $source -File -Recurse | Sort-Object FullName | ForEach-Object {
             $relative = $_.FullName.Substring($source.Length).TrimStart([char[]]"\\/")
-            $entry = $archive.CreateEntry(('m360-pel-controlled-deployment/' + $relative.Replace('\\', '/')), [IO.Compression.CompressionLevel]::Optimal)
+            $entry = $archive.CreateEntry(('m360-pel-controlled-deployment/' + $relative.Replace('\', '/')), [IO.Compression.CompressionLevel]::Optimal)
             $input = [IO.File]::OpenRead($_.FullName)
             $target = $entry.Open()
             try { $input.CopyTo($target) } finally { $target.Dispose(); $input.Dispose() }

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 PEL Controlled Deployment
  * Description: Perfil operacional controlado do M360 Core para o Portal Energia Limpa.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires at least: 6.0
  * Requires PHP: 8.0
  */
@@ -12,19 +12,40 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_PEL_Controlled_Deployment
 {
     private const OPTION = 'm360_pel_controlled_deployment';
-    private const VERSION = '0.1.0';
+    private const VERSION = '0.1.1';
 
     public static function register(): void
     {
         add_action('admin_menu', [self::class, 'menu'], 70);
         add_action('admin_post_m360_pel_apply_profile', [self::class, 'apply_profile']);
         add_action('init', [self::class, 'register_shortcodes'], 30);
+        add_action('wp_enqueue_scripts', [self::class, 'register_assets']);
+        add_filter('get_search_form', [self::class, 'filter_native_search_form'], 20, 2);
     }
 
     public static function register_shortcodes(): void
     {
         add_shortcode('m360_pel_search_form', [self::class, 'search_form']);
         add_shortcode('m360_pel_search_results', [self::class, 'search_results']);
+    }
+
+    public static function register_assets(): void
+    {
+        wp_register_style(
+            'm360-pel-controlled-deployment',
+            plugin_dir_url(__FILE__) . 'assets/m360-pel-deployment.css',
+            [],
+            self::VERSION
+        );
+        if (self::profile_applied()) {
+            wp_enqueue_style('m360-pel-controlled-deployment');
+        }
+    }
+
+    public static function filter_native_search_form(string $form, array $args = []): string
+    {
+        if (is_admin() || !self::profile_applied()) { return $form; }
+        return self::search_form([]);
     }
 
     public static function search_form(array $atts = []): string
@@ -40,6 +61,7 @@ final class M360_PEL_Controlled_Deployment
         $action = esc_url(home_url('/' . ltrim($action, '/')));
         $placeholder = trim((string) $atts['placeholder']) ?: ($is_en ? 'Search Portal Energia Limpa' : 'Pesquisar no Portal Energia Limpa');
         $button = trim((string) $atts['button_label']) ?: ($is_en ? 'Search' : 'Pesquisar');
+        self::enqueue_assets();
         return '<form class="m360-pel-search-form" role="search" method="get" action="' . $action . '">'
             . '<label class="screen-reader-text" for="m360-pel-search-q">' . esc_html($button) . '</label>'
             . '<input id="m360-pel-search-q" type="search" name="m360q" required value="' . esc_attr(self::request_text('m360q')) . '" placeholder="' . esc_attr($placeholder) . '">'
@@ -48,13 +70,15 @@ final class M360_PEL_Controlled_Deployment
 
     public static function search_results(array $atts = []): string
     {
-        $atts = shortcode_atts(['limit' => 10, 'title' => ''], $atts, 'm360_pel_search_results');
+        $atts = shortcode_atts(['limit' => 10, 'title' => '', 'show_title' => 'true'], $atts, 'm360_pel_search_results');
         $query_text = self::request_text('m360q');
         $is_en = self::is_en();
         $title = trim((string) $atts['title']) ?: ($is_en ? 'Search results' : 'Resultados da pesquisa');
+        $show_title = self::enabled($atts['show_title']);
+        self::enqueue_assets();
         $form = self::search_form([]);
         if ($query_text === '') {
-            return '<section class="m360-pel-search-results"><h1>' . esc_html($title) . '</h1>' . $form . '</section>';
+            return '<section class="m360-pel-search-results">' . ($show_title ? '<h1>' . esc_html($title) . '</h1>' : '') . $form . '</section>';
         }
         $page = max(1, absint(self::request_text('m360_search_page')));
         $posts_per_page = max(1, min(24, absint($atts['limit'])));
@@ -71,7 +95,7 @@ final class M360_PEL_Controlled_Deployment
         }
         $results = new WP_Query($args);
         ob_start();
-        echo '<section class="m360-pel-search-results"><h1>' . esc_html($title) . '</h1>' . $form;
+        echo '<section class="m360-pel-search-results">' . ($show_title ? '<h1>' . esc_html($title) . '</h1>' : '') . $form;
         echo '<p>' . esc_html($is_en ? 'Search term: ' : 'Termo pesquisado: ') . '<strong>' . esc_html($query_text) . '</strong></p>';
         if ($results->have_posts()) {
             echo '<div class="m360-pel-search-results__items">';
@@ -276,6 +300,24 @@ final class M360_PEL_Controlled_Deployment
     private static function application_ready(): bool
     {
         return self::core_ready() && self::target_ready() && self::portable_origin_ready();
+    }
+
+    private static function profile_applied(): bool
+    {
+        $state = get_option(self::OPTION, []);
+        return is_array($state) && !empty($state['applied']);
+    }
+
+    private static function enabled(mixed $value): bool
+    {
+        return !in_array(strtolower(trim((string) $value)), ['0', 'false', 'no', 'off'], true);
+    }
+
+    private static function enqueue_assets(): void
+    {
+        if (wp_style_is('m360-pel-controlled-deployment', 'registered')) {
+            wp_enqueue_style('m360-pel-controlled-deployment');
+        }
     }
 
     private static function is_en(): bool

@@ -1,4 +1,4 @@
-# M360 Core — PEL Controlled Deployment v0.1.0
+# M360 Core — PEL Controlled Deployment v0.1.1
 
 Este complemento é instalado **depois** do ZIP canônico `m360-core-v0.7.4.0.1.zip`. Ele não altera o Core canônico nem seu SHA-256 homologado.
 
@@ -38,3 +38,12 @@ Crie uma página em cada idioma no Polylang e coloque nela o shortcode
 `[m360_pel_search_results]`. O formulário padrão
 `[m360_pel_search_form]` envia para essas URLs e a consulta somente posts
 publicados do idioma atual. Nenhum filtro `template_include` é habilitado.
+
+Para evitar título duplicado, oculte o título da página no Elementor e mantenha
+o título semântico gerado pelo shortcode. Como alternativa, use
+`[m360_pel_search_results show_title="false"]`.
+
+A v0.1.1 substitui formulários renderizados por `get_search_form()` pelo
+formulário PEL após a aplicação do perfil. Formulários HTML personalizados devem
+usar `name="m360q"` e enviar para `/resultados-da-pesquisa/` ou
+`/en/search-results/` conforme o idioma.
