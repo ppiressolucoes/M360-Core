@@ -1,5 +1,64 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.10] — Dedicated Prospective Queue Runner
+
+- adiciona runner CLI `m360-discovery-cron.php` para a fila prospectiva do Core;
+- processa no máximo cinco entradas `queued` por execução, exclusivamente pela fila já autorizada;
+- não depende do Action Scheduler nem do disparo público do `wp-cron.php`;
+- cancela eventos nativos residuais ao concluir ou ignorar um item;
+- bloqueia acesso web ao runner e não expõe credenciais ou endpoints públicos.
+
+## [v0.7.4.0.9] — Prospective Queue Recovery & Diagnostics
+
+- reconcilia no `init` entradas `queued` que perderam seu evento único do WP-Cron;
+- reageenda somente itens elegíveis originados pela primeira publicação no modo prospectivo;
+- marca filas antigas ou incompatíveis como `ignored`, sem gerar snapshots retroativos;
+- mantém backfill bloqueado e não cria agendamento recorrente;
+- exibe ID, estado, origem, tentativa, diagnóstico e horário dos itens recentes no painel Discovery.
+
+## [v0.7.4.0.8] — Prospective Discovery Cutover
+
+- adiciona modo público `prospective`, restrito aos canários homologados e posts publicados após o início do cutover;
+- adiciona writer `prospective`, que enfileira somente a primeira publicação de novos posts;
+- impede reprocessamento por atualização ou mudança de termos em posts antigos no modo prospectivo;
+- bloqueia início e retomada de backfill enquanto o writer estiver em `manual` ou `prospective`;
+- preserva os canários `77976` e `77991` e mantém o acervo histórico fora do novo ownership;
+- registra o início prospectivo em UTC sem transportar o valor pelo Site Profile.
+
+## [v0.7.4.0.7] — External Dictionary Run Identifier Hotfix
+
+- reduz o identificador do algoritmo para `portable-v6-ext-dict`, compatível com a coluna `algorithm_version varchar(32)`;
+- restaura a criação e promoção de snapshots após a ativação do provider `external-pdo`;
+- não altera schema, snapshots anteriores, dicionário externo, renderer, writer ou backfill;
+- mantém a regeneração limitada aos posts canários autorizados.
+
+## [v0.7.4.0.6] — External Dictionary Provider
+
+- adiciona conexão PDO opcional e somente leitura para dicionários mantidos em schema externo ao WordPress;
+- aceita credenciais exclusivamente por constantes de ambiente no `wp-config.php`, função local ou filtro PHP;
+- não grava host, schema, usuário, senha ou conexão no Site Profile, banco de opções, logs ou pacote do plugin;
+- preserva o adapter local como fallback quando nenhum provider externo estiver configurado;
+- expõe apenas origem, estado e tabela no diagnóstico administrativo;
+- atualiza o algoritmo para `portable-v5-external-dictionary-provider`, exigindo nova geração somente dos posts canários.
+
+## [v0.7.4.0.5] — Discovery Dictionary Table Resolution & Diagnostics
+
+- resolve o nome físico do dicionário preservando caixa e prefixo reais, incluindo `WP_links_internos` em servidores Linux;
+- mantém consulta somente leitura e ausência da tabela como estado suportado;
+- exibe no painel Discovery a tabela detectada, linhas elegíveis por locale e correspondências encontradas nos posts canários;
+- atualiza o algoritmo para `portable-v4-dictionary-table-resolution`, exigindo nova geração manual apenas dos canários;
+- preserva renderer canário, writer manual, backfill parado, branding e atalhos administrativos.
+
+## [v0.7.4.0.4] — PEL Discovery Dictionary, Admin Shortcuts & Branding
+
+- integra opcionalmente o dicionário local `WP_links_internos` ao gerador e renderer de links contextuais, sempre em modo somente leitura;
+- mantém o comportamento portátil quando a tabela não existe;
+- adiciona atalhos visíveis para Editorial, Discovery, Ads, Newsletter, Privacy & Consent e Site Profile sob o menu M360 Dashboard;
+- evolui o Site Profile para schema 3 com cores primária e secundária portáteis;
+- aplica as cores do perfil ao Discovery, Dashboard, componentes UI, seletor de idioma e avatar do Post Info;
+- configura o perfil PEL com primária `#ff3d00` e secundária `#fc893c`, preservando o fallback vermelho do Mengão 360;
+- mantém writer manual, backfill parado e renderer canário durante a homologação do PEL.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;

@@ -20,7 +20,7 @@
       var autoplay=carousel.getAttribute('data-autoplay')==='true'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function show(index){slides[current].hidden=true;slides[current].setAttribute('aria-hidden','true');current=(index+slides.length)%slides.length;slides[current].hidden=false;slides[current].setAttribute('aria-hidden','false');}
       function stop(){if(timer!==null){window.clearInterval(timer);timer=null;}}
-      function start(){stop();if(autoplay){timer=window.setInterval(function(){show(current+1);},interval);}}
+      function start(){stop();if(autoplay&&!document.hidden){timer=window.setInterval(function(){show(current+1);},interval);}}
       if(previous){previous.addEventListener('click',function(){show(current-1);start();});}
       if(next){next.addEventListener('click',function(){show(current+1);start();});}
       carousel.addEventListener('mouseenter',stop);
@@ -29,6 +29,34 @@
       carousel.addEventListener('focusout',start);
       document.addEventListener('visibilitychange',function(){if(document.hidden){stop();}else{start();}});
       start();
+    });
+  }
+
+  function initializeNewsroomCards(root){
+    find(root,'[data-m360-editorial-card-carousel]').forEach(function(carousel){
+      if(carousel.getAttribute('data-m360-editorial-card-ready')==='true'){return;}
+      carousel.setAttribute('data-m360-editorial-card-ready','true');
+      var slides=Array.prototype.slice.call(carousel.querySelectorAll('[data-m360-editorial-card-slide]'));
+      if(slides.length<5){return;}
+      var current=0;
+      var visible=4;
+      var timer=null;
+      var interval=Math.max(2500,parseInt(carousel.getAttribute('data-interval')||'6500',10));
+      // Match the ticker policy: the explicit widget setting controls autoplay.
+      var autoplay=carousel.getAttribute('data-autoplay')==='true';
+      // The cards live in a narrow sidebar on desktop. Use the viewport
+      // breakpoint, not the sidebar width, so desktop retains its 2×2 grid.
+      function columns(){var width=window.innerWidth||document.documentElement.clientWidth||0;return width<=560?1:(width<=900?2:4);}
+      function show(index){visible=columns();var pages=Math.ceil(slides.length/visible);current=(index+pages)%pages;var start=current*visible;slides.forEach(function(slide,item){var active=item>=start&&item<start+visible;slide.hidden=!active;slide.setAttribute('aria-hidden',active?'false':'true');});}
+      function stop(){if(timer!==null){window.clearInterval(timer);timer=null;}}
+      function start(){stop();if(autoplay&&!document.hidden){timer=window.setInterval(function(){show(current+1);},interval);}}
+      carousel.addEventListener('mouseenter',stop);
+      carousel.addEventListener('mouseleave',start);
+      carousel.addEventListener('focusin',stop);
+      carousel.addEventListener('focusout',start);
+      document.addEventListener('visibilitychange',function(){if(document.hidden){stop();}else{start();}});
+      if(window.ResizeObserver){new window.ResizeObserver(function(){show(current);}).observe(carousel);}else{window.addEventListener('resize',function(){show(current);});}
+      show(0);start();
     });
   }
 
@@ -47,12 +75,12 @@
       var visible=6;
       var timer=null;
       var interval=Math.max(2500,parseInt(carousel.getAttribute('data-interval')||'6500',10));
-      var autoplay=carousel.getAttribute('data-autoplay')==='true'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var autoplay=carousel.getAttribute('data-autoplay')==='true';
       function measure(){var width=viewport.getBoundingClientRect().width;visible=width<=480?1:(width<=700?2:(width<=1000?3:6));current=Math.min(current,Math.max(0,items.length-visible));render();}
       function render(){var max=Math.max(0,items.length-visible);current=Math.max(0,Math.min(current,max));var offset=items[current]?items[current].offsetLeft:0;track.style.transform='translate3d(-'+offset+'px,0,0)';items.forEach(function(item,index){item.setAttribute('aria-hidden',index<current||index>=current+visible?'true':'false');});if(status){status.textContent=(current+1)+'–'+Math.min(items.length,current+visible)+' / '+items.length;}}
       function move(step){var max=Math.max(0,items.length-visible);current=step>0?(current>=max?0:current+1):(current<=0?max:current-1);render();start();}
       function stop(){if(timer!==null){window.clearInterval(timer);timer=null;}}
-      function start(){stop();if(autoplay){timer=window.setInterval(function(){move(1);},interval);}}
+      function start(){stop();if(autoplay&&!document.hidden){timer=window.setInterval(function(){move(1);},interval);}}
       if(previous){previous.addEventListener('click',function(){move(-1);});}
       if(next){next.addEventListener('click',function(){move(1);});}
       carousel.addEventListener('mouseenter',stop);
@@ -97,7 +125,7 @@
     });
   }
 
-  function initialize(root){initializeTicker(root);initializeNewsroom(root);initializeWidgetCarousel(root);}
+  function initialize(root){initializeTicker(root);initializeNewsroom(root);initializeNewsroomCards(root);initializeWidgetCarousel(root);}
   function observe(){
     if(!window.MutationObserver||!document.body){return;}
     new window.MutationObserver(function(mutations){

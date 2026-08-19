@@ -23,10 +23,21 @@
    - o Comparador continua `eligible`.
 5. Registrar a evidência antes de incluir outro tipo de relação.
 
-## Cutover automático do renderer
+## Homologação automática restrita
+
+1. Manter no campo Renderer Canary somente os IDs explicitamente autorizados.
+2. Remover desses posts os shortcodes manuais `m360_discovery_canary` para evitar duplicação.
+3. Selecionar `Canary — somente IDs autorizados`, manter três links contextuais e salvar.
+4. Limpar os caches do WordPress/host.
+5. Validar que a composição automática aparece somente nos IDs canários e que um post de controle, com snapshot ou sem snapshot, permanece inalterado.
+6. Para rollback imediato, retornar o renderer a `Shortcode — rollback`.
+
+O modo `Canary` é o gate obrigatório para novos portais. Ele permite homologar links dentro do corpo e a posição automática dos blocos sem liberar o renderer global.
+
+## Cutover automático global do renderer
 
 1. Remover do template os shortcodes manuais `m360_discovery_canary`.
-2. Em **M360 Platform > Content Discovery > Renderer Canary**, manter três links contextuais e selecionar `Automatic — cutover do renderer`.
+2. Em **M360 Platform > Content Discovery > Renderer Canary**, manter três links contextuais e selecionar `Automatic — Core renderer global` somente após autorização de cutover.
 3. Salvar e limpar os caches do WordPress/host.
 4. Validar pelo menos um post PT-BR e um EN-US:
    - no máximo três links contextuais, sempre no mesmo locale;

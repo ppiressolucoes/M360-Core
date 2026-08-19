@@ -6,9 +6,19 @@
 0.7.4.0.1
 ```
 
+## Próxima versão candidata
+
+```text
+0.7.4.0.17
+```
+
 ## Estado operacional
 
 - Release operacional homologada no WordPress: `v0.7.4.0.1 — Existing Installation Detection Hotfix`.
+- Revisão instalada no PEL: `v0.7.4.0.2 — Plugin Identity & PEL Controlled Deployment`.
+- Hotfix intermediário: `v0.7.4.0.3 — PEL Discovery Canary Allowlist UI Hotfix`.
+- Candidata intermediária: `v0.7.4.0.4 — PEL Discovery Dictionary, Admin Shortcuts & Branding`.
+- Próxima revisão candidata: `v0.7.4.0.17 — Editorial Autoplay Policy`.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
 - Content Discovery & SEO homologado com saúde `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`.

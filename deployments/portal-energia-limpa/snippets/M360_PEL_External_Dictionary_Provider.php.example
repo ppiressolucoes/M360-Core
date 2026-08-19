@@ -1,0 +1,37 @@
+<?php
+/**
+ * PEL — ponte local do dicionário externo para o M360 Core.
+ *
+ * Preferência: definir M360_DISCOVERY_DB_* no wp-config.php.
+ * Alternativa: instalar este código como snippet executado em todo o site.
+ * Nunca enviar a versão preenchida ao repositório ou ao suporte.
+ */
+if (!function_exists('m360_discovery_dictionary_pdo')) {
+    function m360_discovery_dictionary_pdo(): ?PDO
+    {
+        static $connection = null;
+        static $attempted = false;
+        if ($connection instanceof PDO) { return $connection; }
+        if ($attempted) { return null; }
+        $attempted = true;
+
+        $host = 'localhost';
+        $port = 3306;
+        $database = 'u164126954_energia_limpa';
+        $user = 'USUARIO_SOMENTE_LEITURA';
+        $password = 'SEGREDO_LOCAL';
+
+        try {
+            $dsn = "mysql:host={$host};port={$port};dbname={$database};charset=utf8mb4";
+            $connection = new PDO($dsn, $user, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ]);
+            return $connection;
+        } catch (Throwable $exception) {
+            error_log('M360 PEL: provider externo do dicionário indisponível.');
+            return null;
+        }
+    }
+}

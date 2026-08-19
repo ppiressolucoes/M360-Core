@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_Site_Profile
 {
     private const OPTION = 'm360_site_profile';
-    private const SCHEMA_VERSION = 2;
+    private const SCHEMA_VERSION = 3;
 
     public static function activate(): void
     {
@@ -23,6 +23,10 @@ final class M360_Site_Profile
             'vertical' => 'publisher',
             'default_locale' => $locale,
             'supported_locales' => [$locale],
+            'branding' => [
+                'primary_color' => '#d71920',
+                'secondary_color' => '#b81218',
+            ],
             'runtime' => M360_Runtime_Profile::get(),
         ];
     }
@@ -64,6 +68,7 @@ final class M360_Site_Profile
         if (!$locales) { $locales = [$default_locale]; }
         if (!in_array($default_locale, $locales, true)) { array_unshift($locales, $default_locale); }
 
+        $branding = is_array($input['branding'] ?? null) ? $input['branding'] : [];
         return [
             'schema_version' => self::SCHEMA_VERSION,
             'site_key' => sanitize_key((string) ($input['site_key'] ?? 'portal')) ?: 'portal',
@@ -71,6 +76,10 @@ final class M360_Site_Profile
             'vertical' => sanitize_key((string) ($input['vertical'] ?? 'publisher')) ?: 'publisher',
             'default_locale' => $default_locale,
             'supported_locales' => array_slice($locales, 0, 20),
+            'branding' => [
+                'primary_color' => self::sanitize_color((string) ($branding['primary_color'] ?? ''), '#d71920'),
+                'secondary_color' => self::sanitize_color((string) ($branding['secondary_color'] ?? ''), '#b81218'),
+            ],
             'runtime' => M360_Runtime_Profile::sanitize(
                 is_array($input['runtime'] ?? null) ? $input['runtime'] : M360_Runtime_Profile::get()
             ),
@@ -83,13 +92,13 @@ final class M360_Site_Profile
         if (!is_array($decoded) || json_last_error() !== JSON_ERROR_NONE) {
             return new WP_Error('m360_profile_json', 'JSON de perfil inválido.');
         }
-        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','runtime'];
+        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','branding','runtime'];
         $unknown = array_diff(array_keys($decoded), $allowed);
         if ($unknown) {
             return new WP_Error('m360_profile_keys', 'O perfil contém campos não permitidos: ' . implode(', ', $unknown));
         }
         $incoming_schema = (int) ($decoded['schema_version'] ?? 0);
-        if (!in_array($incoming_schema, [1, self::SCHEMA_VERSION], true)) {
+        if (!in_array($incoming_schema, [1, 2, self::SCHEMA_VERSION], true)) {
             return new WP_Error('m360_profile_schema', 'Versão de schema do Site Profile incompatível.');
         }
         $required = ['site_key','site_name','vertical','default_locale','supported_locales'];
@@ -99,6 +108,9 @@ final class M360_Site_Profile
         }
         if ($incoming_schema === 1) {
             $decoded['runtime'] = M360_Runtime_Profile::get();
+        }
+        if ($incoming_schema < 3) {
+            $decoded['branding'] = self::defaults()['branding'];
         }
         $decoded['schema_version'] = self::SCHEMA_VERSION;
         self::update($decoded);
@@ -116,5 +128,11 @@ final class M360_Site_Profile
         if (!preg_match('/^[a-zA-Z]{2,3}(?:-[a-zA-Z]{2})?$/', $locale)) { return null; }
         $parts = explode('-', $locale, 2);
         return strtolower($parts[0]) . (isset($parts[1]) ? '-' . strtoupper($parts[1]) : '');
+    }
+
+    private static function sanitize_color(string $color, string $fallback): string
+    {
+        $clean = sanitize_hex_color(trim($color));
+        return is_string($clean) && $clean !== '' ? strtolower($clean) : $fallback;
     }
 }

@@ -24,14 +24,55 @@ final class M360_Discovery_Scheduler
         add_action('set_object_terms', [self::class, 'on_terms'], 90, 6);
         add_action(self::PROCESS_HOOK, [self::class, 'process'], 10, 2);
         add_action(self::BACKFILL_HOOK, [self::class, 'backfill_batch']);
-        if (did_action('init')) { self::ensure_backfill_scheduled(); }
-        else { add_action('init', [self::class, 'ensure_backfill_scheduled'], 99); }
+        if (did_action('init')) {
+            self::ensure_queue_scheduled();
+            self::ensure_backfill_scheduled();
+        } else {
+            add_action('init', [self::class, 'ensure_queue_scheduled'], 98);
+            add_action('init', [self::class, 'ensure_backfill_scheduled'], 99);
+        }
+    }
+
+    public static function ensure_queue_scheduled(): void
+    {
+        if (!self::writer_enabled()) { return; }
+        $queue = self::queue();
+        $changed = false;
+        $checked = 0;
+        foreach ($queue as $key => $entry) {
+            if ($checked >= 50) { break; }
+            $entry = (array) $entry;
+            if (sanitize_key((string) ($entry['status'] ?? '')) !== 'queued') { continue; }
+            $checked++;
+            $post_id = max(0, (int) ($entry['post_id'] ?? $key));
+            $attempt = max(0, min(self::RETRY_LIMIT, (int) ($entry['attempt'] ?? 0)));
+            $origin = sanitize_key((string) ($entry['origin_trigger'] ?? $entry['trigger'] ?? ''));
+            if (!self::eligible_post($post_id) || (self::writer_mode() === 'prospective' && $origin !== 'post_published')) {
+                $queue[$key] = array_merge($entry, ['status'=>'ignored', 'last_code'=>'prospective_new_posts_only', 'updated_at'=>time()]);
+                $changed = true;
+                continue;
+            }
+            $args = [$post_id, $attempt];
+            if (wp_next_scheduled(self::PROCESS_HOOK, $args)) { continue; }
+            $scheduled = wp_schedule_single_event(time() + 10, self::PROCESS_HOOK, $args);
+            if ($scheduled) {
+                $queue[$key] = array_merge($entry, [
+                    'scheduled_at'=>is_int($scheduled) ? $scheduled : time() + 10,
+                    'last_code'=>'cron_recovered',
+                    'updated_at'=>time(),
+                ]);
+            } else {
+                $queue[$key] = array_merge($entry, ['last_code'=>'cron_reschedule_failed', 'updated_at'=>time()]);
+            }
+            $changed = true;
+        }
+        if ($changed) { self::save_queue($queue); }
     }
 
     public static function ensure_backfill_scheduled(): void
     {
         $state = self::backfill_state();
-        if (($state['status'] ?? '') === 'running' && self::writer_enabled() && !wp_next_scheduled(self::BACKFILL_HOOK)) {
+        if (($state['status'] ?? '') === 'running' && self::backfill_enabled() && !wp_next_scheduled(self::BACKFILL_HOOK)) {
             wp_schedule_single_event(time() + 20, self::BACKFILL_HOOK);
         }
     }
@@ -45,19 +86,25 @@ final class M360_Discovery_Scheduler
             return;
         }
         if ($new_status === 'publish') {
-            self::schedule((int) $post->ID, $old_status === 'publish' ? 'post_updated' : 'post_published', 30);
+            if ($old_status !== 'publish') {
+                self::schedule((int) $post->ID, 'post_published', 30);
+            } elseif (self::writer_mode() === 'automatic') {
+                self::schedule((int) $post->ID, 'post_updated', 30);
+            }
         }
     }
 
     public static function on_save(int $post_id, WP_Post $post, bool $update): void
     {
         if (wp_is_post_revision($post_id) || wp_is_post_autosave($post_id) || $post->post_status !== 'publish') { return; }
+        if (self::writer_mode() !== 'automatic') { return; }
         self::schedule($post_id, $update ? 'save_updated' : 'save_published', 45);
     }
 
     public static function on_terms(int $object_id, $terms, $tt_ids, string $taxonomy, bool $append, $old_tt_ids): void
     {
         $settings = M360_Content_Discovery_Module::settings();
+        if (self::writer_mode() !== 'automatic') { return; }
         if (!in_array($taxonomy, (array) $settings['taxonomies'], true)) { return; }
         $post = get_post($object_id);
         if ($post instanceof WP_Post && $post->post_status === 'publish') {
@@ -80,6 +127,8 @@ final class M360_Discovery_Scheduler
         }
 
         $trigger = substr(sanitize_key($trigger), 0, 40);
+        $origin_trigger = sanitize_key((string) ($current['origin_trigger'] ?? $trigger));
+        if ($trigger === 'post_published') { $origin_trigger = 'post_published'; }
         $attempt = max(0, min(self::RETRY_LIMIT, $attempt));
         $args = [$post_id, $attempt];
         $scheduled = wp_next_scheduled(self::PROCESS_HOOK, $args);
@@ -87,7 +136,7 @@ final class M360_Discovery_Scheduler
         if (!$scheduled) { return false; }
 
         $queue[$key] = [
-            'post_id'=>$post_id, 'status'=>'queued', 'trigger'=>$trigger, 'attempt'=>$attempt,
+            'post_id'=>$post_id, 'status'=>'queued', 'trigger'=>$trigger, 'origin_trigger'=>$origin_trigger, 'attempt'=>$attempt,
             'scheduled_at'=>is_int($scheduled) ? $scheduled : time() + max(5, $delay),
             'updated_at'=>time(), 'last_code'=>'',
         ];
@@ -97,8 +146,14 @@ final class M360_Discovery_Scheduler
 
     public static function process(int $post_id, int $attempt = 0): void
     {
+        $entry = (array) (self::queue()[(string) $post_id] ?? []);
+        if ($entry && !in_array(sanitize_key((string) ($entry['status'] ?? '')), ['queued', 'running'], true)) {
+            self::cancel($post_id);
+            return;
+        }
         if (!self::writer_enabled() || !self::eligible_post($post_id)) {
             self::mark($post_id, 'ignored', 'writer_disabled_or_invalid');
+            self::cancel($post_id);
             return;
         }
         if (!self::lock($post_id)) {
@@ -108,12 +163,20 @@ final class M360_Discovery_Scheduler
 
         $queue = self::queue();
         $trigger = sanitize_key((string) ($queue[(string) $post_id]['trigger'] ?? 'publication'));
+        $origin_trigger = sanitize_key((string) ($queue[(string) $post_id]['origin_trigger'] ?? $trigger));
+        if (self::writer_mode() === 'prospective' && $origin_trigger !== 'post_published') {
+            self::mark($post_id, 'ignored', 'prospective_new_posts_only', $attempt);
+            self::unlock($post_id);
+            self::cancel($post_id);
+            return;
+        }
         self::mark($post_id, 'running', '', $attempt);
         try {
             $result = (new M360_Shadow_Generator())->generate($post_id, 'writer_' . $trigger);
             $code = sanitize_key((string) ($result['code'] ?? 'generation_error'));
             if (!empty($result['ok'])) {
                 self::mark($post_id, 'active', $code, $attempt);
+                self::cancel($post_id);
                 return;
             }
             if (self::retryable($code) && $attempt < self::RETRY_LIMIT) {
@@ -127,9 +190,30 @@ final class M360_Discovery_Scheduler
         }
     }
 
+    /** @return array<string,int> */
+    public static function process_queued(int $limit = 5): array
+    {
+        $limit = max(1, min(20, $limit));
+        $result = ['considered'=>0, 'processed'=>0, 'skipped'=>0];
+        foreach (self::queue() as $entry) {
+            if ($result['considered'] >= $limit) { break; }
+            $entry = (array) $entry;
+            if (sanitize_key((string) ($entry['status'] ?? '')) !== 'queued') { continue; }
+            $post_id = max(0, (int) ($entry['post_id'] ?? 0));
+            if ($post_id < 1) { continue; }
+            $result['considered']++;
+            $before = sanitize_key((string) ($entry['status'] ?? ''));
+            self::process($post_id, max(0, (int) ($entry['attempt'] ?? 0)));
+            $updated = (array) (self::queue()[(string) $post_id] ?? []);
+            $after = sanitize_key((string) ($updated['status'] ?? ''));
+            if ($after !== $before) { $result['processed']++; } else { $result['skipped']++; }
+        }
+        return $result;
+    }
+
     public static function start_backfill(): bool
     {
-        if (!self::writer_enabled()) { return false; }
+        if (!self::backfill_enabled()) { return false; }
         $state = [
             'status'=>'running', 'cursor'=>0, 'processed'=>0, 'generated'=>0, 'unchanged'=>0, 'failed'=>0,
             'started_at'=>current_time('mysql'), 'updated_at'=>current_time('mysql'), 'finished_at'=>'',
@@ -159,7 +243,7 @@ final class M360_Discovery_Scheduler
     public static function backfill_batch(): void
     {
         $state = self::backfill_state();
-        if (($state['status'] ?? '') !== 'running' || !self::writer_enabled()) { return; }
+        if (($state['status'] ?? '') !== 'running' || !self::backfill_enabled()) { return; }
         $ids = self::next_backfill_ids(max(0, (int) ($state['cursor'] ?? 0)), self::BACKFILL_BATCH);
         if (!$ids) {
             $state['status'] = 'completed';
@@ -208,6 +292,7 @@ final class M360_Discovery_Scheduler
         return [
             'writer_mode'=>(string) ($settings['writer_mode'] ?? 'manual'),
             'queue'=>$counts,
+            'recent_entries'=>array_slice(array_values(self::queue()), 0, 20),
             'backfill'=>self::backfill_state(),
             'coverage'=>M360_Discovery_DB::coverage_summary((array) $settings['post_types']),
         ];
@@ -216,7 +301,19 @@ final class M360_Discovery_Scheduler
     private static function writer_enabled(): bool
     {
         $settings = M360_Content_Discovery_Module::settings();
+        return ($settings['mode'] ?? 'off') === 'shadow'
+            && in_array((string) ($settings['writer_mode'] ?? 'manual'), ['prospective', 'automatic'], true);
+    }
+
+    private static function backfill_enabled(): bool
+    {
+        $settings = M360_Content_Discovery_Module::settings();
         return ($settings['mode'] ?? 'off') === 'shadow' && ($settings['writer_mode'] ?? 'manual') === 'automatic';
+    }
+
+    private static function writer_mode(): string
+    {
+        return (string) (M360_Content_Discovery_Module::settings()['writer_mode'] ?? 'manual');
     }
 
     private static function eligible_post(int $post_id): bool
