@@ -15,7 +15,8 @@ final class M360_Discovery_Content_Injector
     public static function process(string $content): string
     {
         $settings = M360_Content_Discovery_Module::settings();
-        if (($settings['public_render_mode'] ?? 'shortcode') !== 'automatic') { return $content; }
+        $render_mode = (string) ($settings['public_render_mode'] ?? 'shortcode');
+        if (!in_array($render_mode, ['canary', 'prospective', 'automatic'], true)) { return $content; }
         if (($settings['mode'] ?? 'off') !== 'shadow') { return $content; }
         if (is_admin() || is_feed() || !is_singular('post')) { return $content; }
         if (str_contains($content, 'm360-discovery-auto-footer') || str_contains($content, 'm360-sr-post-footer')) { return $content; }
@@ -24,6 +25,8 @@ final class M360_Discovery_Content_Injector
         $post_id = max(0, (int) get_the_ID());
         if ($post_id < 1) { $post_id = $queried_id; }
         if ($post_id < 1 || ($queried_id > 0 && $post_id !== $queried_id)) { return $content; }
+        if ($render_mode === 'canary' && !in_array($post_id, (array) ($settings['renderer_canary_posts'] ?? []), true)) { return $content; }
+        if ($render_mode === 'prospective' && !M360_Content_Discovery_Module::prospective_post_allowed($post_id, $settings)) { return $content; }
 
         $resolver = new M360_Discovery_Locale_Resolver();
         $locale = $resolver->resolve($post_id);
@@ -115,10 +118,16 @@ final class M360_Discovery_Content_Injector
         }
         $url = get_term_link($term);
         if (is_wp_error($url)) { return null; }
+        $phrases = array_merge(
+            self::term_variants($term->name, $locale),
+            M360_Discovery_Keyword_Dictionary::aliases_for_term($term, $locale)
+        );
+        $phrases = array_values(array_unique(array_filter(array_map('trim', $phrases))));
+        usort($phrases, static fn(string $a, string $b): int => mb_strlen($b, 'UTF-8') <=> mb_strlen($a, 'UTF-8'));
         return [
             'target_type' => 'term',
             'target_id' => (int) $term->term_id,
-            'phrases' => self::term_variants($term->name, $locale),
+            'phrases' => $phrases,
             'url' => (string) $url,
         ];
     }

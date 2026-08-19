@@ -28,6 +28,10 @@ O perfil:
 - habilita Editorial somente por shortcodes explícitos;
 - prepara Discovery em shadow manual, com até três links contextuais e sem
   injeção automática;
+- adiciona o modo público `canary`, que restringe a injeção automática aos
+  IDs persistidos em `m360_discovery_canary_posts`;
+- faz o renderer por shortcode respeitar a mesma allowlist, preservando o
+  modo `automatic` global para portais que já concluíram o cutover;
 - não transporta conteúdo, dados pessoais, campanhas, credenciais, segredos
   ou snapshots de outro portal.
 

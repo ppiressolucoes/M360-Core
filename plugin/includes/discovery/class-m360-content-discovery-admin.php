@@ -37,6 +37,10 @@ final class M360_Content_Discovery_Admin
         $summary = M360_Content_Discovery_Module::adapter()->summary();
         $core_summary = M360_Discovery_DB::summary();
         $settings = M360_Content_Discovery_Module::settings();
+        $dictionary = M360_Discovery_Keyword_Dictionary::diagnostics(
+            (array) $settings['supported_locales'],
+            (array) $settings['renderer_canary_posts']
+        );
         $writer_summary = M360_Discovery_Scheduler::summary();
         $health = $enabled && $module ? $module->health() : ['status' => 'disabled', 'message' => 'Modulo desativado; preflight somente leitura disponivel.'];
         $notice = sanitize_key((string) ($_GET['m360_discovery_notice'] ?? ''));
@@ -48,6 +52,7 @@ final class M360_Content_Discovery_Admin
         $coverage = (array) $writer_summary['coverage'];
         $backfill = (array) $writer_summary['backfill'];
         $queue = (array) $writer_summary['queue'];
+        $recent_queue = (array) ($writer_summary['recent_entries'] ?? []);
         $coverage_percent = round(((float) ($coverage['ratio'] ?? 0)) * 100, 1);
         $backfill_status = sanitize_key((string) ($backfill['status'] ?? 'idle'));
         ?>
@@ -80,23 +85,38 @@ final class M360_Content_Discovery_Admin
                             <div><span>Falhas</span><strong><?php echo esc_html((string) ($backfill['failed'] ?? 0)); ?></strong></div>
                         </div>
                         <div class="m360-discovery-admin__actions">
-                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"><input type="hidden" name="action" value="m360_discovery_save_writer"><?php wp_nonce_field('m360_discovery_save_writer'); ?><label><span>Modo do writer</span><select name="writer_mode"><option value="manual" <?php selected($settings['writer_mode'], 'manual'); ?>>Manual — rollback</option><option value="automatic" <?php selected($settings['writer_mode'], 'automatic'); ?>>Automatic — Core writer</option></select></label><button type="submit" class="button">Salvar</button></form>
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"><input type="hidden" name="action" value="m360_discovery_save_writer"><?php wp_nonce_field('m360_discovery_save_writer'); ?><label><span>Modo do writer</span><select name="writer_mode"><option value="manual" <?php selected($settings['writer_mode'], 'manual'); ?>>Manual — rollback</option><option value="prospective" <?php selected($settings['writer_mode'], 'prospective'); ?>>Prospective — somente novos posts</option><option value="automatic" <?php selected($settings['writer_mode'], 'automatic'); ?>>Automatic — inclui atualizações e backfill</option></select></label><button type="submit" class="button">Salvar</button></form>
                             <?php if ($backfill_status === 'running'): ?>
                                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"><input type="hidden" name="action" value="m360_discovery_stop_backfill"><?php wp_nonce_field('m360_discovery_stop_backfill'); ?><button type="submit" class="button">Parar backfill</button></form>
-                            <?php else: ?>
+                            <?php elseif ($settings['writer_mode'] === 'automatic'): ?>
                                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"><input type="hidden" name="action" value="m360_discovery_start_backfill"><?php wp_nonce_field('m360_discovery_start_backfill'); ?><button type="submit" class="button button-primary"><?php echo esc_html($backfill_status === 'completed' ? 'Reexecutar backfill' : 'Iniciar backfill'); ?></button></form>
+                            <?php else: ?>
+                                <span class="description">Backfill indisponível nos modos Manual e Prospective.</span>
                             <?php endif; ?>
                         </div>
                         <div class="m360-discovery-admin__queue"><strong>Fila recente</strong><?php foreach ($queue as $state => $total): ?><span class="is-<?php echo esc_attr((string) $state); ?>"><?php echo esc_html((string) $state); ?> <b><?php echo esc_html((string) $total); ?></b></span><?php endforeach; ?></div>
+                        <?php if ($recent_queue): ?>
+                            <table class="widefat striped" style="margin-top:12px"><thead><tr><th>Post</th><th>Estado</th><th>Origem</th><th>Tentativa</th><th>Diagnóstico</th><th>Agendado</th></tr></thead><tbody>
+                            <?php foreach ($recent_queue as $entry): $entry = (array) $entry; ?>
+                                <tr><td><code><?php echo esc_html((string) ($entry['post_id'] ?? 0)); ?></code></td><td><?php echo esc_html((string) ($entry['status'] ?? '')); ?></td><td><code><?php echo esc_html((string) ($entry['origin_trigger'] ?? $entry['trigger'] ?? '')); ?></code></td><td><?php echo esc_html((string) ($entry['attempt'] ?? 0)); ?></td><td><code><?php echo esc_html((string) ($entry['last_code'] ?? '')); ?></code></td><td><?php echo esc_html(!empty($entry['scheduled_at']) ? wp_date('Y-m-d H:i:s', (int) $entry['scheduled_at']) : '—'); ?></td></tr>
+                            <?php endforeach; ?>
+                            </tbody></table>
+                        <?php endif; ?>
                     </section>
 
                     <section class="m360-discovery-admin__panel">
                         <div class="m360-discovery-admin__panel-head"><div><h2>Renderer público</h2><p>Composição automática e limite de links contextuais.</p></div><span class="m360-discovery-admin__status is-<?php echo esc_attr((string) $settings['public_render_mode']); ?>"><?php echo esc_html((string) $settings['public_render_mode']); ?></span></div>
                         <form class="m360-discovery-admin__form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                             <input type="hidden" name="action" value="m360_discovery_save_renderer"><?php wp_nonce_field('m360_discovery_save_renderer'); ?>
-                            <label><span>Modo público</span><select name="public_render_mode"><option value="shortcode" <?php selected($settings['public_render_mode'], 'shortcode'); ?>>Shortcode — rollback</option><option value="automatic" <?php selected($settings['public_render_mode'], 'automatic'); ?>>Automatic — Core renderer</option></select></label>
+                            <label><span>Modo público</span><select name="public_render_mode"><option value="shortcode" <?php selected($settings['public_render_mode'], 'shortcode'); ?>>Shortcode — rollback</option><option value="canary" <?php selected($settings['public_render_mode'], 'canary'); ?>>Canary — somente IDs autorizados</option><option value="prospective" <?php selected($settings['public_render_mode'], 'prospective'); ?>>Prospective — canários e novos posts</option><option value="automatic" <?php selected($settings['public_render_mode'], 'automatic'); ?>>Automatic — Core renderer global</option></select></label>
                             <label><span>Links contextuais</span><select name="contextual_links_max"><?php for ($max = 0; $max <= 3; $max++): ?><option value="<?php echo esc_attr((string) $max); ?>" <?php selected((int) $settings['contextual_links_max'], $max); ?>><?php echo esc_html((string) $max); ?></option><?php endfor; ?></select></label>
                             <button type="submit" class="button button-primary">Salvar renderer</button>
+                        </form>
+                        <form class="m360-discovery-admin__form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                            <input type="hidden" name="action" value="m360_discovery_save_canary"><?php wp_nonce_field('m360_discovery_save_canary'); ?>
+                            <label><span>IDs autorizados no canário</span><input type="text" name="canary_posts" value="<?php echo esc_attr(implode(', ', (array) $settings['renderer_canary_posts'])); ?>" placeholder="77976, 77991" inputmode="numeric"></label>
+                            <button type="submit" class="button">Salvar IDs canários</button>
+                            <p class="description">Até 20 IDs de posts publicados, separados por vírgula. O modo Canary não renderiza fora desta lista.</p>
                         </form>
                     </section>
 
@@ -108,6 +128,20 @@ final class M360_Content_Discovery_Admin
                             <?php if (is_array($comparison)): self::render_comparison($comparison); endif; ?>
                             <h3>Gerar snapshot isolado</h3>
                             <form class="m360-discovery-admin__form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"><input type="hidden" name="action" value="m360_discovery_generate_shadow"><?php wp_nonce_field('m360_discovery_generate_shadow'); ?><label><span>ID do post</span><input type="number" min="1" name="post_id" required></label><label><span>Execução</span><select name="strategy"><option value="now">Agora</option><option value="async">WP-Cron</option></select></label><button type="submit" class="button">Gerar snapshot</button></form>
+                            <h3>Dicionário de links internos</h3>
+                            <p>Provider: <strong><?php echo !empty($dictionary['available']) ? 'detectado' : 'não detectado'; ?></strong>
+                                · origem <code><?php echo esc_html((string) ($dictionary['provider'] ?? 'none')); ?></code>
+                                · estado <code><?php echo esc_html((string) ($dictionary['status'] ?? 'not_configured')); ?></code>
+                                <?php if (!empty($dictionary['table'])): ?> · tabela <code><?php echo esc_html((string) $dictionary['table']); ?></code><?php endif; ?>
+                            </p>
+                            <?php self::key_value_table((array) $dictionary['rows'], 'Locale', 'Linhas elegíveis'); ?>
+                            <?php if (!empty($dictionary['matches'])): ?>
+                                <table class="widefat striped"><thead><tr><th>Post canário</th><th>Correspondências no conteúdo</th></tr></thead><tbody>
+                                <?php foreach ((array) $dictionary['matches'] as $dictionary_post_id => $dictionary_matches): ?>
+                                    <tr><td><code><?php echo esc_html((string) $dictionary_post_id); ?></code></td><td><?php echo esc_html($dictionary_matches ? implode(', ', (array) $dictionary_matches) : 'Nenhuma'); ?></td></tr>
+                                <?php endforeach; ?>
+                                </tbody></table>
+                            <?php endif; ?>
                             <h3>Storage e agregados do Core</h3>
                             <p>Schema <code><?php echo esc_html((string) $core_summary['storage']['schema_version']); ?></code> · Runs <?php echo esc_html((string) $core_summary['storage']['tables']['runs']['engine']); ?> · Relations <?php echo esc_html((string) $core_summary['storage']['tables']['relations']['engine']); ?></p>
                             <?php self::count_table((array) $core_summary['runs'], ['locale'=>'Locale','status'=>'Estado']); ?>
@@ -181,7 +215,7 @@ final class M360_Content_Discovery_Admin
         check_admin_referer('m360_discovery_save_writer');
         $mode = sanitize_key((string) ($_POST['writer_mode'] ?? 'manual'));
         $saved = M360_Content_Discovery_Module::update_writer_mode($mode);
-        if ($saved && $mode === 'manual') { M360_Discovery_Scheduler::stop_backfill(); }
+        if ($saved && $mode !== 'automatic') { M360_Discovery_Scheduler::stop_backfill(); }
         self::redirect_notice($saved ? 'writer_saved' : 'writer_save_failed');
     }
 

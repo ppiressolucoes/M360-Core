@@ -81,13 +81,13 @@ Isso é obrigatório porque um único attachment compartilhado não pode ter sim
 Implementar um pequeno adaptador, preferencialmente como plugin independente do M360 Core, sem alterar o core do WordPress nem o tema de terceiros. Ele deve:
 
 1. localizar posts com `_m360_external_featured_media_sha256`;
-2. resolver o registro da mídia e gerar a URL de entrega Cloudinary adequada ao tamanho pedido;
+2. resolver o registro da mídia e gerar a URL de entrega Cloudinary no perfil único do MVP: largura máxima de 768 px (`c_limit,w_768`), com proporção preservada;
 3. filtrar os pontos de resolução de imagem usados pelo WordPress (`wp_get_attachment_image_src`, `wp_get_attachment_image_attributes` e `post_thumbnail_url`) para devolver URL, dimensões e `alt` do post atual;
 4. garantir que `has_post_thumbnail()`, `get_the_post_thumbnail_url()` e `the_post_thumbnail()` continuem funcionais;
 5. fornecer integração explícita para Open Graph/SEO usada no portal, se o plugin de SEO não consumir os filtros acima;
 6. não interceptar attachments normais: a regra aplica-se apenas ao attachment virtual marcado como mídia externa M360.
 
-Antes de codificar, testar a cadeia real de renderização no site de homologação: tema/News Portal, Elementor, widgets M360, plugin de SEO e prévia social. Os componentes M360 existentes consultam tamanhos como `medium`, `medium_large` e `large`; o adaptador deve convertê-los para transformações Cloudinary, preservando a proporção e evitando que o WordPress crie arquivos locais.
+Antes de codificar, testar a cadeia real de renderização no site de homologação: tema/News Portal, Elementor, widgets M360, plugin de SEO e prévia social. Os componentes M360 existentes consultam tamanhos como `medium`, `medium_large` e `large`; durante o MVP, o adaptador deve normalizar todos para o perfil único de 768 px, preservando a proporção e evitando que o WordPress crie arquivos locais.
 
 ## Workflow n8n
 
@@ -135,7 +135,7 @@ Executar em homologação com um post real de teste:
 - Uma mesma imagem binária produz exatamente um registro técnico, um asset Cloudinary e um attachment virtual.
 - PT-BR e EN-US compartilham a mesma referência física e não criam segundo upload nem arquivos locais equivalentes.
 - O WordPress continua a reconhecer a Featured Image por `_thumbnail_id`.
-- As URLs dos tamanhos solicitados pelos componentes são entregues pelo Cloudinary, sem thumbnails gerados no Hostinger.
+- As URLs solicitadas pelos componentes são normalizadas para o perfil único de entrega Cloudinary de 768 px, sem thumbnails gerados no Hostinger.
 - Os quatro metadados editoriais são independentes por post/idioma.
 - Frontend, Elementor e Open Graph exibem a imagem externa corretamente.
 - O job recorrente e seu retry são idempotentes.
