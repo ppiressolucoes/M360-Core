@@ -1,1 +1,10 @@
-# Baseline estável\n\n```text\n0.7.4.0.19\n```\n\n## Estado operacional\n\n- Release candidata à validação: v0.7.4.0.19 — persistência de consentimento em páginas com cache.\n- Base evolutiva: produção Mengão 360 v0.7.4.0.1 → Portal Energia Limpa v0.7.4.0.17 → hotfixes v0.7.4.0.18 e v0.7.4.0.19.\n- Política aprovada para Mengão 360: Analytics em opt-out na primeira visita; publicidade e personalização continuam negadas.\n
+# Baseline estável
+
+```text
+0.7.4.0.20
+```
+
+## Estado operacional
+
+- Release candidata à validação: v0.7.4.0.20 — bootstrap de Consent Mode compatível com cache.
+- Política aprovada no Mengão 360: Analytics em opt-out na primeira visita; Ads e personalização negados.

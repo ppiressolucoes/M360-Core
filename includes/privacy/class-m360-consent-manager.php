@@ -177,10 +177,10 @@ final class M360_Consent_Manager
         $state = self::consent_state();
         $signals = self::google_signals($state);
         $source = self::has_stored_consent() ? 'stored' : 'default';
-        echo "\n<script id=\"m360-consent-mode-v2\">window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments);};gtag('consent','default',{";
-        echo "'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'denied','personalization_storage':'denied','security_storage':'granted','wait_for_update':500";
-        echo "});gtag('set','ads_data_redaction',true);";
-        if ($source === 'stored') { echo "gtag('consent','update'," . wp_json_encode($signals) . ");"; }
+        echo "\n<script id=\"m360-consent-mode-v2\">window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments);};gtag('consent','default'," . wp_json_encode($signals) . ");gtag('set','ads_data_redaction',true);";
+        // Cached markup cannot know the current visitor cookie. Resolve it before
+        // Google configuration and immediately override the cached fallback.
+        echo "try{var n=encodeURIComponent(" . wp_json_encode(self::COOKIE) . ")+ '=',p=(document.cookie||'').split(';').map(function(v){return v.trim();}).filter(function(v){return v.indexOf(n)===0;})[0];if(p){var d=JSON.parse(decodeURIComponent(p.slice(n.length))),c=d&&Number(d.version)===1&&d.categories;if(c){var g=function(k){return c[k]?'granted':'denied';};gtag('consent','update',{ad_storage:g('advertising'),ad_user_data:g('advertising'),ad_personalization:g('advertising'),analytics_storage:g('analytics'),functionality_storage:g('preferences'),personalization_storage:g('preferences'),security_storage:'granted'});}}}catch(e){}";
         // External CMPs can emit before regular scripts are evaluated. Queue the
         // input instead of losing it and leaving Google in the denied default.
         echo "window.M360Consent=window.M360Consent||{};window.M360Consent._queue=window.M360Consent._queue||[];window.M360Consent._receive=window.M360Consent._receive||function(c){if(window.M360Consent&&typeof window.M360Consent.update==='function'){window.M360Consent.update(c,'cmp');}else{window.M360Consent._queue.push(c);}};window.addEventListener('m360:cmp:consent',function(e){var d=e&&e.detail?e.detail:{};var c=d.categories||d;if(c&&typeof c==='object'){window.M360Consent._receive(c);}});";
@@ -194,7 +194,7 @@ final class M360_Consent_Manager
         if (empty($s['enabled'])) { return; }
         wp_enqueue_style('m360-core-consent', M360_CORE_URL . 'assets/css/m360-consent.css', [], M360_CORE_VERSION);
         // Keep this asset independently cache-busted for a focused privacy hotfix.
-        wp_enqueue_script('m360-core-consent', M360_CORE_URL . 'assets/js/m360-consent.js', [], M360_CORE_VERSION . '-consent-cache-restore-fix-20260820', false);
+        wp_enqueue_script('m360-core-consent', M360_CORE_URL . 'assets/js/m360-consent.js', [], M360_CORE_VERSION . '-consent-bootstrap-cache-fix-20260820', false);
         wp_localize_script('m360-core-consent', 'M360ConsentConfig', [
             'cookieName' => self::COOKIE,
             'cookieDays' => (int) $s['cookie_days'],

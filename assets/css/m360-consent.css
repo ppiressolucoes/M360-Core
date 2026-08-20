@@ -27,8 +27,8 @@
 }
 
 .m360-consent__panel {
-    width: min(100%, 720px) !important;
-    max-height: calc(100dvh - 40px);
+    width: min(100%, 920px) !important;
+    max-height: calc(100dvh - 24px);
     align-self: center;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -95,7 +95,7 @@
     justify-content: space-between;
     gap: 20px;
     border-top: 1px solid #eee;
-    padding: 13px 0;
+    padding: 10px 0;
     font-weight: 700;
 }
 
