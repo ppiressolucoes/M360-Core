@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 - Core Editorial
  * Description: Sistema editorial e de navegação para WordPress com independência de tema M360 Core.
- * Version: 0.7.4.0.18
+ * Version: 0.7.4.0.19
  * Author: M360
  * Text Domain: m360-core
  * Requires at least: 6.0
@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-if (!defined('M360_CORE_VERSION')) { define('M360_CORE_VERSION', '0.7.4.0.18'); }
+if (!defined('M360_CORE_VERSION')) { define('M360_CORE_VERSION', '0.7.4.0.19'); }
 if (!defined('M360_CORE_FILE')) { define('M360_CORE_FILE', __FILE__); }
 if (!defined('M360_CORE_PATH')) { define('M360_CORE_PATH', plugin_dir_path(__FILE__)); }
 if (!defined('M360_CORE_URL')) { define('M360_CORE_URL', plugin_dir_url(__FILE__)); }

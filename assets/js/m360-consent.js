@@ -6,7 +6,26 @@
     var root = null;
     var launcher = null;
     var categories = ['preferences', 'analytics', 'advertising', 'external_media'];
-    var state = Object.assign({ necessary: true, preferences: false, analytics: false, advertising: false, external_media: false }, bootstrap.state || config.state || {});
+
+    // A full-page cache may return markup generated before this visitor decided.
+    // The browser cookie is the final authority for returning visitors.
+    function readStoredDecision() {
+        var name = encodeURIComponent(config.cookieName || 'm360_consent_v1') + '=';
+        var entry = (document.cookie || '').split(';').map(function (part) { return part.trim(); }).filter(function (part) { return part.indexOf(name) === 0; })[0];
+        if (!entry) { return null; }
+        try {
+            var payload = JSON.parse(decodeURIComponent(entry.slice(name.length)));
+            if (!payload || Number(payload.version) !== 1 || !payload.categories || typeof payload.categories !== 'object') { return null; }
+            return payload.categories;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    var browserStoredState = readStoredDecision();
+    var initialSource = browserStoredState ? 'stored_client' : (bootstrap.source || config.initialSource || 'default');
+    if (browserStoredState) { config.hasStoredDecision = true; }
+    var state = Object.assign({ necessary: true, preferences: false, analytics: true, advertising: false, external_media: false }, browserStoredState || bootstrap.state || config.state || {});
 
     function diagnostic(event, detail) {
         if (!config.debug || !window.console || typeof window.console.info !== 'function') { return; }
@@ -59,7 +78,11 @@
     function openPanel() {
         if (!root) { return; }
         root.hidden = false; root.querySelector('.m360-consent__banner').hidden = true; root.querySelector('.m360-consent__panel').hidden = false;
-        Object.keys(state).forEach(function (key) { var input = root.querySelector('[name="' + key + '"]'); if (input && !input.disabled) { input.checked = !!state[key]; } });
+        Object.keys(state).forEach(function (key) {
+            var input = root.querySelector('[name="' + key + '"]');
+            if (!input || input.disabled) { return; }
+            input.checked = !!state[key];
+        });
     }
 
     window.M360Consent = Object.assign(namespace, {
@@ -92,7 +115,7 @@
         if (launcher) { launcher.addEventListener('click', openPanel); }
     }
 
-    diagnostic('bootstrap', { state: Object.assign({}, state), source: bootstrap.source || config.initialSource || 'default', signals: googleSignals(state) });
+    diagnostic('bootstrap', { state: Object.assign({}, state), source: initialSource, signals: googleSignals(state) });
     consumeQueuedUpdates();
 
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initInterface); }

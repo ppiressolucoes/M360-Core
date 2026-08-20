@@ -52,7 +52,9 @@ final class M360_Consent_Manager
 
     public static function consent_state(): array
     {
-        $state = ['necessary' => true, 'preferences' => false, 'analytics' => false, 'advertising' => false, 'external_media' => false];
+        // Opt-out policy approved for the portal: measurement starts enabled,
+        // while advertising, personalization and external media stay denied.
+        $state = ['necessary' => true, 'preferences' => false, 'analytics' => true, 'advertising' => false, 'external_media' => false];
         $stored = self::stored_consent();
         if ($stored !== null) {
             foreach (self::categories() as $key => $definition) {
@@ -192,7 +194,7 @@ final class M360_Consent_Manager
         if (empty($s['enabled'])) { return; }
         wp_enqueue_style('m360-core-consent', M360_CORE_URL . 'assets/css/m360-consent.css', [], M360_CORE_VERSION);
         // Keep this asset independently cache-busted for a focused privacy hotfix.
-        wp_enqueue_script('m360-core-consent', M360_CORE_URL . 'assets/js/m360-consent.js', [], M360_CORE_VERSION . '-consent-mode-fix-20260818', false);
+        wp_enqueue_script('m360-core-consent', M360_CORE_URL . 'assets/js/m360-consent.js', [], M360_CORE_VERSION . '-consent-cache-restore-fix-20260820', false);
         wp_localize_script('m360-core-consent', 'M360ConsentConfig', [
             'cookieName' => self::COOKIE,
             'cookieDays' => (int) $s['cookie_days'],
@@ -216,7 +218,7 @@ final class M360_Consent_Manager
         $cookies = $en ? $s['cookies_url_en'] : $s['cookies_url_pt'];
         $title = $en ? 'Your privacy choices' : 'Suas escolhas de privacidade';
         $description = $en ? 'We use optional technologies only with your permission. You can change your choices at any time.' : 'Usamos tecnologias opcionais somente com sua permissão. Você pode alterar suas escolhas a qualquer momento.';
-        $summary = $en ? 'Necessary technologies stay on for security and site operation. Preferences, analytics, advertising and external media stay blocked until you allow them.' : 'Tecnologias necessárias permanecem ativas para segurança e funcionamento. Preferências, medição, publicidade e mídia externa ficam bloqueadas até a sua autorização.';
+        $summary = $en ? 'Necessary technologies and site measurement start enabled for security, operation and monitoring. You can change this choice at any time; advertising and external media remain blocked until you allow them.' : 'Tecnologias necessárias e a medição do portal começam ativas para segurança, funcionamento e monitoramento. Você pode alterar essa escolha a qualquer momento; publicidade e mídia externa permanecem bloqueadas até a sua autorização.';
         echo '<div class="m360-consent" data-m360-consent-root hidden>';
         echo '<section class="m360-consent__banner" role="dialog" aria-modal="true" aria-labelledby="m360-consent-title"><h2 id="m360-consent-title">' . esc_html($title) . '</h2><p>' . esc_html($description) . '</p><p class="m360-consent__summary">' . esc_html($summary) . '</p>';
         echo '<div class="m360-consent__links">';
@@ -257,14 +259,14 @@ final class M360_Consent_Manager
         $pt = [
             'necessary' => 'Mantém segurança, funcionamento básico e o registro desta escolha.',
             'preferences' => 'Guarda preferências de interface e personalização.',
-            'analytics' => 'Mede navegação e desempenho para melhorar o portal.',
+            'analytics' => 'Mede navegação e desempenho para melhorar o portal. Ativo por padrão; você pode desmarcar quando quiser.',
             'advertising' => 'Permite medição e personalização de publicidade.',
             'external_media' => 'Carrega vídeos e conteúdos incorporados de terceiros.',
         ];
         $en_copy = [
             'necessary' => 'Keeps security, basic operation and this choice record working.',
             'preferences' => 'Stores interface and personalization preferences.',
-            'analytics' => 'Measures navigation and performance to improve the site.',
+            'analytics' => 'Measures navigation and performance to improve the site. Enabled by default; you can turn it off at any time.',
             'advertising' => 'Allows advertising measurement and personalization.',
             'external_media' => 'Loads third-party embedded videos and content.',
         ];

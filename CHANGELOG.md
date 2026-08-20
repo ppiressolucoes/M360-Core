@@ -1,6 +1,4 @@
-# Changelog — M360 Core
-
-## [v0.7.4.0.18] — Consolidação PEL e correção de Consent Mode
+# Changelog — M360 Core\n\n## [v0.7.4.0.19] — Persistência de consentimento em páginas com cache\n\n- corrige a restauração da decisão persistida no navegador quando uma página é entregue por cache/CDN;\n- evita o retorno indevido do CMP ao estado default em nova navegação;\n- formaliza Analytics em opt-out, ativo na primeira visita por decisão do portal;\n- mantém Publicidade, personalização, Preferências e Mídia externa negadas por padrão;\n- permite revogar Analytics imediatamente em Ajustar cookies;\n- corrige a separação visual entre título e explicação das categorias no CMP.\n\n## [v0.7.4.0.18] — Consolidação PEL e correção de Consent Mode
 
 - consolida a evolução técnica do Portal Energia Limpa v0.7.4.0.17 sobre a baseline de produção do Mengão 360 v0.7.4.0.1;
 - atualiza a identificação distribuída para M360 - Core Editorial, versão 0.7.4.0.18, por M360;
