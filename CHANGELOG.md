@@ -1,5 +1,15 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.18] — Consolidação PEL e correção de Consent Mode
+
+- consolida a evolução técnica do Portal Energia Limpa v0.7.4.0.17 sobre a baseline de produção do Mengão 360 v0.7.4.0.1;
+- atualiza a identificação distribuída para M360 - Core Editorial, versão 0.7.4.0.18, por M360;
+- corrige a sequência do Google Consent Mode: default antecipado, restauração segura da decisão persistida e consent update imediato sem recarga;
+- evita perda de eventos do CMP durante a inicialização e atualizações duplicadas;
+- torna a interface de consentimento mais clara quanto a categorias necessárias, opcionais, concedidas e bloqueadas;
+- adiciona diagnóstico restrito ao desenvolvimento para rastrear origem e estado final do consentimento;
+- preserva a escolha do visitante: Analytics continua opcional e nenhuma categoria é forçada.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;
