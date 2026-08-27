@@ -27,9 +27,8 @@ final class M360_Canary_Renderer
 
         $debug = in_array(strtolower((string) $atts['debug']), ['1', 'true', 'yes', 'on'], true);
         $source_id = self::source_id(max(0, (int) $atts['post_id']));
-        if (!self::allowed($source_id)) {
-            return $debug ? self::diagnostic('módulo inativo, modo diferente de shadow ou post de origem inválido') : '';
-        }
+        $blocked = self::blocked_reason($source_id);
+        if ($blocked !== '') { return $debug ? self::diagnostic($blocked) : ''; }
 
         $type = sanitize_key((string) $atts['type']);
         $definitions = [
@@ -101,11 +100,19 @@ final class M360_Canary_Renderer
         return in_array($post->post_type, (array) $settings['post_types'], true);
     }
 
-    private static function allowed(int $post_id): bool
+    private static function blocked_reason(int $post_id): string
     {
-        if ($post_id < 1 || !M360_Platform::instance()->registry()->is_enabled('content-discovery-seo')) { return false; }
+        if ($post_id < 1) { return 'post de origem inválido ou não publicado'; }
+        if (!M360_Platform::instance()->registry()->is_enabled('content-discovery-seo')) { return 'módulo Content Discovery & SEO inativo'; }
         $settings = M360_Content_Discovery_Module::settings();
-        return $settings['mode'] === 'shadow';
+        if ($settings['mode'] !== 'shadow') { return 'módulo fora do modo shadow'; }
+        if (($settings['public_render_mode'] ?? 'shortcode') === 'automatic') { return ''; }
+        if (($settings['public_render_mode'] ?? 'shortcode') === 'prospective'
+            && M360_Content_Discovery_Module::prospective_post_allowed($post_id, $settings)) { return ''; }
+        if (!in_array($post_id, (array) ($settings['renderer_canary_posts'] ?? []), true)) {
+            return 'post ' . $post_id . ' não consta na lista de IDs autorizados do Renderer Canary';
+        }
+        return '';
     }
 
     private static function diagnostic(string $message): string

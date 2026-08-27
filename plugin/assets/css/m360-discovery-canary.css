@@ -1,5 +1,5 @@
 .m360-discovery-canary {
-    --m360-discovery-accent: #e31b23;
+    --m360-discovery-accent: var(--m360-primary, #e31b23);
     --m360-discovery-text: #202124;
     color: var(--m360-discovery-text);
     font-family: inherit;

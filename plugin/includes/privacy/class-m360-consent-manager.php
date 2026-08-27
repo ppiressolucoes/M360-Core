@@ -21,7 +21,7 @@ final class M360_Consent_Manager
 
     public static function register_frontend(): void
     {
-        add_action('wp_head', [self::class, 'render_consent_mode_defaults'], 0);
+        add_action('wp_head', [self::class, 'render_consent_mode_defaults'], -1000);
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_assets'], 20);
         add_action('wp_footer', [self::class, 'render_local_interface'], 5);
     }
@@ -52,17 +52,23 @@ final class M360_Consent_Manager
 
     public static function consent_state(): array
     {
-        $state = ['necessary' => true, 'preferences' => false, 'analytics' => false, 'advertising' => false, 'external_media' => false];
-        if (!empty($_COOKIE[self::COOKIE])) {
-            $decoded = json_decode(rawurldecode(wp_unslash((string) $_COOKIE[self::COOKIE])), true);
-            if (is_array($decoded) && (int) ($decoded['version'] ?? 0) === 1) {
-                foreach (self::categories() as $key => $definition) {
-                    $state[$key] = !empty($definition['required']) || !empty($decoded['categories'][$key]);
-                }
+        // Opt-out policy approved for the portal: measurement starts enabled,
+        // while advertising, personalization and external media stay denied.
+        $state = ['necessary' => true, 'preferences' => false, 'analytics' => true, 'advertising' => false, 'external_media' => false];
+        $stored = self::stored_consent();
+        if ($stored !== null) {
+            foreach (self::categories() as $key => $definition) {
+                $state[$key] = !empty($definition['required']) || !empty($stored['categories'][$key]);
             }
         }
         $filtered = apply_filters('m360_consent_state', $state, self::settings());
         return is_array($filtered) ? array_merge($state, $filtered) : $state;
+    }
+
+    /** A stored decision is only valid when it matches the current cookie schema. */
+    public static function has_stored_consent(): bool
+    {
+        return self::stored_consent() !== null;
     }
 
     public static function has_consent(string $category): bool
@@ -170,10 +176,15 @@ final class M360_Consent_Manager
         if (empty($s['enabled']) || empty($s['consent_mode_v2'])) { return; }
         $state = self::consent_state();
         $signals = self::google_signals($state);
-        echo "\n<script id=\"m360-consent-mode-v2\">window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments);};gtag('consent','default',{";
-        echo "'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'denied','personalization_storage':'denied','security_storage':'granted','wait_for_update':500";
-        echo "});gtag('set','ads_data_redaction',true);";
-        if (!empty($_COOKIE[self::COOKIE])) { echo "gtag('consent','update'," . wp_json_encode($signals) . ");"; }
+        $source = self::has_stored_consent() ? 'stored' : 'default';
+        echo "\n<script id=\"m360-consent-mode-v2\">window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments);};gtag('consent','default'," . wp_json_encode($signals) . ");gtag('set','ads_data_redaction',true);";
+        // Cached markup cannot know the current visitor cookie. Resolve it before
+        // Google configuration and immediately override the cached fallback.
+        echo "try{var n=encodeURIComponent(" . wp_json_encode(self::COOKIE) . ")+ '=',p=(document.cookie||'').split(';').map(function(v){return v.trim();}).filter(function(v){return v.indexOf(n)===0;})[0];if(p){var d=JSON.parse(decodeURIComponent(p.slice(n.length))),c=d&&Number(d.version)===1&&d.categories;if(c){var g=function(k){return c[k]?'granted':'denied';};gtag('consent','update',{ad_storage:g('advertising'),ad_user_data:g('advertising'),ad_personalization:g('advertising'),analytics_storage:g('analytics'),functionality_storage:g('preferences'),personalization_storage:g('preferences'),security_storage:'granted'});}}}catch(e){}";
+        // External CMPs can emit before regular scripts are evaluated. Queue the
+        // input instead of losing it and leaving Google in the denied default.
+        echo "window.M360Consent=window.M360Consent||{};window.M360Consent._queue=window.M360Consent._queue||[];window.M360Consent._receive=window.M360Consent._receive||function(c){if(window.M360Consent&&typeof window.M360Consent.update==='function'){window.M360Consent.update(c,'cmp');}else{window.M360Consent._queue.push(c);}};window.addEventListener('m360:cmp:consent',function(e){var d=e&&e.detail?e.detail:{};var c=d.categories||d;if(c&&typeof c==='object'){window.M360Consent._receive(c);}});";
+        echo "window.M360ConsentBootstrap={state:" . wp_json_encode($state) . ",source:" . wp_json_encode($source) . ",signals:" . wp_json_encode($signals) . "};";
         echo "</script>\n";
     }
 
@@ -182,7 +193,8 @@ final class M360_Consent_Manager
         $s = self::settings();
         if (empty($s['enabled'])) { return; }
         wp_enqueue_style('m360-core-consent', M360_CORE_URL . 'assets/css/m360-consent.css', [], M360_CORE_VERSION);
-        wp_enqueue_script('m360-core-consent', M360_CORE_URL . 'assets/js/m360-consent.js', [], M360_CORE_VERSION, true);
+        // Keep this asset independently cache-busted for a focused privacy hotfix.
+        wp_enqueue_script('m360-core-consent', M360_CORE_URL . 'assets/js/m360-consent.js', [], M360_CORE_VERSION . '-consent-bootstrap-cache-fix-20260820', false);
         wp_localize_script('m360-core-consent', 'M360ConsentConfig', [
             'cookieName' => self::COOKIE,
             'cookieDays' => (int) $s['cookie_days'],
@@ -190,6 +202,9 @@ final class M360_Consent_Manager
             'consentModeV2' => !empty($s['consent_mode_v2']),
             'language' => self::language(),
             'state' => self::consent_state(),
+            'hasStoredDecision' => self::has_stored_consent(),
+            'initialSource' => self::has_stored_consent() ? 'stored' : 'default',
+            'debug' => self::debug_enabled(),
         ]);
     }
 
@@ -203,16 +218,18 @@ final class M360_Consent_Manager
         $cookies = $en ? $s['cookies_url_en'] : $s['cookies_url_pt'];
         $title = $en ? 'Your privacy choices' : 'Suas escolhas de privacidade';
         $description = $en ? 'We use optional technologies only with your permission. You can change your choices at any time.' : 'Usamos tecnologias opcionais somente com sua permissão. Você pode alterar suas escolhas a qualquer momento.';
+        $summary = $en ? 'Necessary technologies and site measurement start enabled for security, operation and monitoring. You can change this choice at any time; advertising and external media remain blocked until you allow them.' : 'Tecnologias necessárias e a medição do portal começam ativas para segurança, funcionamento e monitoramento. Você pode alterar essa escolha a qualquer momento; publicidade e mídia externa permanecem bloqueadas até a sua autorização.';
         echo '<div class="m360-consent" data-m360-consent-root hidden>';
-        echo '<section class="m360-consent__banner" role="dialog" aria-modal="true" aria-labelledby="m360-consent-title"><h2 id="m360-consent-title">' . esc_html($title) . '</h2><p>' . esc_html($description) . '</p>';
+        echo '<section class="m360-consent__banner" role="dialog" aria-modal="true" aria-labelledby="m360-consent-title"><h2 id="m360-consent-title">' . esc_html($title) . '</h2><p>' . esc_html($description) . '</p><p class="m360-consent__summary">' . esc_html($summary) . '</p>';
         echo '<div class="m360-consent__links">';
         if ($privacy) { echo '<a href="' . esc_url($privacy) . '">' . esc_html($en ? 'Privacy Policy' : 'Política de Privacidade') . '</a>'; }
         if ($cookies) { echo '<a href="' . esc_url($cookies) . '">' . esc_html($en ? 'Cookie Policy' : 'Política de Cookies') . '</a>'; }
         echo '</div><div class="m360-consent__actions"><button type="button" data-m360-consent-reject>' . esc_html($en ? 'Reject optional' : 'Rejeitar opcionais') . '</button><button type="button" data-m360-consent-manage>' . esc_html($en ? 'Manage choices' : 'Gerenciar escolhas') . '</button><button class="is-primary" type="button" data-m360-consent-accept>' . esc_html($en ? 'Accept all' : 'Aceitar todos') . '</button></div></section>';
-        echo '<section class="m360-consent__panel" role="dialog" aria-modal="true" aria-labelledby="m360-consent-panel-title" hidden><h2 id="m360-consent-panel-title">' . esc_html($title) . '</h2><form data-m360-consent-form>';
+        echo '<section class="m360-consent__panel" role="dialog" aria-modal="true" aria-labelledby="m360-consent-panel-title" hidden><h2 id="m360-consent-panel-title">' . esc_html($title) . '</h2><p>' . esc_html($en ? 'Choose which optional categories may operate. Saving applies your choice immediately, without reloading the page.' : 'Escolha quais categorias opcionais podem funcionar. Ao salvar, sua escolha é aplicada imediatamente, sem recarregar a página.') . '</p><form data-m360-consent-form>';
         foreach (self::categories() as $key => $definition) {
             $required = !empty($definition['required']);
-            echo '<label class="m360-consent__category"><span>' . esc_html((string) $definition[$lang]) . '</span><input type="checkbox" name="' . esc_attr($key) . '"' . ($required ? ' checked disabled' : '') . '></label>';
+            $copy = self::category_copy($key, $en);
+            echo '<label class="m360-consent__category"><span class="m360-consent__category-copy"><strong>' . esc_html((string) $definition[$lang]) . '</strong><small>' . esc_html($copy['description']) . '</small></span><span class="m360-consent__control"><input type="checkbox" name="' . esc_attr($key) . '"' . ($required ? ' checked disabled' : '') . '><span>' . esc_html($required ? $copy['always'] : $copy['optional']) . '</span></span></label>';
         }
         echo '<div class="m360-consent__actions"><button type="button" data-m360-consent-close>' . esc_html($en ? 'Cancel' : 'Cancelar') . '</button><button class="is-primary" type="submit">' . esc_html($en ? 'Save choices' : 'Salvar escolhas') . '</button></div></form></section></div>';
         echo '<button class="m360-consent-launcher" type="button" data-m360-consent-launcher>' . esc_html($en ? 'Cookie settings' : 'Ajustar cookies') . '</button>';
@@ -235,6 +252,44 @@ final class M360_Consent_Manager
             'personalization_storage' => $value(!empty($state['preferences'])),
             'security_storage' => 'granted',
         ];
+    }
+
+    private static function category_copy(string $category, bool $en): array
+    {
+        $pt = [
+            'necessary' => 'Mantém segurança, funcionamento básico e o registro desta escolha.',
+            'preferences' => 'Guarda preferências de interface e personalização.',
+            'analytics' => 'Mede navegação e desempenho para melhorar o portal. Ativo por padrão; você pode desmarcar quando quiser.',
+            'advertising' => 'Permite medição e personalização de publicidade.',
+            'external_media' => 'Carrega vídeos e conteúdos incorporados de terceiros.',
+        ];
+        $en_copy = [
+            'necessary' => 'Keeps security, basic operation and this choice record working.',
+            'preferences' => 'Stores interface and personalization preferences.',
+            'analytics' => 'Measures navigation and performance to improve the site. Enabled by default; you can turn it off at any time.',
+            'advertising' => 'Allows advertising measurement and personalization.',
+            'external_media' => 'Loads third-party embedded videos and content.',
+        ];
+        return [
+            'description' => ($en ? $en_copy : $pt)[$category] ?? '',
+            'always' => $en ? 'Always active' : 'Sempre ativo',
+            'optional' => $en ? 'Allow' : 'Permitir',
+        ];
+    }
+
+    private static function stored_consent(): ?array
+    {
+        if (empty($_COOKIE[self::COOKIE])) { return null; }
+        $decoded = json_decode(rawurldecode(wp_unslash((string) $_COOKIE[self::COOKIE])), true);
+        if (!is_array($decoded) || (int) ($decoded['version'] ?? 0) !== 1 || !is_array($decoded['categories'] ?? null)) { return null; }
+        return $decoded;
+    }
+
+    private static function debug_enabled(): bool
+    {
+        return defined('WP_DEBUG') && WP_DEBUG
+            && current_user_can('manage_options')
+            && !empty($_GET['m360_consent_debug']);
     }
 
     private static function language(): string

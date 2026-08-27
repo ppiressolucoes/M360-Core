@@ -190,7 +190,9 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
             'card_categories' => '',
             'international_category' => 'internacional',
             'include_international' => 'true',
-            'cards' => 4,
+            // Quatro cards permanecem visíveis; com mais de quatro itens o
+            // conjunto lateral passa a alternar automaticamente em grupos.
+            'cards' => 8,
             'interval' => 6500,
             'autoplay' => 'true',
             'heading_level' => '',
@@ -219,11 +221,15 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         $html .= '<div class="m360-editorial-newsroom__layout"><div class="m360-editorial-newsroom__carousel" data-m360-editorial-carousel data-interval="' . esc_attr((string)max(2500,(int)$atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '">';
         foreach ($featured as $index => $post) { $html .= self::newsroom_featured($post, min(6,$level+1), $index); }
         if (count($featured) > 1) {
-            $html .= '<div class="m360-editorial-newsroom__controls"><button type="button" data-m360-editorial-prev aria-label="' . esc_attr__('Previous story','m360-core') . '">&#8249;</button><button type="button" data-m360-editorial-next aria-label="' . esc_attr__('Next story','m360-core') . '">&#8250;</button></div>';
+            $previous = $atts['lang'] === 'pt' ? 'Notícia anterior' : __('Previous story','m360-core');
+            $next = $atts['lang'] === 'pt' ? 'Próxima notícia' : __('Next story','m360-core');
+            $left_icon = '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>';
+            $right_icon = '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M9 6l6 6-6 6"/></svg>';
+            $html .= '<div class="m360-editorial-newsroom__controls"><button type="button" data-m360-editorial-prev aria-label="' . esc_attr($previous) . '">' . $left_icon . '</button><button type="button" data-m360-editorial-next aria-label="' . esc_attr($next) . '">' . $right_icon . '</button></div>';
         }
         $html .= '</div>';
-        $html .= '<div class="m360-editorial-newsroom__cards">';
-        foreach ($cards as $post) { $html .= self::newsroom_card($post, min(6,$level+2)); }
+        $html .= '<div class="m360-editorial-newsroom__cards" data-m360-editorial-card-carousel data-interval="' . esc_attr((string)max(2500,(int)$atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '">';
+        foreach ($cards as $index => $post) { $html .= self::newsroom_card($post, min(6,$level+2), $index); }
         return $html . '</div></div></section>';
     }
 
@@ -239,10 +245,10 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         return $html . '</div></article>';
     }
 
-    private static function newsroom_card(WP_Post $post, int $level): string
+    private static function newsroom_card(WP_Post $post, int $level, int $index): string
     {
         $image = get_the_post_thumbnail_url($post, 'medium_large');
-        $html = '<article class="m360-editorial-newsroom__card">';
+        $html = '<article class="m360-editorial-newsroom__card" data-m360-editorial-card-slide' . ($index > 3 ? ' hidden' : '') . ' aria-hidden="' . ($index > 3 ? 'true' : 'false') . '">';
         if ($image) { $html .= '<a href="' . esc_url(get_permalink($post)) . '"><img src="' . esc_url($image) . '" alt="" loading="lazy"></a>'; }
         $html .= '<div class="m360-editorial-newsroom__card-content">' . self::category_badge($post);
         $html .= '<h' . $level . '><a href="' . esc_url(get_permalink($post)) . '">' . esc_html(get_the_title($post)) . '</a></h' . $level . '>';

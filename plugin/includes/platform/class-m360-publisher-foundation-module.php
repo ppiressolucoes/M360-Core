@@ -6,7 +6,7 @@ final class M360_Publisher_Foundation_Module implements M360_Module_Interface
     public function id(): string { return 'publisher-foundation'; }
     public function label(): string { return 'Publisher Platform Foundation'; }
     public function version(): string { return M360_CORE_VERSION; }
-    public function schema_version(): string { return '1'; }
+    public function schema_version(): string { return '2'; }
     public function dependencies(): array { return []; }
     public function capabilities(): array { return ['manage_options']; }
     public function settings_schema(): array
@@ -17,6 +17,8 @@ final class M360_Publisher_Foundation_Module implements M360_Module_Interface
             'vertical' => ['type' => 'string', 'portable' => true],
             'default_locale' => ['type' => 'locale', 'portable' => true],
             'supported_locales' => ['type' => 'locale[]', 'portable' => true],
+            'branding.primary_color' => ['type' => 'color', 'portable' => true],
+            'branding.secondary_color' => ['type' => 'color', 'portable' => true],
         ];
     }
     public function asset_handles(): array { return ['styles' => [], 'scripts' => []]; }

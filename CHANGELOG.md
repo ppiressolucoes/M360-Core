@@ -1,5 +1,29 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.21] — Categoria editorial principal em Últimas Notícias
+
+- Últimas Notícias passa a exibir a categoria editorial principal quando ela estiver marcada no post.
+- Resolução compatível com meta M360, Yoast SEO, Rank Math e o filtro `m360_latest_news_primary_category_id`.
+- A categoria só é aceita como principal quando também estiver atribuída ao post; o fallback legado permanece inalterado.
+
+## [v0.7.4.0.20] — Bootstrap de Consent Mode compatível com cache
+
+- aplica o estado efetivo de consentimento antes da configuração Google, inclusive quando a página vem de cache/CDN;
+- corrige a política opt-out aprovada: Analytics concedido na primeira visita;
+- mantém Ads, dados de usuário para anúncios, personalização, Preferências e Mídia externa negados;
+- elimina o estado inicial denied indevido para visitantes recorrentes que já autorizaram Analytics;
+- amplia o modal e reduz sua altura de conteúdo para evitar scroll vertical em desktop.
+
+\n\n## [v0.7.4.0.19] — Persistência de consentimento em páginas com cache\n\n- corrige a restauração da decisão persistida no navegador quando uma página é entregue por cache/CDN;\n- evita o retorno indevido do CMP ao estado default em nova navegação;\n- formaliza Analytics em opt-out, ativo na primeira visita por decisão do portal;\n- mantém Publicidade, personalização, Preferências e Mídia externa negadas por padrão;\n- permite revogar Analytics imediatamente em Ajustar cookies;\n- corrige a separação visual entre título e explicação das categorias no CMP.\n\n## [v0.7.4.0.18] — Consolidação PEL e correção de Consent Mode
+
+- consolida a evolução técnica do Portal Energia Limpa v0.7.4.0.17 sobre a baseline de produção do Mengão 360 v0.7.4.0.1;
+- atualiza a identificação distribuída para M360 - Core Editorial, versão 0.7.4.0.18, por M360;
+- corrige a sequência do Google Consent Mode: default antecipado, restauração segura da decisão persistida e consent update imediato sem recarga;
+- evita perda de eventos do CMP durante a inicialização e atualizações duplicadas;
+- torna a interface de consentimento mais clara quanto a categorias necessárias, opcionais, concedidas e bloqueadas;
+- adiciona diagnóstico restrito ao desenvolvimento para rastrear origem e estado final do consentimento;
+- preserva a escolha do visitante: Analytics continua opcional e nenhuma categoria é forçada.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;
