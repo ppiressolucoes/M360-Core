@@ -9,6 +9,7 @@ final class M360_Platform_Admin
     {
         self::$registry = $registry;
         add_action('admin_menu', [self::class, 'menu']);
+        add_action('admin_menu', [self::class, 'shortcuts'], 99);
         add_filter('parent_file', [self::class, 'highlight_dashboard']);
         add_action('admin_post_m360_platform_save_profile', [self::class, 'save_profile']);
         add_action('admin_post_m360_platform_import_profile', [self::class, 'import_profile']);
@@ -53,6 +54,21 @@ final class M360_Platform_Admin
             'm360-editorial-widgets',
             [self::class, 'render_widgets']
         );
+    }
+
+    public static function shortcuts(): void
+    {
+        $items = [
+            ['Editorial', 'Editorial', 'm360-editorial-widgets', [self::class, 'render_widgets']],
+            ['Content Discovery & SEO', 'Discovery & SEO', 'm360-content-discovery', [M360_Content_Discovery_Admin::class, 'render']],
+            ['Monetização', 'Ads', 'm360-ads-manager', [M360_Ads_Admin::class, 'render_dashboard']],
+            ['Newsletter', 'Newsletter', 'm360-newsletter-operations', [M360_Newsletter_Admin::class, 'render']],
+            ['Privacy & Consent', 'Privacy & Consent', 'm360-ads-privacy-consent', [M360_Consent_Manager::class, 'render_admin_page']],
+            ['Site Profile e módulos', 'Site Profile e módulos', 'm360-platform', [self::class, 'render']],
+        ];
+        foreach ($items as $item) {
+            add_submenu_page('m360-dashboard', $item[0], $item[1], 'manage_options', $item[2], $item[3]);
+        }
     }
 
     public static function highlight_dashboard(string $parent_file): string
@@ -310,6 +326,8 @@ final class M360_Platform_Admin
                     <tr><th><label for="m360-vertical">Vertical</label></th><td><input class="regular-text" id="m360-vertical" name="profile[vertical]" value="<?php echo esc_attr($profile['vertical']); ?>" required><p class="description">Ex.: publisher, sports, clean-energy.</p></td></tr>
                     <tr><th><label for="m360-default-locale">Idioma padrão</label></th><td><input class="regular-text" id="m360-default-locale" name="profile[default_locale]" value="<?php echo esc_attr($profile['default_locale']); ?>" required></td></tr>
                     <tr><th><label for="m360-supported-locales">Idiomas suportados</label></th><td><input class="regular-text" id="m360-supported-locales" name="profile[supported_locales]" value="<?php echo esc_attr(implode(', ', $profile['supported_locales'])); ?>" required><p class="description">Separados por vírgula; exemplo: pt-BR, en-US.</p></td></tr>
+                    <tr><th><label for="m360-primary-color">Cor primária</label></th><td><input type="color" id="m360-primary-color" name="profile[branding][primary_color]" value="<?php echo esc_attr($profile['branding']['primary_color']); ?>"><code><?php echo esc_html($profile['branding']['primary_color']); ?></code><p class="description">Aplicada aos componentes M360. PEL: #ff3d00; Mengão 360: #d71920.</p></td></tr>
+                    <tr><th><label for="m360-secondary-color">Cor secundária</label></th><td><input type="color" id="m360-secondary-color" name="profile[branding][secondary_color]" value="<?php echo esc_attr($profile['branding']['secondary_color']); ?>"><code><?php echo esc_html($profile['branding']['secondary_color']); ?></code><p class="description">Apoio visual para estados, gradientes e interações.</p></td></tr>
                     <tr>
                         <th><label for="m360-runtime-mode">Política de implantação</label></th>
                         <td>

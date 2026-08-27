@@ -13,6 +13,6 @@ plugin/
 └── views/
 ```
 
-O ZIP oficial é gerado a partir deste diretório pelo script de empacotamento do repositório. A baseline homologada é `v0.7.0`.
+O ZIP oficial é gerado a partir deste diretório pelo script de empacotamento do repositório. A baseline consolidada é `v0.7.4.0.21`.
 
 Entre os componentes vigentes estão navegação, views dinâmicas, publicidade, privacidade e consentimento, Newsletter M360 integrada ao MailPoet e a Publisher Platform Foundation.

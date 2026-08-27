@@ -146,8 +146,7 @@ final class M360_Latest_News_Component
     private static function render_item(int $index, bool $show_image, bool $show_category, bool $show_date, string $layout): string
     {
         $classes = 'm360-latest-news__item' . ($index === 1 ? ' is-featured' : '');
-        $categories = get_the_category();
-        $category = !empty($categories) ? $categories[0] : null;
+        $category = self::primary_category((int) get_the_ID());
         ob_start();
         echo '<article class="' . esc_attr($classes) . '">';
         if ($show_image && has_post_thumbnail()) {
@@ -162,6 +161,62 @@ final class M360_Latest_News_Component
         if ($show_date) { echo '<time class="m360-latest-news__date" datetime="' . esc_attr(get_the_date('c')) . '">' . esc_html(human_time_diff(get_the_time('U'), current_time('timestamp')) . ' ' . ($is_en = self::is_en() ? 'ago' : 'atrás')) . '</time>'; }
         echo '</div></article>';
         return (string) ob_get_clean();
+    }
+
+    /**
+     * Resolves the editorial category that must be displayed for a post.
+     *
+     * WordPress has no native primary-category field. This honours M360,
+     * Yoast and Rank Math markers, then a portal integration filter. A
+     * candidate is valid only when it is assigned to the current post.
+     */
+    private static function primary_category(int $post_id): ?WP_Term
+    {
+        if ($post_id <= 0) {
+            return null;
+        }
+
+        $categories = get_the_category($post_id);
+        if (!is_array($categories) || $categories === []) {
+            return null;
+        }
+
+        $assigned_ids = array_map('intval', wp_list_pluck($categories, 'term_id'));
+        $primary_id = (int) get_post_meta($post_id, '_m360_primary_category_id', true);
+
+        if ($primary_id <= 0 && class_exists('WPSEO_Primary_Term')) {
+            $primary_id = (int) (new WPSEO_Primary_Term('category', $post_id))->get_primary_term();
+        }
+        if ($primary_id <= 0) {
+            $primary_id = (int) get_post_meta($post_id, '_yoast_wpseo_primary_category', true);
+        }
+        if ($primary_id <= 0) {
+            $primary_id = (int) get_post_meta($post_id, 'rank_math_primary_category', true);
+        }
+
+        /**
+         * Allows a portal integration to nominate an assigned editorial category.
+         *
+         * @param int   $primary_id Current candidate category ID, or zero.
+         * @param int   $post_id    Post identifier.
+         * @param array $categories Categories assigned to the post.
+         */
+        $primary_id = (int) apply_filters('m360_latest_news_primary_category_id', $primary_id, $post_id, $categories);
+
+        if ($primary_id > 0 && in_array($primary_id, $assigned_ids, true)) {
+            $term = get_term($primary_id, 'category');
+            if ($term instanceof WP_Term) {
+                return $term;
+            }
+        }
+
+        foreach ($categories as $category) {
+            if ($category instanceof WP_Term) {
+                return $category;
+            }
+        }
+
+        return null;
     }
 
     public static function enqueue_assets(): void

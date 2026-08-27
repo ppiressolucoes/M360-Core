@@ -4,8 +4,8 @@
  */
 
 :root {
-    --m360-ui-red: #d71920;
-    --m360-ui-red-dark: #b81218;
+    --m360-ui-red: var(--m360-primary, #d71920);
+    --m360-ui-red-dark: var(--m360-secondary, #b81218);
     --m360-ui-text: #202124;
     --m360-ui-muted: #6b7280;
     --m360-ui-border: rgba(0,0,0,.08);

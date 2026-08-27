@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.21] — Categoria editorial principal em Últimas Notícias
+
+- Últimas Notícias passa a exibir a categoria editorial principal quando ela estiver marcada no post.
+- Resolução compatível com meta M360, Yoast SEO, Rank Math e o filtro `m360_latest_news_primary_category_id`.
+- A categoria só é aceita como principal quando também estiver atribuída ao post; o fallback legado permanece inalterado.
+
 ## [v0.7.4.0.20] — Bootstrap de Consent Mode compatível com cache
 
 - aplica o estado efetivo de consentimento antes da configuração Google, inclusive quando a página vem de cache/CDN;

@@ -49,6 +49,8 @@ require_once M360_CORE_PATH . 'includes/discovery/class-m360-legacy-semantic-ada
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-locale-resolver.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-wordpress-catalog-provider.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-db.php';
+require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-external-dictionary-provider.php';
+require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-keyword-dictionary.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-shadow-generator.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-scheduler.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-semantic-comparator.php';
@@ -129,6 +131,8 @@ final class M360_Core_Runtime_034
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
         add_action('admin_enqueue_scripts', [$this, 'register_admin_assets']);
+        add_action('wp_head', [$this, 'render_branding_css'], 99);
+        add_action('admin_head', [$this, 'render_branding_css'], 99);
         add_filter('widget_text', 'do_shortcode', 11);
         add_filter('widget_text_content', 'do_shortcode', 11);
         add_filter('widget_custom_html_content', 'do_shortcode', 11);
@@ -207,6 +211,39 @@ final class M360_Core_Runtime_034
             wp_enqueue_media();
             wp_enqueue_script('m360-core-ads-admin', M360_CORE_URL . 'assets/js/m360-ads-admin.js', ['jquery', 'media-editor'], M360_CORE_VERSION, true);
         }
+    }
+
+    public function render_branding_css(): void
+    {
+        $profile = M360_Site_Profile::get();
+        $branding = (array) ($profile['branding'] ?? []);
+        $primary = sanitize_hex_color((string) ($branding['primary_color'] ?? '')) ?: '#d71920';
+        $secondary = sanitize_hex_color((string) ($branding['secondary_color'] ?? '')) ?: '#b81218';
+        ?>
+        <style id="m360-site-branding">
+            :root{--m360-primary:<?php echo esc_html($primary); ?>;--m360-secondary:<?php echo esc_html($secondary); ?>;--m360-ui-red:<?php echo esc_html($primary); ?>;--m360-ui-red-dark:<?php echo esc_html($secondary); ?>}
+            /* Tokens portáveis: sobrescrevem os acentos legados dos componentes públicos. */
+            .m360-latest-news__header{border-bottom-color:var(--m360-primary)}
+            .m360-latest-news__category,.m360-latest-news__title a:hover{color:var(--m360-primary)!important}
+            .m360-latest-news__pagination a.page-numbers:hover,.m360-latest-news__pagination span.page-numbers.current{border-color:var(--m360-primary);background:var(--m360-primary)}
+            .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu{background:var(--m360-primary)}
+            .m360-breadcrumb.m360-ui-breadcrumb-nav li + li::before,.m360-breadcrumb.m360-ui-breadcrumb-nav a{color:var(--m360-primary)!important}
+            .m360-breadcrumb.m360-ui-breadcrumb-nav a:hover{color:var(--m360-secondary)!important}
+            .m360-lang-toggle{background:var(--m360-primary)}
+            .m360-lang-toggle:hover,.m360-lang-toggle:focus-visible{background:var(--m360-secondary)}
+            .m360-post-info__avatar-frame{border-color:var(--m360-primary)}
+            .m360-post-info a:focus-visible{color:var(--m360-primary)!important;outline-color:var(--m360-primary)}
+            .m360-search-form__field:focus-within,.m360-search-form.is-invalid .m360-search-form__field{border-color:var(--m360-primary)}
+            .m360-search-form__button{background:var(--m360-primary)}
+            .m360-search-form__button:hover{background:var(--m360-secondary)}
+            .m360-editorial-newsroom__category,.m360-editorial-newsroom__controls button:hover,.m360-editorial-newsroom__controls button:focus-visible{background:var(--m360-primary)}
+            .m360-editorial-widget{--m360-widget-accent:var(--m360-primary)}
+            .m360-editorial-ticker__label,.m360-editorial-ticker__controls button:hover,.m360-editorial-ticker__controls button:focus-visible{background:var(--m360-primary)}
+            .m360-editorial-ticker__category{color:var(--m360-primary)}
+            .m360-dashboard{--m360-dashboard-accent:var(--m360-primary)}
+            .m360-discovery-canary{--m360-discovery-accent:var(--m360-primary)}
+        </style>
+        <?php
     }
 
     public function register_shortcodes(): void

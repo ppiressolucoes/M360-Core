@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Shadow_Generator
 {
-    public const ALGORITHM_VERSION = 'portable-v2-internal-terms';
+    public const ALGORITHM_VERSION = 'portable-v6-ext-dict';
     public const CRON_HOOK = 'm360_discovery_generate_shadow';
 
     private M360_WordPress_Catalog_Provider $provider;
@@ -85,25 +85,26 @@ final class M360_Shadow_Generator
         $relations = [];
         $terms = array_values(array_filter($taxonomies, 'taxonomy_exists'));
         $terms = $terms ? wp_get_post_terms($post_id, $terms) : [];
-        if (!is_wp_error($terms)) {
-            foreach (array_slice($terms, 0, 8) as $term) {
-                if (!$term instanceof WP_Term) { continue; }
-                $relations[] = ['relation_kind'=>'topic','target_type'=>'term','target_id'=>(int)$term->term_id,'score'=>1,'reason_codes'=>['assigned_term'],'score_breakdown'=>['assigned'=>1]];
-            }
+        if (is_wp_error($terms)) { $terms = []; }
+        foreach (array_slice($terms, 0, 8) as $term) {
+            if (!$term instanceof WP_Term) { continue; }
+            $relations[] = ['relation_kind'=>'topic','target_type'=>'term','target_id'=>(int)$term->term_id,'score'=>1,'reason_codes'=>['assigned_term'],'score_breakdown'=>['assigned'=>1]];
         }
         $candidates = $this->provider->candidates($post_id, $locale, ['post']);
         foreach (array_slice($candidates, 0, 6) as $candidate) {
             $candidate['relation_kind'] = 'related_post';
             $relations[] = $candidate;
         }
-        foreach ($this->internal_link_terms($terms) as $term) {
+        $post = get_post($post_id);
+        $content = $post instanceof WP_Post ? (string) $post->post_content : '';
+        foreach ($this->internal_link_terms($terms, $content, $locale, $taxonomies) as $term) {
             $relations[] = [
                 'relation_kind' => 'internal_link',
                 'target_type' => 'term',
                 'target_id' => (int) $term->term_id,
                 'score' => 1,
-                'reason_codes' => ['assigned_term', 'portable_internal_term'],
-                'score_breakdown' => ['assigned_term' => 1, 'contract_version' => 2],
+                'reason_codes' => ['portable_internal_term', 'assigned_or_dictionary_match'],
+                'score_breakdown' => ['eligible_term' => 1, 'contract_version' => 3],
             ];
         }
         return $relations;
@@ -117,16 +118,21 @@ final class M360_Shadow_Generator
      * @param WP_Term[] $terms
      * @return WP_Term[]
      */
-    private function internal_link_terms(array $terms): array
+    private function internal_link_terms(array $terms, string $content, string $locale, array $taxonomies): array
     {
         $targets = array_values(array_filter($terms, static function ($term): bool {
             return $term instanceof WP_Term && $term->term_id > 0 && taxonomy_exists($term->taxonomy);
         }));
-        usort($targets, static function (WP_Term $a, WP_Term $b): int {
-            $taxonomy = strcmp($a->taxonomy, $b->taxonomy);
-            return $taxonomy !== 0 ? $taxonomy : ($a->term_id <=> $b->term_id);
-        });
-        return array_slice($targets, 0, 4);
+        $targets = array_merge(
+            M360_Discovery_Keyword_Dictionary::matching_terms($content, $locale, $taxonomies, 8),
+            $targets
+        );
+        $unique = [];
+        foreach ($targets as $target) {
+            if ($target instanceof WP_Term) { $unique[(int) $target->term_id] = $target; }
+        }
+        $targets = array_values($unique);
+        return array_slice($targets, 0, 8);
     }
 
     private function source_hash(WP_Post $post, string $locale, array $taxonomies): string
@@ -135,6 +141,7 @@ final class M360_Shadow_Generator
         $terms = $taxonomies ? wp_get_post_terms((int) $post->ID, $taxonomies, ['fields'=>'ids']) : [];
         $terms = is_wp_error($terms) ? [] : array_map('intval', $terms);
         sort($terms);
-        return hash('sha256', implode('|', [$post->post_title,$post->post_excerpt,wp_strip_all_tags($post->post_content),implode(',',$terms),$locale,self::ALGORITHM_VERSION]));
+        $dictionary = M360_Discovery_Keyword_Dictionary::fingerprint($locale);
+        return hash('sha256', implode('|', [$post->post_title,$post->post_excerpt,wp_strip_all_tags($post->post_content),implode(',',$terms),$locale,$dictionary,self::ALGORITHM_VERSION]));
     }
 }

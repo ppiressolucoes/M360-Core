@@ -9,7 +9,7 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     public function id(): string { return 'content-discovery-seo'; }
     public function label(): string { return 'Content Discovery & SEO'; }
     public function version(): string { return M360_CORE_VERSION; }
-    public function schema_version(): string { return '7'; }
+    public function schema_version(): string { return '8'; }
     public function dependencies(): array { return ['publisher-foundation']; }
     public function capabilities(): array { return ['manage_options']; }
     public function asset_handles(): array { return ['styles' => [], 'scripts' => []]; }
@@ -26,9 +26,10 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
             'supported_locales' => ['type' => 'locale[]', 'portable' => true],
             'generation_strategy' => ['type' => 'enum:manual,async', 'portable' => true],
             'renderer_canary_posts' => ['type' => 'int[]', 'portable' => false],
-            'public_render_mode' => ['type' => 'enum:shortcode,automatic', 'portable' => false],
+            'public_render_mode' => ['type' => 'enum:shortcode,canary,prospective,automatic', 'portable' => false],
+            'prospective_started_at' => ['type' => 'datetime', 'portable' => false],
             'contextual_links_max' => ['type' => 'integer:0,3', 'portable' => false],
-            'writer_mode' => ['type' => 'enum:manual,automatic', 'portable' => false],
+            'writer_mode' => ['type' => 'enum:manual,prospective,automatic', 'portable' => false],
         ];
     }
 
@@ -65,8 +66,17 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
         $storage = M360_Discovery_DB::schema_health();
         if (!$storage['healthy']) { return ['status'=>'error','message'=>'Storage próprio ausente ou não transacional.']; }
         if ($legacy['status'] === 'error') { return $legacy; }
-        $renderer = $settings['public_render_mode'] === 'automatic' ? 'injeção automática do Core ativa' : 'renderer disponível por shortcode';
-        $writer = $settings['writer_mode'] === 'automatic' ? 'writer assíncrono do Core ativo' : 'writer automático desativado';
+        $renderer = match ($settings['public_render_mode']) {
+            'automatic' => 'injeção automática do Core ativa',
+            'prospective' => 'injeção pública restrita aos canários e novas publicações',
+            'canary' => 'injeção automática restrita aos posts canários',
+            default => 'renderer disponível por shortcode',
+        };
+        $writer = match ($settings['writer_mode']) {
+            'automatic' => 'writer assíncrono e backfill disponíveis',
+            'prospective' => 'writer prospectivo ativo somente para novas publicações',
+            default => 'writer automático desativado',
+        };
         return ['status'=>'healthy','message'=>'Storage próprio saudável; ' . $renderer . '; ' . $writer . '.'];
     }
 
@@ -99,8 +109,9 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
             'generation_strategy' => 'manual',
             'renderer_canary_posts' => [],
             'public_render_mode' => 'shortcode',
+            'prospective_started_at' => '',
             'contextual_links_max' => 3,
-            'writer_mode' => 'automatic',
+            'writer_mode' => 'manual',
         ];
     }
 
@@ -117,9 +128,10 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
             'supported_locales' => self::sanitize_locales((array) $input['supported_locales']),
             'generation_strategy' => in_array((string) $input['generation_strategy'], ['manual', 'async'], true) ? (string) $input['generation_strategy'] : 'manual',
             'renderer_canary_posts' => self::sanitize_post_ids((array) get_option(self::CANARY_POSTS, $input['renderer_canary_posts'])),
-            'public_render_mode' => in_array((string) $input['public_render_mode'], ['shortcode', 'automatic'], true) ? (string) $input['public_render_mode'] : 'shortcode',
+            'public_render_mode' => in_array((string) $input['public_render_mode'], ['shortcode', 'canary', 'prospective', 'automatic'], true) ? (string) $input['public_render_mode'] : 'shortcode',
+            'prospective_started_at' => preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', (string) $input['prospective_started_at']) ? (string) $input['prospective_started_at'] : '',
             'contextual_links_max' => max(0, min(3, (int) $input['contextual_links_max'])),
-            'writer_mode' => in_array((string) $input['writer_mode'], ['manual', 'automatic'], true) ? (string) $input['writer_mode'] : 'manual',
+            'writer_mode' => in_array((string) $input['writer_mode'], ['manual', 'prospective', 'automatic'], true) ? (string) $input['writer_mode'] : 'manual',
         ];
     }
 
@@ -127,7 +139,10 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     {
         $stored = get_option(self::SETTINGS, []);
         $stored = is_array($stored) ? $stored : [];
-        $stored['public_render_mode'] = in_array($mode, ['shortcode', 'automatic'], true) ? $mode : 'shortcode';
+        $stored['public_render_mode'] = in_array($mode, ['shortcode', 'canary', 'prospective', 'automatic'], true) ? $mode : 'shortcode';
+        if ($stored['public_render_mode'] === 'prospective' && empty($stored['prospective_started_at'])) {
+            $stored['prospective_started_at'] = gmdate('Y-m-d H:i:s');
+        }
         $stored['contextual_links_max'] = max(0, min(3, $max_links));
         $updated = update_option(self::SETTINGS, $stored, false);
         wp_cache_delete(self::SETTINGS, 'options');
@@ -140,10 +155,26 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     {
         $stored = get_option(self::SETTINGS, []);
         $stored = is_array($stored) ? $stored : [];
-        $stored['writer_mode'] = in_array($mode, ['manual', 'automatic'], true) ? $mode : 'manual';
+        $stored['writer_mode'] = in_array($mode, ['manual', 'prospective', 'automatic'], true) ? $mode : 'manual';
         $updated = update_option(self::SETTINGS, $stored, false);
         wp_cache_delete(self::SETTINGS, 'options');
         return $updated || self::settings()['writer_mode'] === $stored['writer_mode'];
+    }
+
+    /** @param array<string,mixed>|null $settings */
+    public static function prospective_post_allowed(int $post_id, ?array $settings = null): bool
+    {
+        $settings = $settings ?? self::settings();
+        if (in_array($post_id, (array) ($settings['renderer_canary_posts'] ?? []), true)) { return true; }
+        $started_at = (string) ($settings['prospective_started_at'] ?? '');
+        if ($started_at === '') { return false; }
+        $post = get_post($post_id);
+        if (!$post instanceof WP_Post || $post->post_status !== 'publish') { return false; }
+        $published_gmt = (string) $post->post_date_gmt;
+        if ($published_gmt === '' || $published_gmt === '0000-00-00 00:00:00') {
+            $published_gmt = get_gmt_from_date((string) $post->post_date);
+        }
+        return $published_gmt >= $started_at;
     }
 
     /** @return string[] */

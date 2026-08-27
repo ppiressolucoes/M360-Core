@@ -29,12 +29,12 @@ final class M360_Editorial_Widgets
     public static function presets(): array
     {
         return [
-            'newsroom' => ['label' => 'Top Header Section · Newsroom', 'count' => 5],
-            '1' => ['label' => 'Destaque 100% + 3 cards', 'count' => 4],
-            '2' => ['label' => 'Destaque 50% + 6 notícias', 'count' => 7],
-            '3' => ['label' => '2 destaques + 4 notícias', 'count' => 6],
-            '4' => ['label' => '3 destaques + 6 notícias', 'count' => 9],
-            '5' => ['label' => 'Latest News · carrossel retrato', 'count' => 12],
+            'newsroom' => ['label' => 'Newsroom · destaque rotativo + 4 cards', 'count' => 5],
+            '1' => ['label' => '1 destaque 100% + 3 cards', 'count' => 4],
+            '2' => ['label' => '1 destaque 50% + 6 mininotícias', 'count' => 7],
+            '3' => ['label' => '2 destaques + 4 mininotícias', 'count' => 6],
+            '4' => ['label' => '3 destaques + 6 mininotícias', 'count' => 9],
+            '5' => ['label' => 'Latest News · carrossel retrato', 'count' => 9],
         ];
     }
 
@@ -88,7 +88,8 @@ final class M360_Editorial_Widgets
                 'title'=>$config['title'],
                 'show_title'=>$config['title'] !== '' ? 'true' : 'false',
                 'lang'=>$config['lang'],
-                'featured_tag'=>$config['featured_tag'],
+                'featured_category'=>implode(',', $config['featured_categories']),
+                'featured_tag'=>$config['featured_categories'] ? '' : $config['featured_tag'],
                 'featured_limit'=>$config['limit'],
                 'card_categories'=>implode(',', $config['categories']),
                 'cards'=>$config['card_count'],
@@ -124,7 +125,7 @@ final class M360_Editorial_Widgets
         $terms = is_array($terms) ? $terms : [];
         $edit_id = sanitize_key((string) ($_GET['edit_widget'] ?? ''));
         $editing = $edit_id !== '' && isset($widgets[$edit_id]) ? $widgets[$edit_id] : null;
-        $defaults = ['id'=>'','title'=>'','layout'=>'1','categories'=>[],'lang'=>'en','limit'=>4,'excerpt_words'=>22,'show_view_all'=>false,'view_all_url'=>'','featured_tag'=>'','card_count'=>4,'interval'=>6500,'autoplay'=>true];
+        $defaults = ['id'=>'','title'=>'','layout'=>'1','categories'=>[],'lang'=>'en','limit'=>4,'excerpt_words'=>22,'show_view_all'=>false,'view_all_url'=>'','featured_categories'=>[],'featured_tag'=>'','card_count'=>8,'interval'=>6500,'autoplay'=>true];
         $form_widget = $editing ?: $defaults;
         echo '<p>Crie instâncias por editoria e publique pelo shortcode estável da lista. Nenhuma página é alterada automaticamente.</p>';
         echo '<details class="m360-editorial-admin__form"' . ($editing ? ' open' : '') . '><summary>' . esc_html($editing ? 'Editar widget: ' . $editing['title'] : 'Cadastrar nova instância') . '</summary>';
@@ -151,18 +152,30 @@ final class M360_Editorial_Widgets
 
     private static function admin_fields(array $widget, array $terms, bool $locked): void
     {
+        $is_newsroom = $widget['layout'] === 'newsroom';
+        $limit_label = $is_newsroom ? 'Slides em destaque' : 'Notícias';
+        $limit_help = $is_newsroom
+            ? 'Quantidade de notícias do carrossel de destaque. A fonte é a categoria ou tag definida abaixo.'
+            : 'No modelo #5, o máximo é 12. Zero oculta o resumo dos destaques.';
         echo '<table class="form-table"><tbody><tr><th><label>ID técnico</label></th><td><input class="regular-text" name="widget[id]" value="' . esc_attr($widget['id']) . '" ' . ($locked ? 'readonly' : 'required') . '><p class="description">Ex.: brasileirao-home ou transfers-en.</p></td></tr>';
         echo '<tr><th><label>Título público</label></th><td><input class="regular-text" name="widget[title]" value="' . esc_attr($widget['title']) . '"></td></tr>';
         echo '<tr><th><label>Modelo</label></th><td><select name="widget[layout]">';
         foreach (self::presets() as $key => $preset) { $model_key = $key === 'newsroom' ? 'Newsroom' : '#' . $key; echo '<option value="' . esc_attr($key) . '" ' . selected($widget['layout'], $key, false) . '>' . esc_html($model_key . ' — ' . $preset['label']) . '</option>'; }
-        echo '</select></td></tr><tr><th><label>Idioma</label></th><td><input class="small-text" name="widget[lang]" value="' . esc_attr($widget['lang']) . '" placeholder="en"><p class="description">Código de consulta, como en ou pt.</p></td></tr>';
-        echo '<tr><th><label>Editorias</label></th><td><details class="m360-editorial-admin__dropdown"><summary>' . esc_html($widget['categories'] ? count($widget['categories']) . ' selecionada(s)' : 'Todas as editorias') . '</summary><div class="m360-editorial-admin__options">';
-        foreach ($terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<label><input type="checkbox" name="widget[categories][]" value="' . esc_attr($term->slug) . '" ' . checked(in_array($term->slug, $widget['categories'], true), true, false) . '> ' . esc_html($term->name . ' (' . $term->slug . ')') . '</label>'; }
-        echo '</div></details><p class="description">Selecione uma ou várias. Sem seleção, consulta as últimas notícias.</p></td></tr>';
-        echo '<tr><th><label>Quantidade e resumo</label></th><td><label>Notícias <input class="small-text" type="number" min="1" max="24" name="widget[limit]" value="' . esc_attr((string) $widget['limit']) . '"></label> &nbsp; <label>Palavras no resumo <input class="small-text" type="number" min="0" max="80" name="widget[excerpt_words]" value="' . esc_attr((string) $widget['excerpt_words']) . '"></label><p class="description">No modelo #5, o máximo é 12. Zero oculta o resumo dos destaques.</p></td></tr>';
+        $languages = self::language_options();
+        echo '</select></td></tr><tr><th><label>Idioma</label></th><td><select name="widget[lang]">';
+        foreach ($languages as $slug => $label) { echo '<option value="' . esc_attr($slug) . '" ' . selected($widget['lang'], $slug, false) . '>' . esc_html($label) . '</option>'; }
+        echo '</select><p class="description">Define a consulta pública e filtra as categorias exibidas abaixo. Salve e reabra a instância após trocar o idioma.</p></td></tr>';
+        $locale_terms = self::terms_for_locale($terms, $widget['lang']);
+        echo '<tr><th><label>' . ($is_newsroom ? 'Editorias dos cards' : 'Editorias') . '</label></th><td><details class="m360-editorial-admin__dropdown"><summary>' . esc_html($widget['categories'] ? count($widget['categories']) . ' selecionada(s)' : 'Todas as editorias') . '</summary><div class="m360-editorial-admin__options">';
+        foreach ($locale_terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<label><input type="checkbox" name="widget[categories][]" value="' . esc_attr($term->slug) . '" ' . checked(in_array($term->slug, $widget['categories'], true), true, false) . '> ' . esc_html($term->name . ' (' . $term->slug . ')') . '</label>'; }
+        echo '</div></details><p class="description">' . ($is_newsroom ? 'Fonte exclusiva dos quatro cards laterais. Selecione as editorias EN-US que devem alimentá-los.' : 'Selecione uma ou várias. Sem seleção, consulta as últimas notícias.') . '</p></td></tr>';
+        echo '<tr><th><label>Quantidade e resumo</label></th><td><label>' . esc_html($limit_label) . ' <input class="small-text" type="number" min="1" max="24" name="widget[limit]" value="' . esc_attr((string) $widget['limit']) . '"></label> &nbsp; <label>Palavras no resumo <input class="small-text" type="number" min="0" max="80" name="widget[excerpt_words]" value="' . esc_attr((string) $widget['excerpt_words']) . '"></label><p class="description">' . esc_html($limit_help) . '</p></td></tr>';
         echo '<tr><th><label>View All</label></th><td><label><input type="checkbox" name="widget[show_view_all]" value="1" ' . checked($widget['show_view_all'], true, false) . '> exibir link</label> &nbsp; <input class="regular-text" type="url" name="widget[view_all_url]" value="' . esc_attr($widget['view_all_url']) . '" placeholder="https://..."><p class="description">Com uma única editoria, o Core usa automaticamente o arquivo da categoria. Para várias editorias, informe a URL.</p></td></tr>';
-        echo '<tr><th><label>Top Header Section</label></th><td><label>Tag dos destaques <input class="regular-text" name="widget[featured_tag]" value="' . esc_attr($widget['featured_tag']) . '" placeholder="featured-en"></label> &nbsp; <label>Cards <input class="small-text" type="number" min="1" max="8" name="widget[card_count]" value="' . esc_attr((string) $widget['card_count']) . '"></label><p class="description">Aplicável ao preset Newsroom. As editorias selecionadas alimentam os cards laterais.</p></td></tr>';
-        echo '<tr><th><label>Carrossel</label></th><td><label><input type="checkbox" name="widget[autoplay]" value="1" ' . checked($widget['autoplay'], true, false) . '> avanço automático</label> &nbsp; <label>Intervalo <input class="small-text" type="number" min="2500" step="500" name="widget[interval]" value="' . esc_attr((string) $widget['interval']) . '"> ms</label><p class="description">Aplicável ao modelo #5.</p></td></tr></tbody></table>';
+        echo '<tr class="m360-editorial-admin__newsroom-source"><th><label>Newsroom — categorias dos destaques</label></th><td><details class="m360-editorial-admin__dropdown"><summary>' . esc_html($widget['featured_categories'] ? count($widget['featured_categories']) . ' selecionada(s)' : 'Últimas notícias do idioma') . '</summary><div class="m360-editorial-admin__options">';
+        foreach ($locale_terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<label><input type="checkbox" name="widget[featured_categories][]" value="' . esc_attr($term->slug) . '" ' . checked(in_array($term->slug, $widget['featured_categories'], true), true, false) . '> ' . esc_html($term->name . ' (' . $term->slug . ')') . '</label>'; }
+        echo '</div></details><p class="description">Aplicável somente ao Newsroom. Selecione as categorias que devem alimentar o carrossel grande. A lista de editorias dos cards é independente.</p></td></tr>';
+        echo '<tr><th><label>Newsroom — cards</label></th><td><label>Cards de origem <input class="small-text" type="number" min="1" max="8" name="widget[card_count]" value="' . esc_attr((string) $widget['card_count']) . '"></label><p class="description">Aplicável ao Newsroom. Quatro cards ficam visíveis; informe de 5 a 8 para alternância lateral automática. É necessário haver posts publicados no idioma selecionado.</p></td></tr>';
+        echo '<tr><th><label>Carrossel</label></th><td><label><input type="checkbox" name="widget[autoplay]" value="1" ' . checked($widget['autoplay'], true, false) . '> avanço automático</label> &nbsp; <label>Intervalo <input class="small-text" type="number" min="2500" step="500" name="widget[interval]" value="' . esc_attr((string) $widget['interval']) . '"> ms</label><p class="description">Aplicável ao Newsroom e ao modelo #5.</p></td></tr></tbody></table>';
     }
 
     private static function sanitize(array $input, string $fallback_id = ''): array
@@ -175,6 +188,9 @@ final class M360_Editorial_Widgets
         $default_count = (int) self::presets()[$layout]['count'];
         $limit = max(1, min(24, (int) ($input['limit'] ?? $default_count)));
         if ($layout === '5') { $limit = min(12, $limit); }
+        $featured_categories = $input['featured_categories'] ?? ($input['featured_category'] ?? []);
+        if (is_string($featured_categories)) { $featured_categories = preg_split('/\s*,\s*/', $featured_categories) ?: []; }
+        $featured_categories = array_slice(array_values(array_unique(array_filter(array_map('sanitize_title', is_array($featured_categories) ? $featured_categories : [])))), 0, 12);
         return [
             'id' => sanitize_key((string) ($input['id'] ?? $fallback_id)),
             'title' => sanitize_text_field((string) ($input['title'] ?? '')),
@@ -185,12 +201,38 @@ final class M360_Editorial_Widgets
             'excerpt_words' => max(0, min(80, (int) ($input['excerpt_words'] ?? 22))),
             'show_view_all' => filter_var($input['show_view_all'] ?? false, FILTER_VALIDATE_BOOLEAN),
             'view_all_url' => esc_url_raw((string) ($input['view_all_url'] ?? '')),
+            'featured_categories' => $featured_categories,
             'featured_tag' => sanitize_title((string) ($input['featured_tag'] ?? '')),
             'card_count' => max(1, min(8, (int) ($input['card_count'] ?? 4))),
             'interval' => max(2500, min(30000, (int) ($input['interval'] ?? 6500))),
             'autoplay' => filter_var($input['autoplay'] ?? false, FILTER_VALIDATE_BOOLEAN),
         ];
     }
+
+    private static function language_options(): array
+    {
+        $options = ['pt' => 'Português (pt-BR)', 'en' => 'English (en-US)'];
+        if (!function_exists('pll_languages_list')) { return $options; }
+        $slugs = pll_languages_list(['fields' => 'slug']);
+        if (!is_array($slugs) || !$slugs) { return $options; }
+        $available = [];
+        foreach ($slugs as $slug) {
+            $slug = sanitize_key((string) $slug);
+            if ($slug === '') { continue; }
+            $available[$slug] = $options[$slug] ?? strtoupper($slug);
+        }
+        return $available ?: $options;
+    }
+
+    private static function terms_for_locale(array $terms, string $lang): array
+    {
+        $lang = sanitize_key(substr($lang, 0, 8));
+        if ($lang === '' || !function_exists('pll_get_term_language')) { return $terms; }
+        return array_values(array_filter($terms, static function ($term) use ($lang): bool {
+            return $term instanceof WP_Term && pll_get_term_language($term->term_id, 'slug') === $lang;
+        }));
+    }
+
 
     private static function query(array $config): array
     {

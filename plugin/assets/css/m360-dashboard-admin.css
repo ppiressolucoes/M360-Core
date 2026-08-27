@@ -1,5 +1,5 @@
 .m360-dashboard {
-    --m360-dashboard-accent: #3157e8;
+    --m360-dashboard-accent: var(--m360-primary, #3157e8);
     max-width: 1440px;
 }
 
