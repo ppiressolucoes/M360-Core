@@ -65,3 +65,12 @@ Toda nova sprint ou release do M360 Core deve atualizar:
 3. documento de sprint em `docs/01-sprints/`;
 4. ADR em `docs/05-adr/` quando houver decisão estrutural;
 5. release notes em `docs/03-releases/`.
+
+## Enriquecimento Editorial com DW Esportivo — análise preliminar
+
+Status: **aguardando validação do DW de produção**. Base de implementação aceita: Core 0.7.4.0.20, commit `0190d99`, referenciado pela PR #27; essa referência não substitui o estado de merge/releases documentado acima.
+
+- [Sprint: escopo, base e critérios de aceite](01-sprints/Sprint_Enriquecimento_Editorial_DW_Esportivo.md).
+- [Mapeamento DW: evidências, contrato proposto e pendências](02-architecture/M360_Enriquecimento_Editorial_DW_Mapeamento_v1.md).
+- [Runbook e consultas de diagnóstico](06-runbooks/M360_Enriquecimento_Editorial_DW_Diagnostico.md).
+- [Registro documental, sem release de software](03-releases/M360_Registro_Documental_Enriquecimento_DW_2026-09-04.md).

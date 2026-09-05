@@ -1,0 +1,86 @@
+{
+  "status": "referencias de analise; producao pendente de validacao",
+  "core_commit": "0190d99cb5492f7356a5302b813570b3242249ae",
+  "dw_commit": "b7c4c832dd8ddf9049b7a9de4202c9245dfe4c62",
+  "dw_repository": "https://github.com/ppiressolucoes/m360-dw-esportivo",
+  "remote_files": [
+    {
+      "path": "README.md",
+      "git_blob_sha": "2cfbf2f6e1f8828ea7d588609e751e2332e7743c"
+    },
+    {
+      "path": "fluxo-n8n/HTML [1] Publicar Jogos Fases Competição/8.1 — Preparar Dados vs2.txt",
+      "git_blob_sha": "76f5900feaa60a4670be8b978d7b3db5644fc4b1"
+    },
+    {
+      "path": "fluxo-n8n/HTML [1] Publicar Jogos Fases Competição/8.2 — Gerar Conteúdo HTML,txt",
+      "git_blob_sha": "ab2d04b43edc507def78de796dd1bd4034d981a2"
+    },
+    {
+      "path": "fluxo-n8n/HTML [1] Publicar Jogos Fases Competição/8.2 — Vs09 Status Agenda.txt",
+      "git_blob_sha": "005f8ae01ba5f4b11446cf2683a4bcb5e8ba14d8"
+    },
+    {
+      "path": "fluxo-n8n/HTML [1] Publicar Jogos Fases Competição/README.md",
+      "git_blob_sha": "f24f2dca9f52d728b2e80385ba80ea9aaabc62ce"
+    },
+    {
+      "path": "fluxo-n8n/HTML [1] Publicar Jogos Fases Competição/patches/8.2 — centralizar agenda pontos corridos v8.txt",
+      "git_blob_sha": "e73a951cb079b78ef59d4f41fbf873c18eb96b80"
+    },
+    {
+      "path": "fluxo-n8n/README.md",
+      "git_blob_sha": "f96c9d6698c2e1b34c05e7e3e3888087a3629c50"
+    }
+  ],
+  "local_schema_references": [
+    {
+      "file": "u164126954_dw_esportes_extra.sql",
+      "sha256": "4d0d0572344818ddd39df418bd02f58b7fa524f9db067c09550f8058b7d8cc6d"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_dim_competicao_fase_jogo.sql",
+      "sha256": "20a5ed5d613a10551a982a7244ae281978aff9c8ee7ad4c5b9ce10fc314597a3"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_dim_competicao_fonte.sql",
+      "sha256": "26a0fb8c73beaa2989fe789a8a8e682260951b10a897c3f3fe9ed078cedda5bc"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_dim_competicao_modelo.sql",
+      "sha256": "e784e405decec436b94c72c823fa931305b2a7c78e6bb8e564024983dd84a187"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_dim_competicoes.sql",
+      "sha256": "44486702be852e0aed039b8407f08b98560e24e9bc66d7c1a04cb4a2d77e5032"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_dim_times.sql",
+      "sha256": "6ad02d85816db348d861cd9e1a613754cb126a6e62518c51cc8b16b357a61cb8"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_etl_logs.sql",
+      "sha256": "70c7d659c7bdf0ef66bbe3562220075805f894cbe07dfd49065e7e57db49fb85"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_fato_artilharia.sql",
+      "sha256": "635f17cee7e897646c1d11306b3e099c3d7fa3c0ac621867446e2ba75e6e707d"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_fato_classificacao.sql",
+      "sha256": "bf8cd3fdf87ea6a400721283d5a3ae76cf0c93a67526fd1a713d5b4a2d20d033"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_fato_jogos.sql",
+      "sha256": "99f905db389fc67c9e32258deba3eac30b1d21396bbb978b1d3a5b1373377693"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_fato_mata_mata.sql",
+      "sha256": "f84dcae1741164f77c6fdf38e43be2f963785c9e89b428133ae53c1cda6efd06"
+    },
+    {
+      "file": "u164126954_dw_esportes_table_m360_seo_links_catalog.sql",
+      "sha256": "149f4c8a5321203a31ebb44230442f890f11ccc4f54275b2d367a12cdd30b9ef"
+    }
+  ]
+}

@@ -151,3 +151,12 @@ Toda evolução estrutural deverá atualizar este índice quando criar ou promov
 Nenhum documento mestre deve ficar isolado do índice documental do projeto.
 
 Toda sprint visual, comercial ou de interface deve verificar aderência ao ADR-0007 antes da codificação.
+
+## Enriquecimento Editorial com DW Esportivo — análise preliminar
+
+Status: **aguardando validação do DW de produção**. Base de implementação aceita: Core 0.7.4.0.20, commit `0190d99`, referenciado pela PR #27; essa referência não substitui o estado de merge/releases documentado acima.
+
+- [Sprint: escopo, base e critérios de aceite](01-sprints/Sprint_Enriquecimento_Editorial_DW_Esportivo.md).
+- [Mapeamento DW: evidências, contrato proposto e pendências](02-architecture/M360_Enriquecimento_Editorial_DW_Mapeamento_v1.md).
+- [Runbook e consultas de diagnóstico](06-runbooks/M360_Enriquecimento_Editorial_DW_Diagnostico.md).
+- [Registro documental, sem release de software](03-releases/M360_Registro_Documental_Enriquecimento_DW_2026-09-04.md).
