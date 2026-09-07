@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [Não lançado] — Documentação do Enriquecimento Editorial DW
+
+- registra análise preliminar, base aceita 0.7.4.0.20, mapeamento de tabelas/views e dependências de produção;
+- adiciona roteiro e consultas de diagnóstico somente leitura, sem execução no DW;
+- atualiza índices documentais; não altera código, versão do plugin ou estado de homologação.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;

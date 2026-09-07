@@ -1,0 +1,52 @@
+{
+  "evidence_version": 1,
+  "captured_at_utc": "2026-09-07T13:53:25.5037981Z",
+  "source": {
+    "server": "MariaDB 11.8.8",
+    "transport": "TLS_AES_256_GCM_SHA384",
+    "session_time_zone": "SYSTEM",
+    "system_time_zone": "UTC",
+    "dump_package_sha256": "2b007bc4634b7b86899005affac58287b574230bf644aad1f31288a09125b61a"
+  },
+  "local_validation": {
+    "server": "MariaDB 12.3.3",
+    "bind": "127.0.0.1:3307",
+    "database": "m360_dw_local",
+    "reader_privileges": ["SELECT", "SHOW VIEW"],
+    "base_tables": 46,
+    "views": 19
+  },
+  "central_rows": {
+    "dim_times": 183,
+    "dim_competicoes": 14,
+    "fato_classificacao": 0,
+    "fato_jogos": 2005,
+    "dim_competicao_fase_jogo": 1989
+  },
+  "competitions": [
+    {"code": "BSA", "id": "1", "name": "Campeonato Brasileiro Série A", "season": "2026", "games": 380, "finished": 235, "upcoming_valid": 70, "phase_links": 380},
+    {"code": "PL", "id": "3", "name": "Premier League", "season": "2026", "games": 380, "finished": 30, "upcoming_valid": 350, "phase_links": 380},
+    {"code": "FL1", "id": "6", "name": "Ligue 1", "season": "2026", "games": 306, "finished": 27, "upcoming_valid": 279, "phase_links": 306},
+    {"code": "BL1", "id": "7", "name": "Bundesliga", "season": "2026", "games": 306, "finished": 16, "upcoming_valid": 289, "phase_links": 306},
+    {"code": "CLI", "id": "11", "name": "Copa Libertadores", "season": "2026", "games": 149, "finished": 141, "upcoming_valid": 7, "phase_links": 133},
+    {"code": "PD", "id": "12", "name": "Primera Division", "season": "2026", "games": 380, "finished": 39, "upcoming_valid": 341, "phase_links": 380}
+  ],
+  "flamengo": {
+    "id": "10",
+    "name": "CR Flamengo",
+    "popular_name": "Flamengo",
+    "slug": "flamengo-fla",
+    "abbreviation": "FLA",
+    "bsa_calculated_snapshot": {"position": 2, "played": 23, "points": 45, "wins": 13, "draws": 6, "losses": 4, "goals_for": 45, "goals_against": 21, "goal_difference": 24}
+  },
+  "data_quality": {
+    "invalid_game_status_rows": 72,
+    "invalid_game_status_distinct_values": 51,
+    "affected_competition": "BSA",
+    "affected_game_date_min": "2026-08-29 18:30:00",
+    "affected_game_date_max": "2026-10-16 21:00:00",
+    "classification_fact_rows": 0,
+    "policy": "Use a closed status allowlist; omit invalid rows and return partial or no_data without reinterpreting timestamps."
+  },
+  "sanitization": "No hostname, username, password, connection string, personal data, or raw dump content is stored in this evidence file."
+}

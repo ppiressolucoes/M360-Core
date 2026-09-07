@@ -1,1 +1,8 @@
 outputs/
+
+# Dumps locais do DW Esportivo. Somente o README pode ser versionado.
+/local-data/dw-esportivo/*
+!/local-data/dw-esportivo/README.md
+
+# Ferramentas portáteis usadas somente neste workspace.
+/local-tools/
