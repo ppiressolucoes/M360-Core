@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [Não lançado] — Fundação do Enriquecimento Editorial DW
+
+- registra módulo desativado, resolução de vínculos explícitos e contrato interno de classificação;
+- adiciona cache com leitura desacoplada da consulta e testes sintéticos;
+- desenvolvimento parcial: sem provedor DW, agenda, agendador ou renderização pública. Ver `docs/01-modules/M360_Editorial_DW_Foundation_Development.md`.
+
 ## [v0.7.4.0.20] — Bootstrap de Consent Mode compatível com cache
 
 - aplica o estado efetivo de consentimento antes da configuração Google, inclusive quando a página vem de cache/CDN;

@@ -151,3 +151,7 @@ Toda evolução estrutural deverá atualizar este índice quando criar ou promov
 Nenhum documento mestre deve ficar isolado do índice documental do projeto.
 
 Toda sprint visual, comercial ou de interface deve verificar aderência ao ADR-0007 antes da codificação.
+
+## Enriquecimento Editorial DW — desenvolvimento inicial
+
+[Fundação, contrato interno e testes](01-modules/M360_Editorial_DW_Foundation_Development.md). Módulo desativado; sem conexão ao DW ou apresentação pública. Base aceita: Core 0.7.4.0.20; análise documental na PR #29.
