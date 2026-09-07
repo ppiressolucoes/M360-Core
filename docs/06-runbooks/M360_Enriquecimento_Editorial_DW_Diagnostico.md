@@ -4,6 +4,12 @@ Status: **Análise técnica preliminar — aguardando validação do DW de produ
 
 Objetivo: confirmar o contrato de leitura necessário ao [módulo proposto](../01-sprints/Sprint_Enriquecimento_Editorial_DW_Esportivo.md). As consultas não foram executadas no DW. [Mapeamento e limitações](../02-architecture/M360_Enriquecimento_Editorial_DW_Mapeamento_v1.md).
 
+## Coleta por dump local
+
+Quando não houver conector de banco disponível no ambiente Codex, usar o [pacote de exportação PowerShell](../../scripts/dw-editorial/README.md). Ele produz a estrutura completa do schema e os dados das cinco tabelas centrais em `local-data/dw-esportivo/incoming/`, diretório protegido pelo `.gitignore`.
+
+O dump registra um recorte temporal do DW. Ele é suficiente para fechar o primeiro mapa de schema, preparar fixtures e implementar o adaptador inicial. Latência, concorrência e atualização dos dados ainda deverão ser confirmadas posteriormente por uma conexão somente leitura.
+
 ## Etapa inicial: quatro consultas sem parâmetros
 
 Abrir [diagnostico-inicial-sem-parametros.sql](sql/editorial-dw/diagnostico-inicial-sem-parametros.sql) em uma sessão autorizada no schema do DW. Executar cada SELECT separadamente e exportar resultados tabulares/texto, preservando os nomes das colunas e definições completas de views.
