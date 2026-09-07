@@ -77,6 +77,34 @@ Depois que o primeiro schema confirmar os nomes reais, o conjunto pode ser alter
 
 O verificador confere manifesto, tamanhos, hashes e procura comandos de usuários/permissões e tabelas sensíveis do WordPress. Ele não importa nem executa o SQL.
 
+## Réplica local preparada
+
+O ambiente de desenvolvimento mantém uma réplica descartável em `local-data/dw-esportivo/runtime/mariadb-12.3.3/`. Ela escuta apenas em `127.0.0.1:3307`, não instala serviço do Windows e usa o schema `m360_dw_local`. Senhas, banco, logs e binários ficam em caminhos ignorados pelo Git.
+
+Inicie o servidor e execute consultas com o usuário local limitado a `SELECT` e `SHOW VIEW`:
+
+```powershell
+.\scripts\dw-editorial\Start-DwLocal.ps1
+
+.\scripts\dw-editorial\Invoke-DwLocalQuery.ps1 `
+  -Sql 'SELECT COUNT(*) AS jogos FROM fato_jogos;'
+```
+
+Também é possível executar um arquivo SQL:
+
+```powershell
+.\scripts\dw-editorial\Invoke-DwLocalQuery.ps1 `
+  -SqlFile '.\docs\06-runbooks\sql\editorial-dw\diagnostico-inicial-sem-parametros.sql'
+```
+
+Encerre a instância ao terminar:
+
+```powershell
+.\scripts\dw-editorial\Stop-DwLocal.ps1
+```
+
+Os scripts de operação pressupõem que o runtime já tenha sido inicializado e o dump importado. Se `Start-DwLocal.ps1` informar que o runtime não existe, refaça a preparação controlada do ambiente antes de consultar; não aponte esses scripts para produção.
+
 ## Comportamento operacional
 
 - O exportador usa `--single-transaction`, `--quick` e `--skip-lock-tables`. A consistência depende de as tabelas relevantes usarem InnoDB.
@@ -84,3 +112,4 @@ O verificador confere manifesto, tamanhos, hashes e procura comandos de usuário
 - A estrutura do schema é completa para preservar tabelas, views, índices e relacionamentos.
 - Os dados ficam limitados às cinco tabelas centrais. Outras tabelas serão incluídas após a leitura do primeiro schema.
 - O ZIP deve permanecer no diretório local ignorado pelo Git. Para transferi-lo, use um canal privado aprovado e confira o `.sha256`.
+- A importação e as consultas locais desabilitam TLS porque usam somente loopback; a coleta remota de produção continua exigindo TLS.

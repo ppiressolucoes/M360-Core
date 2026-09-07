@@ -1,14 +1,33 @@
 # Diagnóstico — Enriquecimento Editorial DW
 
-Status: **Análise técnica preliminar — aguardando validação do DW de produção**.
+Status: **Coleta de produção e réplica local concluídas em 07/09/2026**.
 
-Objetivo: confirmar o contrato de leitura necessário ao [módulo proposto](../01-sprints/Sprint_Enriquecimento_Editorial_DW_Esportivo.md). As consultas não foram executadas no DW. [Mapeamento e limitações](../02-architecture/M360_Enriquecimento_Editorial_DW_Mapeamento_v1.md).
+Objetivo: confirmar o contrato de leitura necessário ao [módulo proposto](../01-sprints/Sprint_Enriquecimento_Editorial_DW_Esportivo.md). A conexão TLS, o dump e a réplica local foram validados. [Mapeamento, resultados e limitações](../02-architecture/M360_Enriquecimento_Editorial_DW_Mapeamento_v1.md).
 
 ## Coleta por dump local
 
 Quando não houver conector de banco disponível no ambiente Codex, usar o [pacote de exportação PowerShell](../../scripts/dw-editorial/README.md). Ele produz a estrutura completa do schema e os dados das cinco tabelas centrais em `local-data/dw-esportivo/incoming/`, diretório protegido pelo `.gitignore`.
 
 O dump registra um recorte temporal do DW. Ele é suficiente para fechar o primeiro mapa de schema, preparar fixtures e implementar o adaptador inicial. Latência, concorrência e atualização dos dados ainda deverão ser confirmadas posteriormente por uma conexão somente leitura.
+
+## Recorte validado
+
+- pacote: `20260907-105104-dw-esportivo-production.zip`;
+- SHA-256: `2b007bc4634b7b86899005affac58287b574230bf644aad1f31288a09125b61a`;
+- origem: MariaDB 11.8.8, transporte TLS `TLS_AES_256_GCM_SHA384`;
+- réplica: MariaDB 12.3.3 em `127.0.0.1:3307`, schema `m360_dw_local`;
+- usuário local: `m360_reader`, limitado a `SELECT` e `SHOW VIEW`;
+- contagem: 46 tabelas, 19 views e 2.005 jogos.
+
+O pacote e as credenciais locais permanecem sob `local-data/` e `local-tools/`, ambos ignorados pelo Git. A [evidência sanitizada](../02-architecture/evidence/editorial-dw-producao-2026-09-07.json) pode ser versionada.
+
+Para operar a réplica já inicializada:
+
+```powershell
+.\scripts\dw-editorial\Start-DwLocal.ps1
+.\scripts\dw-editorial\Invoke-DwLocalQuery.ps1 -Sql 'SELECT COUNT(*) AS jogos FROM fato_jogos;'
+.\scripts\dw-editorial\Stop-DwLocal.ps1
+```
 
 ## Etapa inicial: quatro consultas sem parâmetros
 
@@ -38,25 +57,28 @@ O arquivo [diagnostico-dw-editorial.sql](sql/editorial-dw/diagnostico-dw-editori
 
 Q4 identifica time; Q5 inventaria escopos e atualização da classificação; Q6 retorna no máximo duas linhas para detectar ambiguidade; Q7 inventaria status; Q8 amostra vínculos de edição; Q9 consulta até três jogos candidatos; Q11 identifica UIDs ativos em mais de uma edição.
 
-A classificação carregada e a calculada precisam ser comparadas e associadas ao Node 7 real antes da escolha de fonte. Status aceitos na agenda são proposta conservadora a validar com Q7. Resultado vazio não comprova que o time não tenha jogos.
+`fato_classificacao` retornou zero linhas. A fonte inicial de classificação será calculada pelas views de liga/grupos, com a limitação documentada de critérios oficiais e ajustes externos. A agenda aceita apenas `AGENDADO`, `TIMED` e `SCHEDULED`. Foram detectadas 72 linhas do BSA com timestamp no campo `status_jogo`; elas devem ser omitidas e produzir estado `partial` ou `no_data`, nunca uma afirmação de ausência de jogos.
 
 ## Custo, segurança e limites
 
-Todos os statements fornecidos são SELECTs, com identificadores fixos. Não executar o dump de referência: ele inclui DDL e operações alheias à sprint. O módulo futuro precisa de acesso com permissão efetiva somente leitura; a conexão compartilhada usada pelo Bolão não comprova essa restrição.
+Todos os statements fornecidos são SELECTs, com identificadores fixos. O dump só deve ser importado na réplica local descartável; nunca no DW de produção ou em um WordPress. O módulo futuro precisa de acesso com permissão efetiva somente leitura. A credencial usada na coleta possui privilégios de alteração e não deve ser reutilizada pelo plugin.
 
 LIMIT controla saída, não garante baixo custo. Avaliar planos dos agregados por competição em homologação; reduzir intervalos/amostras conforme necessário. Índices futuros são responsabilidade da administração DW, fora destas consultas. Não disparar diagnóstico na requisição pública de uma notícia.
 
-## Validação documental realizada
+## Validação realizada
 
 - 11 statements iniciados por SELECT, sem comandos de mutação.
 - Parâmetros nomeados sem repetição dentro de cada statement.
 - 23 referências distintas de colunas qualificadas conferidas contra o DDL local.
 - Quatro consultas iniciais sem parâmetros correspondem a Q1, Q2, Q3 e Q10 do arquivo completo.
+- Dump validado por manifesto, tamanhos e SHA-256 antes da importação.
+- Importação local concluída e views consultadas com credencial local somente leitura.
+- Catálogo, cobertura, Flamengo e anomalias de status registrados em evidência sanitizada.
 
-Essas verificações são estáticas; não equivalem a parse completo MySQL/MariaDB, EXPLAIN ou execução em produção. Testes funcionais do módulo ainda não ocorreram.
+Ainda faltam EXPLAIN das consultas finais, teste de latência no caminho real do WordPress e testes funcionais do módulo.
 
 ## Retomada e reversão
 
-Após receber resultados: atualizar o mapeamento com data/versão do DW, confirmar edição/fuso/IDs, selecionar fonte de classificação e definir transporte, TTLs e fixtures. Em seguida, implementar e homologar na base Core 0.7.4.0.20 fixada na sprint.
+Próxima etapa: implementar o adaptador em plugin específico do Portal Mengão 360, usando fixtures extraídas e sanitizadas da réplica, cache e fallback. Antes da homologação, criar credencial exclusiva somente leitura, corrigir a carga de status do BSA e confirmar fuso/cadência.
 
-Esta entrega altera apenas documentação e consultas não executadas. Para desfazê-la após merge, reverter o commit documental via PR; não há migração, configuração de plugin ou dados a restaurar.
+Esta entrega altera apenas documentação, scripts locais e evidências sanitizadas. Para desfazê-la após merge, reverter o commit via PR; não há migração nem dado de produção a restaurar.

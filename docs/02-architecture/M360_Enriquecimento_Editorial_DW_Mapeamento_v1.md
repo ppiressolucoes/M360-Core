@@ -1,14 +1,16 @@
 # Mapeamento do DW para Enriquecimento Editorial — v1
 
-Status: **Análise técnica preliminar — aguardando validação do DW de produção**.
+Status: **Mapeamento validado sobre recorte do DW de produção de 07/09/2026**.
 
 [Sprint e base aceita](../01-sprints/Sprint_Enriquecimento_Editorial_DW_Esportivo.md) · [Diagnóstico](../06-runbooks/M360_Enriquecimento_Editorial_DW_Diagnostico.md)
 
-Data: 04/09/2026. Base Core confirmada: 0.7.4.0.20, commit `0190d99cb5492f7356a5302b813570b3242249ae`.
+Data inicial: 04/09/2026. Validação de produção: 07/09/2026. Base Core confirmada: 0.7.4.0.20, commit `0190d99cb5492f7356a5302b813570b3242249ae`.
 
 ## Resultado
 
-Há tabelas e views documentadas para classificação, estatísticas básicas do time e agenda. A escolha entre classificação carregada e calculada ainda precisa ser validada com o fluxo de produção. O mapeamento está concluído sobre as fontes disponíveis; o contrato de produção ainda depende da confirmação do schema atual, fuso, temporadas, IDs e transporte com permissão somente leitura. Nenhuma consulta ao DW foi executada.
+O schema de produção, o catálogo das seis competições, o Flamengo e as views candidatas foram validados por conexão TLS e por dump local. A agenda pode ser lida de `fato_jogos`, com escopo de edição/fase em `dim_competicao_fase_jogo`. A classificação carregada não pode ser usada neste recorte porque `fato_classificacao` contém zero linhas; as views calculadas entregam classificação para as ligas e grupos da Libertadores.
+
+O acesso usado para a coleta não é efetivamente somente leitura: embora tenha sido apresentado como tal, o usuário autenticado possui privilégios de alteração no schema. Os scripts desta sprint executaram apenas leituras e dump, mas o plugin de produção deverá receber outra credencial limitada a `SELECT` e `SHOW VIEW`.
 
 ## Fontes e confiança
 
@@ -16,8 +18,9 @@ Há tabelas e views documentadas para classificação, estatísticas básicas do
 2. Dump local `M360-Baseline-production-Mega-Bolao/dw-mega-bolao-schema-only-2026-07-28/`, com DDL e índices. Referência de estrutura de 28/07, não prova do estado atual nem da existência de registros.
 3. Consumidor local `m360-bolao/includes/class-bolao-db.php`: usa o helper `conectar_dw_esportes_m360()` e PDO. Possui operações de bolão que não pertencem ao enriquecimento. A existência do helper não comprova privilégio somente leitura.
 4. Catálogo semântico no dump e adaptador SR examinado anteriormente: vínculo com WordPress, sem chave estrangeira demonstrada para times ou competições.
+5. Recorte de produção `20260907-105104-dw-esportivo-production`, coletado por TLS (`TLS_AES_256_GCM_SHA384`) do MariaDB 11.8.8 e validado localmente no MariaDB 12.3.3. O ZIP tem SHA-256 `2b007bc4634b7b86899005affac58287b574230bf644aad1f31288a09125b61a`; o conteúdo permanece fora do Git.
 
-Os fontes externos foram lidos sem execução ou alteração. O [manifesto de evidências](evidence/editorial-dw-fontes.json) registra os commits, nomes e hashes das referências. O dump local e os arquivos de trabalho não fazem parte deste repositório; sua estrutura continua sujeita à confirmação no DW atual.
+Os fontes externos e o DW foram lidos sem alteração. O [manifesto de fontes](evidence/editorial-dw-fontes.json) e a [evidência sanitizada da validação](evidence/editorial-dw-producao-2026-09-07.json) registram hashes, contagens e decisões sem credenciais nem dados pessoais. O dump local e os arquivos de trabalho não fazem parte deste repositório.
 
 ## Mapa de entidades e fatos
 
@@ -26,8 +29,9 @@ Os fontes externos foram lidos sem execução ou alteração. O [manifesto de ev
 | Time | `dim_times` | `id`, `nome`, `nome_popular`, `slug`, `sigla`, `pais`, `ativo` | ID interno canônico; nomes e siglas não são chaves de identidade |
 | Competição | `dim_competicoes` | `id`, `nome`, `slug`, `codigo`, `temporada`, `modelo_id`, `ativo` | Validar allowlist com IDs reais das seis competições |
 | Modelo de competição | `dim_competicao_modelo` | `id`, `nome_modelo`, `slug_modelo`, `tipo_mata_mata`, `ativo` | Não inferir fase atual apenas pelo modelo |
-| Classificação | `fato_classificacao` | `competicao_id`, `temporada`, `fase`, `grupo`, `time_id`, `posicao`, `pontos`, `jogos` | Exigir escopo exato e único; manter fase/grupo |
-| Estatísticas básicas | `fato_classificacao` | `vitorias`, `empates`, `derrotas`, `gols_pro`, `gols_contra`, `saldo_gols` | Mesmo registro e escopo da classificação; não reconstruir pontos por fórmula |
+| Classificação de liga | `vw_frontend_liga_classificacao` | competição, time, posição, jogos, pontos, vitórias, empates, derrotas e gols | Fonte inicial calculada; registrar que não inclui punições/ajustes externos e homologar critérios por competição |
+| Classificação de grupo | `vw_frontend_classificacao` | competição, grupo, time, posição e estatísticas calculadas | Fonte inicial para grupos da Libertadores; exigir competição e grupo explícitos |
+| Classificação carregada | `fato_classificacao` | campos de escopo, posição e estatísticas | Não usar enquanto estiver vazia; reavaliar se o ETL passar a populá-la |
 | Próximos jogos | `fato_jogos` | `id`, `jogo_uid`, `competicao_id`, `data_jogo`, `mandante_id`, `visitante_id`, `rodada`, `status_jogo`, `estadio_nome` | Validar horário, status, adversário e temporada; ordenar por data e ID |
 | Temporada/fase de cada jogo | `dim_competicao_fase_jogo` | `competicao_id`, `temporada`, `jogo_uid`, `cod_fase`, `grupo_codigo`, `ativo` | Vincular por competição + UID + temporada; medir cobertura antes de depender dessa tabela |
 | Contexto de eliminatória | `fato_mata_mata` | `competicao_id`, `temporada`, `fase`, `chave`, IDs dos times, UIDs das partidas | Fora do primeiro bloco até validar semântica de placares e fases |
@@ -37,6 +41,19 @@ Os fontes externos foram lidos sem execução ou alteração. O [manifesto de ev
 IDs BIGINT devem trafegar como strings decimais no JSON, preservando precisão fora do PHP/SQL. A representação interna precisa respeitar os limites de cada runtime.
 
 ## Achados que afetam correção
+
+### Catálogo e cobertura validados
+
+| Código | ID | Competição | Temporada | Jogos | Finalizados | Próximos válidos | Vínculos de fase |
+| --- | ---: | --- | --- | ---: | ---: | ---: | ---: |
+| `BSA` | 1 | Campeonato Brasileiro Série A | `2026` | 380 | 235 | 70 | 380 |
+| `PL` | 3 | Premier League | `2026` | 380 | 30 | 350 | 380 |
+| `FL1` | 6 | Ligue 1 | `2026` | 306 | 27 | 279 | 306 |
+| `BL1` | 7 | Bundesliga | `2026` | 306 | 16 | 289 | 306 |
+| `CLI` | 11 | Copa Libertadores | `2026` | 149 | 141 | 7 | 133 |
+| `PD` | 12 | Primera Division | `2026` | 380 | 39 | 341 | 380 |
+
+As cinco ligas retornaram uma linha calculada por time: BSA 20, PL 20, FL1 18, BL1 18 e PD 20. A Libertadores retornou oito grupos de quatro times. O Flamengo é o time canônico ID 10, nome `CR Flamengo`, nome popular `Flamengo`, slug `flamengo-fla` e sigla `FLA`. No recorte, sua classificação calculada no BSA é 2º lugar, 23 jogos e 45 pontos; esses números são evidência de teste, não conteúdo congelado para publicação.
 
 ### Temporadas
 
@@ -66,7 +83,9 @@ Cache proposto: por provedor/versão + time + competição + edição + fase/gru
 
 O código completo do Node 8.2 reconhece `AGENDADO`, `AGUARDANDO`, `TIMED`, `SCHEDULED`, `FINISHED`, `IN_PLAY`, `LIVE`, `PAUSED`, `POSTPONED`, `CANCELLED` e `CANCELED`. O arquivo Vs09 é uma nota de mudança pendente de homologação, não o código completo de produção; menciona outros aliases que ainda precisam ser conferidos nos dados.
 
-Proposta conservadora de agenda: aceitar `AGENDADO`, `TIMED` e `SCHEDULED` após validação da amostra; horário futuro e dois times conhecidos. Não aceitar `AGUARDANDO` automaticamente como horário confirmado. Excluir encerrados, em andamento, adiados, cancelados e status desconhecidos. Um resultado vazio não deve afirmar que o time está sem jogos: pode significar ausência de dados elegíveis.
+Regra conservadora de agenda: aceitar somente `AGENDADO`, `TIMED` e `SCHEDULED`, com horário futuro e dois times conhecidos. Não aceitar `AGUARDANDO` automaticamente como horário confirmado. Excluir encerrados, em andamento, adiados, cancelados e status desconhecidos. Um resultado vazio não deve afirmar que o time está sem jogos: pode significar ausência de dados elegíveis.
+
+O recorte contém 72 linhas do BSA com 51 valores inválidos em `status_jogo`. Esses valores são timestamps ISO, no intervalo de partidas de 29/08 a 16/10/2026, indicando provável deslocamento de coluna no ETL. Cinco jogos do Flamengo entre as rodadas 27 e 31 são afetados. O adaptador não deve interpretar esses timestamps como status ou como nova data; deve omitir as linhas, marcar a seção `partial`/`no_data` conforme o resultado e registrar telemetria. A correção pertence ao ETL do DW.
 
 ### WordPress, resolução e idioma
 
@@ -80,7 +99,7 @@ O Node 8.1 contém uma regra de subtração de pênaltis dos campos `gols_time_a
 
 ## Views existentes e decisão de fonte
 
-O arquivo `u164126954_dw_esportes_extra.sql` inclui views esportivas que complementam as tabelas acima. As definições foram lidas como referência, sem executar o dump (que também contém DDL e operações fora desta sprint).
+O dump de produção inclui 19 views, entre elas todas as views esportivas candidatas abaixo. O recorte foi importado em uma instância local isolada e as consultas de classificação e estatísticas foram executadas com usuário local limitado a `SELECT` e `SHOW VIEW`.
 
 | View | Comportamento observado no dump | Condição para uso editorial |
 | --- | --- | --- |
@@ -93,7 +112,7 @@ O arquivo `u164126954_dw_esportes_extra.sql` inclui views esportivas que complem
 
 Nas views de liga examinadas, o vínculo por UID não filtra a temporada. Se houver mais de um vínculo ativo de edições diferentes para o mesmo jogo, o join pode multiplicar registros; se houver jogos de edições anteriores, eles podem ser rotulados com a temporada atual. Isso é uma possibilidade identificada no código, não um incidente confirmado em produção.
 
-A classificação calculada de grupos também agrega sem preservar temporada do vínculo. As views calculadas examinadas não expõem um timestamp de atualização factual. A `fato_classificacao` tem campos de posição/pontos e atualização próprios, mas ainda não há evidência de que seja a origem usada pelo Node 7. A decisão de fonte fica explícita e pendente: comparar carregada e calculada no mesmo escopo e identificar o caminho de produção antes de implementar leitura automática.
+A classificação calculada de grupos também agrega sem preservar temporada do vínculo. As views calculadas examinadas não expõem um timestamp de atualização factual. Como `fato_classificacao` está vazia, a primeira implementação usará as views calculadas com proveniência explícita e estado de atualização derivado apenas de dados comprováveis. Uma futura tabela oficial preenchida poderá substituir a fonte por configuração, após homologação.
 
 Algumas definições de views no dump apresentam texto aparentemente malformado (por exemplo `not nullunionselect` em `vw_frontend_competicao_times`). Isso reforça que o dump não deve ser reaplicado e que precisamos das definições atuais. A consulta Q10 lê somente metadados dessas views; pode requerer visibilidade das definições.
 
@@ -117,15 +136,16 @@ O adaptador realiza somente leituras em origem autorizada, com consultas paramet
 
 ## Diagnóstico preparado
 
-O [SQL de diagnóstico](../06-runbooks/sql/editorial-dw/diagnostico-dw-editorial.sql) contém apenas SELECTs. Primeira parte: schema, fuso da sessão e catálogo. Segunda parte: consultas parametrizadas para competição/time/edição, amostras de classificação, status, cobertura e agenda. Não foi executado; o fuso da sessão retornado não prova o fuso de armazenamento dos registros.
+O [SQL de diagnóstico](../06-runbooks/sql/editorial-dw/diagnostico-dw-editorial.sql) contém apenas SELECTs. A primeira parte e consultas equivalentes de mapeamento foram executadas no recorte local. O servidor de produção informou sessão/global `SYSTEM` e `system_time_zone=UTC`; isso ainda não prova sozinho a semântica de todos os DATETIME gravados pelo ETL.
 
 Limites de linhas controlam resultados, não garantem baixo custo de execução. Avaliar planos em homologação para os agregados por competição. Índices atuais de jogos são separados por competição, time e data; não há garantia de desempenho para o novo padrão. Qualquer índice futuro é tarefa de administração do DW, fora deste módulo somente leitura.
 
 ## Pendências objetivas
 
-1. Confirmar se o dump de 28/07 continua representativo e obter resultados das consultas de catálogo/escopo, sem segredos.
-2. Confirmar fuso de `data_jogo` e timestamps de atualização, convenção de temporada e cobertura do vínculo de fase nos seis campeonatos.
-3. Identificar endpoint ou conexão exclusiva com privilégio SELECT, timeout e configuração no servidor.
-4. Localizar o Node 7, cadência do ETL e mapeamento WordPress → DW existente, se houver.
+1. Criar uma credencial de produção exclusiva com apenas `SELECT` e `SHOW VIEW`, timeout e rotação definidos.
+2. Corrigir no ETL as 72 linhas do BSA cujo `status_jogo` contém timestamp e acrescentar validação de domínio na carga.
+3. Confirmar a semântica de fuso de `data_jogo`, a cadência do ETL e os limites de idade por seção.
+4. Homologar os critérios de desempate das views calculadas e a regra da temporada, sobretudo na Libertadores.
+5. Definir o mapeamento WordPress/Semantic Relations → IDs canônicos do time e da competição.
 
-Essas pendências impedem declarar o adaptador conectado e homologado; não impedem a construção posterior do contrato e dos testes com fixtures explicitamente sintéticas. Nenhum componente PHP foi alterado nesta etapa.
+Essas pendências impedem a homologação em produção, mas o schema, as consultas e os casos de fallback já permitem iniciar o adaptador e seus testes. Nenhum componente PHP foi alterado nesta etapa documental.
