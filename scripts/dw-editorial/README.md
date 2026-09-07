@@ -22,7 +22,22 @@ As tabelas de dados padrão são `dim_times`, `dim_competicoes`, `fato_classific
 3. Usuário dedicado com `SELECT` e visibilidade de metadados/views.
 4. PowerShell 5.1 ou superior.
 
-Confirme o cliente com `mariadb-dump --version` ou `mysqldump --version`.
+Confirme o cliente com `mariadb-dump --version` ou `mysqldump --version`. Os scripts também detectam automaticamente o cliente portátil mantido em `local-tools/`.
+
+## Teste de conexão
+
+Antes do dump, valide autenticação, TLS, versão do servidor, fuso e presença das cinco tabelas centrais:
+
+```powershell
+.\scripts\dw-editorial\Test-DwConnection.ps1 `
+  -HostName 'HOST_DO_DW' `
+  -Port 3306 `
+  -Database 'NOME_DO_SCHEMA' `
+  -UserName 'USUARIO_SOMENTE_LEITURA' `
+  -RequireTls
+```
+
+O teste executa somente `SELECT` em informações da sessão e no catálogo `information_schema`.
 
 ## Execução recomendada
 

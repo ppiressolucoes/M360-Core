@@ -57,6 +57,15 @@ function Resolve-DumpExecutable {
         }
     }
 
+    $localToolsRoot = Join-Path $PSScriptRoot '..\..\local-tools'
+    if (Test-Path -LiteralPath $localToolsRoot) {
+        $portableClient = Get-ChildItem -LiteralPath $localToolsRoot -Filter 'mariadb-dump.exe' -File -Recurse |
+            Select-Object -First 1 -ExpandProperty FullName
+        if ($portableClient) {
+            return $portableClient
+        }
+    }
+
     throw 'mariadb-dump ou mysqldump não foi encontrado. Instale somente o cliente MariaDB/MySQL ou informe -DumpExecutable.'
 }
 
@@ -116,7 +125,9 @@ $helpText = (& $dumpTool --help 2>&1 | Out-String)
 
 $tlsArguments = @()
 if ($RequireTls) {
-    if ($helpText -match '(?m)--ssl-mode(?:[=\s])') {
+    if ($helpText -match '(?m)--ssl-verify-server-cert(?:[=\s,])') {
+        $tlsArguments += '--ssl-verify-server-cert'
+    } elseif ($helpText -match '(?m)--ssl-mode(?:[=\s])') {
         $tlsArguments += '--ssl-mode=REQUIRED'
     } elseif ($helpText -match '(?m)^\s*--ssl(?:[=\s,])') {
         $tlsArguments += '--ssl'
