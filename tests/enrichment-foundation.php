@@ -11,9 +11,13 @@ function check(bool $value, string $name): void {
     $GLOBALS['checks']++;
     if (!$value) { throw new RuntimeException('FAIL: ' . $name); }
 }
+// The accepted 0.7.4.0.20 source is layered: the root contains production
+// overrides and plugin/ supplies unchanged files when the installable ZIP is built.
 require __DIR__ . '/../plugin/includes/platform/interface-m360-module.php';
 require __DIR__ . '/../plugin/includes/platform/class-m360-module-registry.php';
 require __DIR__ . '/../includes/enrichment/bootstrap.php';
+$runtime = file_get_contents(__DIR__ . '/../includes/class-m360-core.php');
+check(is_string($runtime) && substr_count($runtime, "includes/enrichment/bootstrap.php") === 1, 'root runtime loads enrichment bootstrap once');
 final class SyntheticProvider implements M360_Enrichment_Provider {
     public int $calls = 0;
     public array $raw;

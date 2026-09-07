@@ -37,7 +37,7 @@ Com PHP CLI disponível, executar a partir da raiz:
 php tests/enrichment-foundation.php
 ```
 
-Resultado em PHP 8.5.10 CLI: **41 verificações aprovadas**, com fixtures sintéticas e funções WordPress substituídas em memória. Cobrem registro/desativação, BIGINT, ambiguidades, IDs fora do catálogo, timestamps inválidos/futuros/antigos, equivalência de offset, nulos, inconsistências, expiração e isolamento do cache, ausência de consultas durante leitura, cache negativo e proteção contra exposição de erros.
+Resultado em PHP 8.5.10 CLI: **42 verificações aprovadas**, com fixtures sintéticas e funções WordPress substituídas em memória. Cobrem composição da base e carregamento único do bootstrap, registro/desativação, BIGINT, ambiguidades, IDs fora do catálogo, timestamps inválidos/futuros/antigos, equivalência de offset, nulos, inconsistências, expiração e isolamento do cache, ausência de consultas durante leitura, cache negativo e proteção contra exposição de erros.
 
 Lint aprovado nos seis arquivos do módulo, no bootstrap principal alterado e no teste. Isso não substitui testes em WordPress/PHP de produção, cache persistente, consultas SQL ou homologação visual.
 
