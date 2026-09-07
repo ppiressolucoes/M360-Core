@@ -37,7 +37,7 @@ Antes do dump, valide autenticação, TLS, versão do servidor, fuso e presença
   -RequireTls
 ```
 
-O teste executa somente `SELECT` em informações da sessão e no catálogo `information_schema`.
+O teste executa somente leituras de informações da sessão, TLS e catálogo `information_schema`. A saída inclui o tamanho aproximado das tabelas e o perfil de privilégios do usuário autenticado, sem exibir senha ou hash de senha.
 
 ## Execução recomendada
 

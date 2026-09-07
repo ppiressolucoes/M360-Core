@@ -87,6 +87,50 @@ WHERE TABLE_SCHEMA = DATABASE()
       'dim_competicao_fase_jogo'
   )
 ORDER BY TABLE_NAME;
+SHOW STATUS LIKE 'Ssl_cipher';
+SELECT TABLE_NAME,
+       ENGINE,
+       TABLE_ROWS AS estimated_rows,
+       ROUND((COALESCE(DATA_LENGTH, 0) + COALESCE(INDEX_LENGTH, 0)) / 1048576, 2) AS approximate_mb
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = DATABASE()
+  AND TABLE_NAME IN (
+      'dim_times',
+      'dim_competicoes',
+      'fato_classificacao',
+      'fato_jogos',
+      'dim_competicao_fase_jogo'
+  )
+ORDER BY TABLE_NAME;
+SELECT privilege_scope, PRIVILEGE_TYPE, IS_GRANTABLE
+FROM (
+    SELECT 'GLOBAL' AS privilege_scope, PRIVILEGE_TYPE, IS_GRANTABLE
+    FROM information_schema.USER_PRIVILEGES
+    WHERE GRANTEE = CONCAT(
+        QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', 1)),
+        '@',
+        QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', -1))
+    )
+    UNION ALL
+    SELECT CONCAT('SCHEMA:', TABLE_SCHEMA), PRIVILEGE_TYPE, IS_GRANTABLE
+    FROM information_schema.SCHEMA_PRIVILEGES
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND GRANTEE = CONCAT(
+          QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', 1)),
+          '@',
+          QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', -1))
+      )
+    UNION ALL
+    SELECT CONCAT('TABLE:', TABLE_NAME), PRIVILEGE_TYPE, IS_GRANTABLE
+    FROM information_schema.TABLE_PRIVILEGES
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND GRANTEE = CONCAT(
+          QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', 1)),
+          '@',
+          QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', -1))
+      )
+) AS effective_privileges
+ORDER BY privilege_scope, PRIVILEGE_TYPE;
 '@
 
 $temporaryRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("m360-dw-connect-" + [Guid]::NewGuid().ToString('N'))
