@@ -64,14 +64,16 @@ final class M360_Sidebar_Navigation
 
     public static function tags_shortcode(array $atts = []): string
     {
-        $atts = shortcode_atts(['limit' => 24, 'title' => '', 'show_counts' => 'false', 'primary' => '#d71920', 'secondary' => '#b81218', 'min_size' => 13, 'max_size' => 19, 'surface' => 'light'], $atts, 'm360_tag_cloud');
+        $atts = shortcode_atts(['limit' => 24, 'title' => '', 'show_counts' => 'false', 'primary' => '#d71920', 'secondary' => '#b81218', 'min_size' => 13, 'max_size' => 19, 'surface' => 'light', 'order' => 'mixed'], $atts, 'm360_tag_cloud');
         $limit = max(1, min(80, absint($atts['limit'])));
         $min_size = max(11, min(32, (int) $atts['min_size']));
         $max_size = max($min_size, min(40, (int) $atts['max_size']));
         $show_counts = filter_var($atts['show_counts'], FILTER_VALIDATE_BOOLEAN);
-        $terms = get_terms(['taxonomy' => 'post_tag', 'hide_empty' => true, 'number' => $limit, 'orderby' => 'count', 'order' => 'DESC']);
+        $order = in_array(sanitize_key((string) $atts['order']), ['mixed', 'popular', 'name'], true) ? sanitize_key((string) $atts['order']) : 'mixed';
+        $terms = get_terms(['taxonomy' => 'post_tag', 'hide_empty' => true, 'number' => $limit, 'orderby' => $order === 'name' ? 'name' : 'count', 'order' => $order === 'name' ? 'ASC' : 'DESC']);
         if (is_wp_error($terms) || !is_array($terms) || !$terms) { return ''; }
         $max_count = max(1, (int) max(array_map(static fn($term): int => (int) $term->count, $terms)));
+        if ($order === 'mixed') { $terms = self::mix_terms($terms); }
         $items = '';
         foreach ($terms as $term) {
             if (!$term instanceof WP_Term) { continue; }
@@ -92,6 +94,19 @@ final class M360_Sidebar_Navigation
             'surface' => strtolower((string) $atts['surface']) === 'dark' ? 'dark' : 'light',
         ];
         return self::block('tags', $block_atts['title'] ?: (self::is_en() ? 'Tags' : 'Tags'), $items, $block_atts);
+    }
+
+    /** Alternates more-used and less-used tags for a balanced, cache-stable cloud. */
+    private static function mix_terms(array $terms): array
+    {
+        $mixed = [];
+        $left = 0;
+        $right = count($terms) - 1;
+        while ($left <= $right) {
+            $mixed[] = $terms[$left++];
+            if ($left <= $right) { $mixed[] = $terms[$right--]; }
+        }
+        return $mixed;
     }
 
     private static function block_atts(array $atts, string $shortcode): array

@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.40] — Distribuição da nuvem de Tags
+
+- altera a superfície escura do `[m360_tag_cloud]` para `#191919`, acompanhando o Footer do Mengão 360;
+- adiciona `order="mixed"` como padrão, alternando tags mais e menos utilizadas para melhorar a distribuição visual;
+- mantém ordens opcionais `order="popular"` e `order="name"`;
+- preserva quantidade e escala tipográfica configuráveis por `limit`, `min_size` e `max_size`.
+
 ## [v0.7.4.0.39] — Tags no Footer escuro
 
 - adiciona `surface="dark"` ao `[m360_tag_cloud]` e ao alias `[m360_tags]`;
