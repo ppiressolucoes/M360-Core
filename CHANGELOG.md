@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.39] — Tags no Footer escuro
+
+- adiciona `surface="dark"` ao `[m360_tag_cloud]` e ao alias `[m360_tags]`;
+- aplica fundo preto, título branco, etiquetas claras e destaque vermelho para foco e hover;
+- permite usar a nuvem na quarta coluna do Footer sem inserir CSS ou HTML manual no Elementor.
+
 ## [v0.7.4.0.38] — Nuvem de Tags
 
 - adiciona `[m360_tag_cloud]` e o alias `[m360_tags]` como bloco lateral independente;

@@ -64,7 +64,7 @@ final class M360_Sidebar_Navigation
 
     public static function tags_shortcode(array $atts = []): string
     {
-        $atts = shortcode_atts(['limit' => 24, 'title' => '', 'show_counts' => 'false', 'primary' => '#d71920', 'secondary' => '#b81218', 'min_size' => 13, 'max_size' => 19], $atts, 'm360_tag_cloud');
+        $atts = shortcode_atts(['limit' => 24, 'title' => '', 'show_counts' => 'false', 'primary' => '#d71920', 'secondary' => '#b81218', 'min_size' => 13, 'max_size' => 19, 'surface' => 'light'], $atts, 'm360_tag_cloud');
         $limit = max(1, min(80, absint($atts['limit'])));
         $min_size = max(11, min(32, (int) $atts['min_size']));
         $max_size = max($min_size, min(40, (int) $atts['max_size']));
@@ -89,6 +89,7 @@ final class M360_Sidebar_Navigation
             'show_counts' => $show_counts,
             'primary' => self::color((string) $atts['primary'], '#d71920'),
             'secondary' => self::color((string) $atts['secondary'], '#b81218'),
+            'surface' => strtolower((string) $atts['surface']) === 'dark' ? 'dark' : 'light',
         ];
         return self::block('tags', $block_atts['title'] ?: (self::is_en() ? 'Tags' : 'Tags'), $items, $block_atts);
     }
@@ -108,7 +109,8 @@ final class M360_Sidebar_Navigation
     private static function block(string $type, string $title, string $items, array $atts): string
     {
         self::enqueue_assets();
-        return '<aside class="m360-sidebar-navigation m360-sidebar-navigation--' . esc_attr($type) . '" style="--m360-sidebar-primary:' . esc_attr($atts['primary']) . ';--m360-sidebar-secondary:' . esc_attr($atts['secondary']) . '">'
+        $surface = ($atts['surface'] ?? 'light') === 'dark' ? ' m360-sidebar-navigation--surface-dark' : '';
+        return '<aside class="m360-sidebar-navigation m360-sidebar-navigation--' . esc_attr($type) . $surface . '" style="--m360-sidebar-primary:' . esc_attr($atts['primary']) . ';--m360-sidebar-secondary:' . esc_attr($atts['secondary']) . '">'
             . '<section class="m360-sidebar-navigation__section m360-sidebar-navigation__section--' . esc_attr($type) . '"><h2>' . esc_html($title) . '</h2><ul>' . $items . '</ul></section>'
             . '</aside>';
     }

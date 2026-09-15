@@ -38,6 +38,10 @@
 .m360-sidebar-navigation--tags .m360-sidebar-navigation__section li { display: block; padding: 0; border: 0; }
 .m360-sidebar-navigation--tags .m360-sidebar-navigation__section a { display: inline-flex; align-items: center; min-height: 34px; padding: 5px 10px; border: 1px solid var(--m360-sidebar-primary, #d71920); border-radius: 4px; color: #30343b; line-height: 1.15; text-decoration: none; }
 .m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:hover,.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:focus-visible { background: var(--m360-sidebar-primary, #d71920); color: #fff; text-decoration: none; }
+.m360-sidebar-navigation--surface-dark { background: #050505; color: #f3f4f6; }
+.m360-sidebar-navigation--surface-dark .m360-sidebar-navigation__section h2 { color: #fff; }
+.m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a { border-color: rgba(255,255,255,.52); color: #f3f4f6; }
+.m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:hover,.m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:focus-visible { border-color: var(--m360-sidebar-primary, #d71920); background: var(--m360-sidebar-primary, #d71920); color: #fff; }
 
 @media (max-width: 640px) {
     .m360-sidebar-navigation { padding: 18px 20px; }
