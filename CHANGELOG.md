@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.36] — Navegação lateral e redes sociais
+
+- mantém o ticker `[m360_sports_competitions_ticker]` fora do M360 Core; esse componente pertence ao pacote M360 Plus Editorial e não é registrado, empacotado ou inserido na Home pelo Core;
+- adiciona `[m360_categories_archives]` e o alias `[m360_sidebar_categories_archives]` para sidebars com categorias e arquivos mensais;
+- traduz automaticamente os títulos para PT-BR/en-US, mostra contagens opcionais e aceita cores primária/secundária por atributos;
+- adiciona `[m360_social_links]` e o alias `[m360_social_networks]`, com ícones acessíveis para Facebook, Instagram, YouTube, WhatsApp, X, TikTok e LinkedIn;
+- permite configurar URLs por shortcode, pela opção `m360_social_links` ou pelo filtro `m360_social_links`, além de variantes `boxed`, `plain` e `pill`.
+
 ## [v0.7.4.0.35] — Menu institucional em coluna única
 
 - remove a grade de duas colunas do menu institucional no desktop;

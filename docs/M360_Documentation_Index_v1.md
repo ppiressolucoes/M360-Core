@@ -87,6 +87,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | M360 Core v0.7.4.0.33 Release Notes | `releases/v0.7.4.0.33/M360_Core_v0.7.4.0.33_Release_Notes.md` | Correção do idioma de destino e preloader restrito às rotas do Core |
 | M360 Core v0.7.4.0.34 Release Notes | `releases/v0.7.4.0.34/M360_Core_v0.7.4.0.34_Release_Notes.md` | Breadcrumb institucional e alinhamento vertical do menu |
 | M360 Core v0.7.4.0.35 Release Notes | `releases/v0.7.4.0.35/M360_Core_v0.7.4.0.35_Release_Notes.md` | Menu institucional em coluna única no desktop |
+| M360 Core v0.7.4.0.36 Release Notes | `releases/v0.7.4.0.36/M360_Core_v0.7.4.0.36_Release_Notes.md` | Navegação lateral de categorias/arquivos e redes sociais; ticker esportivo permanece no Plus Editorial |
 
 ### Baseline canônico
 
