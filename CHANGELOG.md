@@ -6,6 +6,7 @@
 - torna o fundo transparente para acompanhar a superfície `#191919` do Footer sem formar um painel interno;
 - alinha título, sublinhado e largura da nuvem com os blocos `[m360_footer_menu]`;
 - mantém intactos a quantidade, o tamanho e a distribuição configurados para as tags.
+- homologada no Mengão 360 em 15/09/2026, com alinhamento validado no Footer e sem alteração do shortcode existente.
 
 ## [v0.7.4.0.41] — Menus padronizados no Footer
 

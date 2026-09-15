@@ -65,6 +65,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | Documento | Caminho | Função |
 |---|---|---|
 | M360 Release History | `docs/03-releases/M360_Release_History_v2.md` | Histórico oficial de releases e marcos arquiteturais |
+| Consolidação Editorial e de Navegação v0.7.4.0.42 | `docs/03-releases/M360_Core_Editorial_Navigation_Consolidation_2026-09-15.md` | Baseline homologada, catálogo de componentes, evidências e artefato oficial |
 | M360 Core v0.4.4.x Release Checklist | `releases/v0.4.4.0/M360_Core_v0.4.4.0_Release_Checklist.md` | Checklist operacional da release v0.4.4.x |
 | M360 Core v0.4.4.5 Release Notes | `releases/v0.4.4.5/M360_Core_v0.4.4.5_Release_Notes.md` | Baseline estável e encerramento da linha AdSense Ready |
 | M360 Core v0.5.5 Release Notes | `releases/v0.5.5/M360_Core_v0.5.5_Release_Notes.md` | Breadcrumb Navigation UX e preparação da linha v0.6.0 |
@@ -98,15 +99,14 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 ### Baseline canônico
 
 ```text
-Release homologada: v0.7.0 — Publisher Platform Foundation
-Tag canônica: v0.7.0
-Arquitetura: M360 Platform Architecture v2.2 + ADR-0008
-Baseline incorporada: v0.6.4 — Newsletter Delivery Readiness
-Linha Newsletter incorporada: v0.6.5.4 — Newsletter Subscription Placement & UX
-Linha consolidada: v0.7.0 — Publisher Platform Foundation
-Release operacional homologada: v0.7.4.0.1 — Existing Installation Detection Hotfix
-Próxima frente: staging do Portal Energia Limpa em portable-safe
+Release homologada: v0.7.4.0.42 — Editorial e Navegação consolidados
+Tag canônica: v0.7.4.0.42
+Arquitetura: M360 Platform Architecture v2.2 + ADR-0008 + ADR-0010
+Ambiente validado: Mengão 360, PT-BR e EN-US, desktop e mobile
+Política do portal existente: legacy-compatible
+Política para novas instalações: portable-safe
 Cutover semântico: cobertura 100%, ownership automatic, precursor desativado
+Ticker esportivo: responsabilidade do M360 Plus Editorial
 ```
 
 ## 7. Operações

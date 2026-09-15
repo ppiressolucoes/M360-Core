@@ -1,5 +1,7 @@
 # M360 Core v0.7.4.0.42
 
+Status: homologado em 15/09/2026 no Mengão 360 (PT-BR/EN-US, desktop/mobile).
+
 ## Alinhamento da nuvem de Tags no Footer
 
 A variante `surface="dark"` do `[m360_tag_cloud]` não aplica mais margem ou preenchimento no contêiner interno. O título, o sublinhado e a borda esquerda passam a acompanhar os blocos de menus do Footer.
