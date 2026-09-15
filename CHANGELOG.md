@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.42] — Alinhamento da nuvem de Tags no Footer
+
+- remove margem e preenchimento internos da variante escura do `[m360_tag_cloud]`;
+- torna o fundo transparente para acompanhar a superfície `#191919` do Footer sem formar um painel interno;
+- alinha título, sublinhado e largura da nuvem com os blocos `[m360_footer_menu]`;
+- mantém intactos a quantidade, o tamanho e a distribuição configurados para as tags.
+
 ## [v0.7.4.0.41] — Menus padronizados no Footer
 
 - adiciona `[m360_footer_menu]` e o alias `[m360_navigation_menu]` para renderizar menus nativos do WordPress;

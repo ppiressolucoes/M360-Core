@@ -93,6 +93,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | M360 Core v0.7.4.0.39 Release Notes | `releases/v0.7.4.0.39/M360_Core_v0.7.4.0.39_Release_Notes.md` | Variante escura da nuvem de Tags para Footer |
 | M360 Core v0.7.4.0.40 Release Notes | `releases/v0.7.4.0.40/M360_Core_v0.7.4.0.40_Release_Notes.md` | Cor #191919 e distribuição equilibrada das Tags |
 | M360 Core v0.7.4.0.41 Release Notes | `releases/v0.7.4.0.41/M360_Core_v0.7.4.0.41_Release_Notes.md` | Menus nativos reutilizáveis e padronizados no Footer |
+| M360 Core v0.7.4.0.42 Release Notes | `releases/v0.7.4.0.42/M360_Core_v0.7.4.0.42_Release_Notes.md` | Alinhamento da nuvem de Tags no Footer |
 
 ### Baseline canônico
 

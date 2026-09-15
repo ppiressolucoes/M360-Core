@@ -40,6 +40,19 @@
 .m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:hover,.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:focus-visible { background: var(--m360-sidebar-primary, #d71920); color: #fff; text-decoration: none; }
 .m360-sidebar-navigation--surface-dark { background: #191919; color: #f3f4f6; box-shadow: none; }
 .m360-sidebar-navigation--surface-dark .m360-sidebar-navigation__section h2 { color: #fff; }
+.m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+.m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section h2 {
+    margin: 0 0 13px;
+    padding: 0 0 9px;
+    font-size: 22px;
+}
 .m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a { border-color: rgba(255,255,255,.52); color: #f3f4f6; }
 .m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:hover,.m360-sidebar-navigation--surface-dark.m360-sidebar-navigation--tags .m360-sidebar-navigation__section a:focus-visible { border-color: var(--m360-sidebar-primary, #d71920); background: var(--m360-sidebar-primary, #d71920); color: #fff; }
 
