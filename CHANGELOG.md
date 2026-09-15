@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.38] — Nuvem de Tags
+
+- adiciona `[m360_tag_cloud]` e o alias `[m360_tags]` como bloco lateral independente;
+- ordena as tags por utilização, limita a quantidade exibida e escala o tamanho da fonte entre `min_size` e `max_size`;
+- aplica etiquetas com borda, fundo branco, título preto e cores primária/secundária do portal;
+- mantém Categorias e Arquivos como blocos independentes e preserva o contrato combinado anterior.
+
 ## [v0.7.4.0.37] — Blocos laterais e tipografia editorial
 
 - separa Categorias e Arquivos nos shortcodes independentes `[m360_categories]` e `[m360_archives]`;

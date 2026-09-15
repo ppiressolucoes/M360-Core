@@ -7,6 +7,8 @@ final class M360_Sidebar_Navigation
     {
         add_shortcode('m360_categories', [self::class, 'categories_shortcode']);
         add_shortcode('m360_archives', [self::class, 'archives_shortcode']);
+        add_shortcode('m360_tag_cloud', [self::class, 'tags_shortcode']);
+        add_shortcode('m360_tags', [self::class, 'tags_shortcode']);
         add_shortcode('m360_categories_archives', [self::class, 'shortcode']);
         add_shortcode('m360_sidebar_categories_archives', [self::class, 'shortcode']);
     }
@@ -58,6 +60,37 @@ final class M360_Sidebar_Navigation
         $archives = wp_get_archives(['type' => 'monthly', 'limit' => $atts['limit'], 'show_post_count' => $atts['show_counts'], 'echo' => false]);
         if (!is_string($archives) || trim($archives) === '') { return ''; }
         return self::block('archives', $atts['title'] ?: (self::is_en() ? 'Archives' : 'Arquivos'), wp_kses_post($archives), $atts);
+    }
+
+    public static function tags_shortcode(array $atts = []): string
+    {
+        $atts = shortcode_atts(['limit' => 24, 'title' => '', 'show_counts' => 'false', 'primary' => '#d71920', 'secondary' => '#b81218', 'min_size' => 13, 'max_size' => 19], $atts, 'm360_tag_cloud');
+        $limit = max(1, min(80, absint($atts['limit'])));
+        $min_size = max(11, min(32, (int) $atts['min_size']));
+        $max_size = max($min_size, min(40, (int) $atts['max_size']));
+        $show_counts = filter_var($atts['show_counts'], FILTER_VALIDATE_BOOLEAN);
+        $terms = get_terms(['taxonomy' => 'post_tag', 'hide_empty' => true, 'number' => $limit, 'orderby' => 'count', 'order' => 'DESC']);
+        if (is_wp_error($terms) || !is_array($terms) || !$terms) { return ''; }
+        $max_count = max(1, (int) max(array_map(static fn($term): int => (int) $term->count, $terms)));
+        $items = '';
+        foreach ($terms as $term) {
+            if (!$term instanceof WP_Term) { continue; }
+            $url = get_term_link($term);
+            if (is_wp_error($url)) { continue; }
+            $ratio = $max_count > 1 ? (($term->count - 1) / ($max_count - 1)) : 0;
+            $size = (int) round($min_size + (($max_size - $min_size) * $ratio));
+            $label = $term->name . ($show_counts ? ' (' . $term->count . ')' : '');
+            $items .= '<li><a href="' . esc_url($url) . '" style="font-size:' . esc_attr($size . 'px') . '">' . esc_html($label) . '</a></li>';
+        }
+        if ($items === '') { return ''; }
+        $block_atts = [
+            'limit' => $limit,
+            'title' => sanitize_text_field((string) $atts['title']),
+            'show_counts' => $show_counts,
+            'primary' => self::color((string) $atts['primary'], '#d71920'),
+            'secondary' => self::color((string) $atts['secondary'], '#b81218'),
+        ];
+        return self::block('tags', $block_atts['title'] ?: (self::is_en() ? 'Tags' : 'Tags'), $items, $block_atts);
     }
 
     private static function block_atts(array $atts, string $shortcode): array
