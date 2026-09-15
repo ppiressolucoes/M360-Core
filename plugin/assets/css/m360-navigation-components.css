@@ -184,7 +184,7 @@
 /* Institutional links keep a stable vertical rhythm when labels have different lengths. */
 .m360-section-navigation.m360-section-navigation--institutional ul {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
     gap: 12px;
 }
@@ -200,6 +200,7 @@
     min-height: 46px;
     box-sizing: border-box;
     align-items: center;
+    white-space: nowrap;
 }
 
 @media (max-width: 1024px) {

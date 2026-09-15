@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.35] — Menu institucional em coluna única
+
+- remove a grade de duas colunas do menu institucional no desktop;
+- mantém os itens em uma única coluna, com largura consistente e texto sem quebra;
+- preserva a coluna única e o espaçamento já aprovados no mobile.
+
 ## [v0.7.4.0.34] — Breadcrumb institucional e menu vertical
 
 - inclui automaticamente o título da página atual no `[m360_breadcrumb]` para páginas institucionais e páginas fora da Home;
