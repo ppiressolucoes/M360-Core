@@ -181,6 +181,27 @@
     padding: 5px 12px !important;
 }
 
+/* Institutional links keep a stable vertical rhythm when labels have different lengths. */
+.m360-section-navigation.m360-section-navigation--institutional ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 12px;
+}
+
+.m360-section-navigation.m360-section-navigation--institutional li {
+    display: flex;
+    min-width: 0;
+}
+
+.m360-section-navigation.m360-section-navigation--institutional li > a {
+    display: flex;
+    width: 100%;
+    min-height: 46px;
+    box-sizing: border-box;
+    align-items: center;
+}
+
 @media (max-width: 1024px) {
     .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu {
         display: block !important;
@@ -198,6 +219,11 @@
 }
 
 @media (max-width: 640px) {
+    .m360-section-navigation.m360-section-navigation--institutional ul {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
     .m360-breadcrumb.m360-ui-breadcrumb-nav {
         margin: 18px 0;
         font-size: 13px;

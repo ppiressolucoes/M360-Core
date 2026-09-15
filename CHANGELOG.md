@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.34] — Breadcrumb institucional e menu vertical
+
+- inclui automaticamente o título da página atual no `[m360_breadcrumb]` para páginas institucionais e páginas fora da Home;
+- preserva o comportamento anterior para posts, permitindo evitar duplicidade de título quando `show_current` permanece desativado;
+- organiza o menu institucional em grade vertical com alturas e alinhamento consistentes;
+- reduz o menu para uma coluna no mobile, mantendo áreas de toque uniformes.
+
 ## [v0.7.4.0.33] — Idioma de destino e preloader portátil
 
 - corrige `[m360_language_navigation]` para exibir a bandeira e o código do idioma de destino, em conformidade com o link, o título e o texto acessível;

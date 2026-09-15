@@ -85,6 +85,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | M360 Core v0.7.4.0 Release Notes | `releases/v0.7.4.0/M360_Core_v0.7.4.0_Release_Notes.md` | Portable Deployment Hardening e preservação de upgrades existentes |
 | M360 Core v0.7.4.0.1 Release Notes | `releases/v0.7.4.0.1/M360_Core_v0.7.4.0.1_Release_Notes.md` | Hotfix de detecção robusta e diagnóstico da política de implantação |
 | M360 Core v0.7.4.0.33 Release Notes | `releases/v0.7.4.0.33/M360_Core_v0.7.4.0.33_Release_Notes.md` | Correção do idioma de destino e preloader restrito às rotas do Core |
+| M360 Core v0.7.4.0.34 Release Notes | `releases/v0.7.4.0.34/M360_Core_v0.7.4.0.34_Release_Notes.md` | Breadcrumb institucional e alinhamento vertical do menu |
 
 ### Baseline canônico
 

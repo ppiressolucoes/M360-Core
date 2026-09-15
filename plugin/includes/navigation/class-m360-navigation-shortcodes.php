@@ -138,7 +138,11 @@ final class M360_Navigation_Shortcodes
                     $items[] = self::breadcrumb_item($post_type->labels->name, (string) get_post_type_archive_link($post_type->name));
                 }
             }
-            if (filter_var($atts['show_current'], FILTER_VALIDATE_BOOLEAN)) {
+            $show_current = filter_var($atts['show_current'], FILTER_VALIDATE_BOOLEAN);
+            if (!$show_current && is_page() && !is_front_page()) {
+                $show_current = true;
+            }
+            if ($show_current) {
                 $items[] = self::breadcrumb_item(get_the_title($post_id), get_permalink($post_id), true);
             }
         } elseif (is_post_type_archive()) {
@@ -336,7 +340,7 @@ final class M360_Navigation_Shortcodes
         self::enqueue_assets();
         $atts = shortcode_atts(['menu'=>'','menu_pt'=>'','menu_en'=>''], $atts, 'm360_section_navigation');
         $items = self::institutional_items();
-        if (!empty($items)) { return '<nav class="m360-section-navigation m360-section-navigation--index"><ul><li>' . implode('</li><li>', $items) . '</li></ul></nav>'; }
+        if (!empty($items)) { return '<nav class="m360-section-navigation m360-section-navigation--index m360-section-navigation--institutional"><ul><li>' . implode('</li><li>', $items) . '</li></ul></nav>'; }
         $menu_name = self::section_menu_name($atts);
         if ($menu_name !== '') {
             $html = wp_nav_menu(['menu'=>$menu_name,'container'=>false,'menu_class'=>'m360-section-navigation__menu','echo'=>false,'fallback_cb'=>false,'depth'=>2]);
