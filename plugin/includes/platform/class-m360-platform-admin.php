@@ -15,6 +15,7 @@ final class M360_Platform_Admin
         add_action('admin_post_m360_platform_export_profile', [self::class, 'export_profile']);
         add_action('admin_post_m360_platform_toggle_module', [self::class, 'toggle_module']);
         add_action('admin_post_m360_platform_save_editorial_widget', [self::class, 'save_editorial_widget']);
+        add_action('admin_post_m360_platform_save_editorial_typography', [self::class, 'save_editorial_typography']);
         add_action('admin_post_m360_platform_delete_editorial_widget', [self::class, 'delete_editorial_widget']);
     }
 
@@ -423,6 +424,14 @@ final class M360_Platform_Admin
         self::redirect(is_wp_error($result) ? 'error' : 'widget_saved', 'm360-editorial-widgets');
     }
 
+    public static function save_editorial_typography(): void
+    {
+        self::guard('m360_platform_save_editorial_typography');
+        $input = isset($_POST['typography']) && is_array($_POST['typography']) ? wp_unslash($_POST['typography']) : [];
+        M360_Editorial_Layout_Module::save_typography($input);
+        self::redirect('typography_saved', 'm360-editorial-widgets');
+    }
+
     public static function delete_editorial_widget(): void
     {
         $id = sanitize_key((string) ($_POST['widget_id'] ?? ''));
@@ -436,7 +445,7 @@ final class M360_Platform_Admin
         if (!current_user_can('manage_options')) { return; }
         $notice = sanitize_key((string) ($_GET['m360_notice'] ?? ''));
         if ($notice !== '') {
-            $messages = ['widget_saved'=>'Widget editorial salvo.','widget_deleted'=>'Widget editorial excluído.','error'=>'A operação não pôde ser concluída.'];
+            $messages = ['widget_saved'=>'Widget editorial salvo.','widget_deleted'=>'Widget editorial excluído.','typography_saved'=>'Tipografia editorial atualizada.','error'=>'A operação não pôde ser concluída.'];
             echo '<div class="notice ' . ($notice === 'error' ? 'notice-error' : 'notice-success') . ' is-dismissible"><p>' . esc_html($messages[$notice] ?? 'Operação concluída.') . '</p></div>';
         }
         echo '<div class="wrap"><h1>Widgets editoriais</h1>';

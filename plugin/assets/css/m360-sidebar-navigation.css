@@ -1,17 +1,19 @@
 .m360-sidebar-navigation {
-    display: grid;
-    gap: 26px;
     margin: 24px 0;
+    padding: 22px 24px;
+    background: #fff;
     color: #30343b;
     font-family: inherit;
 }
+
+.m360-sidebar-navigation-group { display: contents; }
 
 .m360-sidebar-navigation__section { margin: 0; }
 .m360-sidebar-navigation__section h2 {
     margin: 0 0 12px;
     padding-bottom: 8px;
     border-bottom: 3px solid var(--m360-sidebar-primary, #d71920);
-    color: var(--m360-sidebar-secondary, #b81218);
+    color: #202020;
     font-size: 20px;
     font-weight: 800;
     line-height: 1.2;
@@ -29,3 +31,7 @@
 .m360-sidebar-navigation__section a:hover { color: var(--m360-sidebar-secondary, #b81218); text-decoration: underline; }
 .m360-sidebar-navigation__section span { color: #555; }
 .m360-sidebar-navigation__section--archives li { display: list-item; margin-left: 18px; padding-left: 4px; list-style: disc; }
+
+@media (max-width: 640px) {
+    .m360-sidebar-navigation { padding: 18px 20px; }
+}

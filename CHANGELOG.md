@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.37] — Blocos laterais e tipografia editorial
+
+- separa Categorias e Arquivos nos shortcodes independentes `[m360_categories]` e `[m360_archives]`;
+- mantém `[m360_categories_archives]` e `[m360_sidebar_categories_archives]` como contratos combinados de compatibilidade;
+- aplica fundo branco, título preto e sublinhado com a cor primária configurada em cada bloco lateral;
+- adiciona ao painel Editorial a configuração global e portátil da família tipográfica e dos tamanhos de títulos de seção, destaque principal, demais destaques, cards/listas, resumos e metadados;
+- eleva os tamanhos padrão dos cards, resumos, datas e autores para preservar legibilidade em temas com tamanho-base reduzido.
+
 ## [v0.7.4.0.36] — Navegação lateral e redes sociais
 
 - mantém o ticker `[m360_sports_competitions_ticker]` fora do M360 Core; esse componente pertence ao pacote M360 Plus Editorial e não é registrado, empacotado ou inserido na Home pelo Core;

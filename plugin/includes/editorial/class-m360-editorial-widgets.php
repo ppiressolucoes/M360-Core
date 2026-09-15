@@ -102,7 +102,7 @@ final class M360_Editorial_Widgets
         wp_enqueue_style('m360-core-editorial-widgets');
         wp_enqueue_script('m360-core-editorial');
         $layout = $config['layout'];
-        $html = '<section class="m360-editorial-widget m360-editorial-widget--layout-' . esc_attr($layout) . '" data-m360-widget="' . esc_attr($config['id']) . '">';
+        $html = '<section class="m360-editorial-widget m360-editorial-widget--layout-' . esc_attr($layout) . '"' . M360_Editorial_Layout_Module::typography_style_attribute() . ' data-m360-widget="' . esc_attr($config['id']) . '">';
         $public_title = self::public_title($config);
         if ($public_title !== '') {
             $html .= '<header class="m360-editorial-widget__header"><h2 class="m360-editorial-widget__heading">' . esc_html($public_title) . '</h2>';
@@ -128,6 +128,7 @@ final class M360_Editorial_Widgets
         $defaults = ['id'=>'','title'=>'','layout'=>'1','categories'=>[],'lang'=>self::default_language(),'limit'=>4,'excerpt_words'=>22,'show_view_all'=>false,'view_all_url'=>'','featured_tag'=>'','card_count'=>4,'interval'=>6500,'autoplay'=>true];
         $form_widget = $editing ?: $defaults;
         echo '<p>Crie instâncias reutilizáveis por idioma e escolha qualquer editoria disponível. O shortcode permanece estável quando título, modelo, categorias ou quantidade forem alterados.</p>';
+        M360_Editorial_Layout_Module::render_typography_admin();
         echo '<details class="m360-editorial-admin__form"' . ($editing ? ' open' : '') . '><summary>' . esc_html($editing ? 'Editar widget: ' . $editing['title'] : 'Cadastrar nova instância') . '</summary>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="m360_platform_save_editorial_widget"><input type="hidden" name="original_id" value="' . esc_attr($editing['id'] ?? '') . '">';
         wp_nonce_field('m360_platform_save_editorial_widget');
