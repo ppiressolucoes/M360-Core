@@ -10,6 +10,19 @@
 
 .m360-core-placeholder code { color: #d71920; font-weight: 700; }
 
+.m360-core-home-shell { margin: 0; background: #f7f7f7; color: #202020; }
+.m360-core-home-header { background: #111; color: #fff; }
+.m360-core-home-header__container,
+.m360-core-home-footer__container { width: min(calc(100% - 32px), 1200px); margin-inline: auto; padding: 16px 0; }
+.m360-core-home-header__container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.m360-core-home-header__brand { color: inherit; font-weight: 800; text-decoration: none; }
+.m360-editorial-home__container { padding-block: 16px 40px; }
+.m360-core-home-footer { margin-top: 32px; background: #111; color: #fff; }
+@media (max-width: 560px) {
+    .m360-core-home-header__container,
+    .m360-core-home-footer__container { width: min(calc(100% - 24px), 1200px); }
+}
+
 .m360-navigation-shell,
 .m360-main-navigation,
 .m360-main-navigation * { box-sizing: border-box; }

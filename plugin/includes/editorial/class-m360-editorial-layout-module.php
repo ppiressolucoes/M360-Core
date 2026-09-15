@@ -10,7 +10,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
     public function id(): string { return 'editorial-layout-home'; }
     public function label(): string { return 'Editorial Layout & Home'; }
     public function version(): string { return M360_CORE_VERSION; }
-    public function schema_version(): string { return '2'; }
+    public function schema_version(): string { return '3'; }
     public function dependencies(): array { return ['publisher-foundation']; }
     public function capabilities(): array { return ['manage_options', 'edit_posts']; }
     public function settings_schema(): array
@@ -23,6 +23,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
             'tag_taxonomy' => ['type' => 'string', 'portable' => true],
             'heading_level' => ['type' => 'integer', 'portable' => true],
             'cache_ttl' => ['type' => 'integer', 'portable' => true],
+            'typography' => ['type' => 'object', 'portable' => true],
         ];
     }
     public function asset_handles(): array { return ['styles' => ['m360-core-editorial','m360-core-editorial-carousel','m360-core-editorial-layout','m360-core-editorial-polish','m360-core-editorial-sections','m360-core-editorial-widgets','m360-core-editorial-ticker'], 'scripts' => ['m360-core-editorial']]; }
@@ -86,7 +87,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
 
     public static function defaults(): array
     {
-        return ['mode' => 'hybrid', 'legacy_shortcodes' => 'precursor', 'post_type' => 'post', 'category_taxonomy' => 'category', 'tag_taxonomy' => 'post_tag', 'heading_level' => 2, 'cache_ttl' => 600];
+        return ['mode' => 'hybrid', 'legacy_shortcodes' => 'precursor', 'post_type' => 'post', 'category_taxonomy' => 'category', 'tag_taxonomy' => 'post_tag', 'heading_level' => 2, 'cache_ttl' => 600, 'typography' => self::typography_defaults()];
     }
     public static function settings(): array
     {
@@ -100,7 +101,71 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
             'tag_taxonomy' => sanitize_key((string) $input['tag_taxonomy']) ?: 'post_tag',
             'heading_level' => max(2, min(6, (int) $input['heading_level'])),
             'cache_ttl' => max(0, min(DAY_IN_SECONDS, (int) $input['cache_ttl'])),
+            'typography' => self::sanitize_typography(is_array($input['typography'] ?? null) ? $input['typography'] : []),
         ];
+    }
+
+    public static function typography_defaults(): array
+    {
+        return ['font_family'=>'inherit','section_title_size'=>25,'featured_title_size'=>32,'lead_title_size'=>22,'card_title_size'=>18,'summary_size'=>16,'meta_size'=>14];
+    }
+
+    public static function typography(): array
+    {
+        return self::settings()['typography'];
+    }
+
+    public static function save_typography(array $input): bool
+    {
+        $stored = get_option(self::SETTINGS, []);
+        $stored = is_array($stored) ? array_merge(self::defaults(), $stored) : self::defaults();
+        $stored['typography'] = self::sanitize_typography($input);
+        return update_option(self::SETTINGS, $stored, false) || self::typography() === $stored['typography'];
+    }
+
+    public static function typography_style_attribute(): string
+    {
+        $t = self::typography();
+        $variables = [
+            '--m360-editorial-font-family' => $t['font_family'],
+            '--m360-editorial-section-title-size' => $t['section_title_size'] . 'px',
+            '--m360-editorial-featured-title-size' => $t['featured_title_size'] . 'px',
+            '--m360-editorial-lead-title-size' => $t['lead_title_size'] . 'px',
+            '--m360-editorial-card-title-size' => $t['card_title_size'] . 'px',
+            '--m360-editorial-summary-size' => $t['summary_size'] . 'px',
+            '--m360-editorial-meta-size' => $t['meta_size'] . 'px',
+        ];
+        $style = '';
+        foreach ($variables as $name => $value) { $style .= $name . ':' . $value . ';'; }
+        return ' style="' . esc_attr($style) . '"';
+    }
+
+    public static function render_typography_admin(): void
+    {
+        $t = self::typography();
+        echo '<details class="m360-editorial-admin__form"><summary>Tipografia editorial</summary><form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="m360_platform_save_editorial_typography">';
+        wp_nonce_field('m360_platform_save_editorial_typography');
+        echo '<table class="form-table"><tbody>';
+        echo '<tr><th><label for="m360-editorial-font-family">Família tipográfica</label></th><td><input class="regular-text" id="m360-editorial-font-family" name="typography[font_family]" value="' . esc_attr($t['font_family']) . '"><p class="description">Use <code>inherit</code> para acompanhar o tema ou informe uma pilha CSS, por exemplo: <code>Arial, Helvetica, sans-serif</code>.</p></td></tr>';
+        $fields = ['section_title_size'=>'Títulos das seções','featured_title_size'=>'Título do destaque principal','lead_title_size'=>'Títulos dos destaques','card_title_size'=>'Títulos dos cards e listas','summary_size'=>'Resumos','meta_size'=>'Data e autor'];
+        foreach ($fields as $key => $label) { echo '<tr><th><label for="m360-' . esc_attr($key) . '">' . esc_html($label) . '</label></th><td><input class="small-text" type="number" min="11" max="56" id="m360-' . esc_attr($key) . '" name="typography[' . esc_attr($key) . ']" value="' . esc_attr((string) $t[$key]) . '"> px</td></tr>'; }
+        echo '</tbody></table>';
+        submit_button('Salvar tipografia');
+        echo '</form></details>';
+    }
+
+    private static function sanitize_typography(array $input): array
+    {
+        $defaults = self::typography_defaults();
+        $font = sanitize_text_field((string) ($input['font_family'] ?? $defaults['font_family']));
+        $font = preg_replace('/[^a-zA-Z0-9\s,\-\'\"]/', '', $font) ?: 'inherit';
+        $font = substr($font, 0, 120);
+        $clean = ['font_family' => $font];
+        foreach (array_keys($defaults) as $key) {
+            if ($key === 'font_family') { continue; }
+            $clean[$key] = max(11, min(56, (int) ($input[$key] ?? $defaults[$key])));
+        }
+        return $clean;
     }
 
     public static function ticker(array $atts = []): string
@@ -113,7 +178,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         if ($label === '') { $label = $lang === 'pt' ? 'Últimas Notícias' : 'Latest News'; }
         $autoplay = filter_var($atts['autoplay'], FILTER_VALIDATE_BOOLEAN);
         $reduced_motion = strtolower(sanitize_key((string) $atts['reduced_motion'])) === 'respect' ? 'respect' : 'allow';
-        $html = '<section class="m360-editorial m360-editorial-ticker" data-m360-editorial-ticker data-interval="' . esc_attr((string) max(2500, (int) $atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '" data-reduced-motion="' . esc_attr($reduced_motion) . '" aria-label="' . esc_attr($label) . '">';
+        $html = '<section class="m360-editorial m360-editorial-ticker"' . self::typography_style_attribute() . ' data-m360-editorial-ticker data-interval="' . esc_attr((string) max(2500, (int) $atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '" data-reduced-motion="' . esc_attr($reduced_motion) . '" aria-label="' . esc_attr($label) . '">';
         $html .= '<strong class="m360-editorial-ticker__label">' . esc_html($label) . '</strong><div class="m360-editorial-ticker__viewport" aria-live="polite">';
         foreach ($posts as $index => $post) {
             $html .= '<article class="m360-editorial-ticker__item" data-m360-ticker-slide' . ($index ? ' hidden' : '') . ' aria-hidden="' . ($index ? 'true' : 'false') . '">';
@@ -140,7 +205,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
     {
         $atts = shortcode_atts(['lang'=>'','limit'=>5,'tag'=>'','category'=>'','heading_level'=>''], $atts, 'm360_editorial_hero');
         $posts = self::posts($atts); if (!$posts) { return ''; } self::assets();
-        $level = self::heading($atts); $html = '<section class="m360-editorial m360-editorial-hero">';
+        $level = self::heading($atts); $html = '<section class="m360-editorial m360-editorial-hero"' . self::typography_style_attribute() . '>';
         foreach ($posts as $post) {
             $image = get_the_post_thumbnail_url($post, 'large'); $html .= '<article class="m360-editorial-hero__item">';
             if ($image) { $html .= '<img src="' . esc_url($image) . '" alt="" loading="lazy">'; }
@@ -153,7 +218,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         $atts = shortcode_atts(['title'=>'','lang'=>'','category'=>'','tag'=>'','layout'=>'grid','limit'=>4,'more_url'=>'','heading_level'=>''], $atts, 'm360_editorial_section');
         $posts = self::posts($atts); if (!$posts) { return ''; } self::assets();
         $layout = in_array($atts['layout'], ['grid','featured-list','compact'], true) ? $atts['layout'] : 'grid'; $level = self::heading($atts);
-        $html = '<section class="m360-editorial m360-editorial-section m360-editorial-section--' . esc_attr($layout) . '">';
+        $html = '<section class="m360-editorial m360-editorial-section m360-editorial-section--' . esc_attr($layout) . '"' . self::typography_style_attribute() . '>';
         if ($atts['title']) { $html .= '<h' . $level . '>' . esc_html($atts['title']) . '</h' . $level . '>'; }
         $html .= '<div class="m360-editorial-section__items">';
         foreach ($posts as $index => $post) { $html .= self::section_item($post, $layout, $index, min(6,$level+1)); }
@@ -213,7 +278,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
 
         self::assets();
         $level = self::heading($atts);
-        $html = '<section class="m360-editorial m360-editorial-newsroom">';
+        $html = '<section class="m360-editorial m360-editorial-newsroom"' . self::typography_style_attribute() . '>';
         if (filter_var($atts['show_title'], FILTER_VALIDATE_BOOLEAN) && $atts['title'] !== '') { $html .= '<h' . $level . ' class="m360-editorial-newsroom__heading">' . esc_html($atts['title']) . '</h' . $level . '>'; }
         $autoplay = filter_var($atts['autoplay'], FILTER_VALIDATE_BOOLEAN);
         $html .= '<div class="m360-editorial-newsroom__layout"><div class="m360-editorial-newsroom__carousel" data-m360-editorial-carousel data-interval="' . esc_attr((string)max(2500,(int)$atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '">';

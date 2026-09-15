@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    function initStickyNavigation(shell) {
-        if (shell.closest('.m360-primary-menu-sticky')) { return; }
-        var target = shell.closest('.m360-header-topbar');
+    function initStickyNavigation(target) {
         if (!target) { return; }
         if (target.getAttribute('data-m360-sticky-managed') === 'true') { return; }
 
@@ -55,7 +53,7 @@
     }
 
     function init() {
-        document.querySelectorAll('.m360-navigation-shell').forEach(initStickyNavigation);
+        document.querySelectorAll('.m360-header-topbar').forEach(initStickyNavigation);
     }
 
     if (document.readyState === 'loading') {

@@ -15,14 +15,15 @@ final class M360_Platform_Admin
         add_action('admin_post_m360_platform_export_profile', [self::class, 'export_profile']);
         add_action('admin_post_m360_platform_toggle_module', [self::class, 'toggle_module']);
         add_action('admin_post_m360_platform_save_editorial_widget', [self::class, 'save_editorial_widget']);
+        add_action('admin_post_m360_platform_save_editorial_typography', [self::class, 'save_editorial_typography']);
         add_action('admin_post_m360_platform_delete_editorial_widget', [self::class, 'delete_editorial_widget']);
     }
 
     public static function menu(): void
     {
         add_menu_page(
-            'M360 Dashboard',
-            'M360 Dashboard',
+            'M360 Core',
+            'M360 Core',
             'manage_options',
             'm360-dashboard',
             [self::class, 'render_dashboard'],
@@ -31,24 +32,24 @@ final class M360_Platform_Admin
         );
         add_submenu_page(
             'm360-dashboard',
-            'M360 Dashboard',
-            'M360 Dashboard',
+            'M360 Core',
+            'Visão geral',
             'manage_options',
             'm360-dashboard',
             [self::class, 'render_dashboard']
         );
         add_submenu_page(
-            null,
+            'm360-dashboard',
             'Plataforma e Site Profile',
-            'Plataforma e Site Profile',
+            'Site Profile e módulos',
             'manage_options',
             'm360-platform',
             [self::class, 'render']
         );
         add_submenu_page(
-            null,
+            'm360-dashboard',
             'Widgets editoriais',
-            'Widgets editoriais',
+            'Editorial',
             'manage_options',
             'm360-editorial-widgets',
             [self::class, 'render_widgets']
@@ -93,7 +94,7 @@ final class M360_Platform_Admin
         <div class="wrap m360-dashboard">
             <div class="m360-dashboard__heading">
                 <div>
-                    <h1>M360 Dashboard</h1>
+                    <h1>M360 Core</h1>
                     <p>Gestão unificada da Publisher Platform, sem dependência de tema ou Elementor.</p>
                 </div>
                 <span class="m360-dashboard__version">v<?php echo esc_html(M360_CORE_VERSION); ?></span>
@@ -311,6 +312,16 @@ final class M360_Platform_Admin
                     <tr><th><label for="m360-default-locale">Idioma padrão</label></th><td><input class="regular-text" id="m360-default-locale" name="profile[default_locale]" value="<?php echo esc_attr($profile['default_locale']); ?>" required></td></tr>
                     <tr><th><label for="m360-supported-locales">Idiomas suportados</label></th><td><input class="regular-text" id="m360-supported-locales" name="profile[supported_locales]" value="<?php echo esc_attr(implode(', ', $profile['supported_locales'])); ?>" required><p class="description">Separados por vírgula; exemplo: pt-BR, en-US.</p></td></tr>
                     <tr>
+                        <th>Navegação</th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="profile[navigation][preloader_enabled]" value="1" <?php checked(!empty($profile['navigation']['preloader_enabled'])); ?>>
+                                Ativar preloader nas rotas públicas gerenciadas pelo M360 Core
+                            </label>
+                            <p class="description">O Core detecta suas rotas e páginas com componentes M360. Para templates isolados do Elementor, o shortcode [m360_preloader] também está disponível. O preloader do News Portal pode permanecer ativo nas páginas renderizadas pelo tema.</p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><label for="m360-runtime-mode">Política de implantação</label></th>
                         <td>
                             <select id="m360-runtime-mode" name="profile[runtime][mode]">
@@ -413,6 +424,14 @@ final class M360_Platform_Admin
         self::redirect(is_wp_error($result) ? 'error' : 'widget_saved', 'm360-editorial-widgets');
     }
 
+    public static function save_editorial_typography(): void
+    {
+        self::guard('m360_platform_save_editorial_typography');
+        $input = isset($_POST['typography']) && is_array($_POST['typography']) ? wp_unslash($_POST['typography']) : [];
+        M360_Editorial_Layout_Module::save_typography($input);
+        self::redirect('typography_saved', 'm360-editorial-widgets');
+    }
+
     public static function delete_editorial_widget(): void
     {
         $id = sanitize_key((string) ($_POST['widget_id'] ?? ''));
@@ -426,7 +445,7 @@ final class M360_Platform_Admin
         if (!current_user_can('manage_options')) { return; }
         $notice = sanitize_key((string) ($_GET['m360_notice'] ?? ''));
         if ($notice !== '') {
-            $messages = ['widget_saved'=>'Widget editorial salvo.','widget_deleted'=>'Widget editorial excluído.','error'=>'A operação não pôde ser concluída.'];
+            $messages = ['widget_saved'=>'Widget editorial salvo.','widget_deleted'=>'Widget editorial excluído.','typography_saved'=>'Tipografia editorial atualizada.','error'=>'A operação não pôde ser concluída.'];
             echo '<div class="notice ' . ($notice === 'error' ? 'notice-error' : 'notice-success') . ' is-dismissible"><p>' . esc_html($messages[$notice] ?? 'Operação concluída.') . '</p></div>';
         }
         echo '<div class="wrap"><h1>Widgets editoriais</h1>';

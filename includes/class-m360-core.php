@@ -41,6 +41,7 @@ require_once M360_CORE_PATH . 'includes/platform/class-m360-runtime-profile.php'
 require_once M360_CORE_PATH . 'includes/platform/class-m360-site-profile.php';
 require_once M360_CORE_PATH . 'includes/platform/class-m360-module-registry.php';
 require_once M360_CORE_PATH . 'includes/platform/class-m360-publisher-foundation-module.php';
+require_once M360_CORE_PATH . 'includes/enrichment/bootstrap.php';
 require_once M360_CORE_PATH . 'includes/editorial/class-m360-editorial-widgets.php';
 require_once M360_CORE_PATH . 'includes/editorial/class-m360-editorial-layout-module.php';
 require_once M360_CORE_PATH . 'includes/discovery/interface-m360-catalog-provider.php';

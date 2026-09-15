@@ -46,6 +46,13 @@
         }
 
         if (!links.length) { links.push(createSwitcher()); }
+        if (links.length > 1) {
+            links.slice(1).forEach(function (link) {
+                var duplicate = link.closest('.m360-floating-lang-toggle');
+                if (duplicate) { duplicate.remove(); }
+            });
+            links = links.slice(0, 1);
+        }
         links.forEach(normalize);
     }
 

@@ -90,7 +90,7 @@ final class M360_Consent_Manager
     public static function register_admin_page(): void
     {
         add_submenu_page(
-            null,
+            'm360-dashboard',
             'M360 Privacy & Consent',
             'Privacy & Consent',
             'manage_options',

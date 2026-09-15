@@ -15,6 +15,7 @@ final class M360_Language_Switcher
     public static function register_shortcodes(): void
     {
         add_shortcode('m360_language_switcher', [self::class, 'render']);
+        add_shortcode('m360_language_navigation', [self::class, 'render_navigation']);
     }
 
     public static function enqueue_assets(): void
@@ -40,7 +41,7 @@ final class M360_Language_Switcher
         ]);
     }
 
-    public static function render(): string
+    public static function render(array $atts = []): string
     {
         $target = self::target();
         if (!$target['available']) { return ''; }
@@ -55,7 +56,31 @@ final class M360_Language_Switcher
             . '</a></div>';
     }
 
-    private static function target(): array
+    public static function render_navigation(array $atts = []): string
+    {
+        $target = self::target(true);
+        if (!$target['available']) { return ''; }
+        $current = self::current_language();
+        $active_label = $current['code'] === 'EN' ? 'English' : 'Português';
+        $aria_label = $current['code'] === 'EN'
+            ? sprintf('Current language: %s. %s', $active_label, (string) $target['aria_label'])
+            : sprintf('Idioma atual: %s. %s', $active_label, (string) $target['aria_label']);
+        return '<div class="m360-language-navigation" data-m360-language-navigation>'
+            . '<a class="m360-language-navigation__link" href="' . esc_url((string) $target['url']) . '" hreflang="' . esc_attr((string) $target['locale']) . '" title="' . esc_attr((string) $target['title']) . '" aria-label="' . esc_attr($aria_label) . '">'
+            . '<span class="m360-language-navigation__flag" aria-hidden="true">' . esc_html((string) $target['flag']) . '</span>'
+            . '<span class="m360-language-navigation__code">' . esc_html((string) $target['code']) . '</span>'
+            . '<span class="m360-language-navigation__arrow" aria-hidden="true">↔</span>'
+            . '</a></div>';
+    }
+
+    private static function current_language(): array
+    {
+        $slug = function_exists('pll_current_language') ? strtolower((string) pll_current_language('slug')) : '';
+        $is_en = str_starts_with($slug, 'en');
+        return ['code' => $is_en ? 'EN' : 'PT', 'flag' => $is_en ? '🇺🇸' : '🇧🇷'];
+    }
+
+    private static function target(bool $allow_home_fallback = false): array
     {
         $empty = [
             'available' => false,
@@ -74,10 +99,13 @@ final class M360_Language_Switcher
         $url = '';
 
         if (is_singular()) {
-            if (!function_exists('pll_get_post')) { return $empty; }
-            $translated_id = (int) pll_get_post((int) get_queried_object_id(), $target_slug);
-            if ($translated_id <= 0 || get_post_status($translated_id) !== 'publish') { return $empty; }
-            $url = (string) get_permalink($translated_id);
+            if (function_exists('pll_get_post')) {
+                $translated_id = (int) pll_get_post((int) get_queried_object_id(), $target_slug);
+                if ($translated_id > 0 && get_post_status($translated_id) === 'publish') {
+                    $url = (string) get_permalink($translated_id);
+                }
+            }
+            if ($url === '' && !$allow_home_fallback) { return $empty; }
         } elseif ((is_category() || is_tag() || is_tax()) && function_exists('pll_get_term')) {
             $term = get_queried_object();
             if ($term instanceof WP_Term) {
@@ -101,7 +129,7 @@ final class M360_Language_Switcher
             }
         }
 
-        if ($url === '' && !is_singular() && function_exists('pll_home_url')) {
+        if ($url === '' && ($allow_home_fallback || !is_singular()) && function_exists('pll_home_url')) {
             $url = (string) pll_home_url($target_slug);
         }
         if ($url === '') { return $empty; }

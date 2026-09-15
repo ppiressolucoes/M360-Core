@@ -8,6 +8,20 @@ final class M360_Search_Form_Component
     public static function register_shortcodes(): void
     {
         add_shortcode('m360_search_form', [self::class, 'shortcode']);
+        add_shortcode('m360_search_toggle', [self::class, 'toggle_shortcode']);
+    }
+
+    public static function toggle_shortcode(array $atts = []): string
+    {
+        $is_en = self::is_en();
+        $label = $is_en ? 'Open search' : 'Abrir pesquisa';
+        $panel_id = wp_unique_id('m360-search-toggle-panel-');
+        self::enqueue_assets();
+        return '<div class="m360-search-toggle" data-m360-search-toggle>'
+            . '<button type="button" class="m360-search-toggle__trigger" aria-expanded="false" aria-controls="' . esc_attr($panel_id) . '" aria-label="' . esc_attr($label) . '">' . self::search_icon() . '</button>'
+            . '<div id="' . esc_attr($panel_id) . '" class="m360-search-toggle__panel" data-m360-search-toggle-panel hidden>'
+            . self::shortcode(['variant' => 'header', 'show_intro' => 'false'])
+            . '</div></div>';
     }
 
     public static function shortcode(array $atts = []): string
