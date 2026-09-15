@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.41] — Menus padronizados no Footer
+
+- adiciona `[m360_footer_menu]` e o alias `[m360_navigation_menu]` para renderizar menus nativos do WordPress;
+- aplica título, sublinhado na cor primária, tipografia e estados de foco/hover consistentes;
+- inclui variantes `surface="dark"` e `surface="light"`, sem depender de HTML ou CSS manual no Elementor;
+- mantém o nome, a ordem e os links dos menus administrados em Aparência > Menus.
+
 ## [v0.7.4.0.40] — Distribuição da nuvem de Tags
 
 - altera a superfície escura do `[m360_tag_cloud]` para `#191919`, acompanhando o Footer do Mengão 360;

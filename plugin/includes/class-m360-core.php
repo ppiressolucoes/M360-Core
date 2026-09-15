@@ -8,6 +8,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php'
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-page-preloader.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-sidebar-navigation.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-footer-menu.php';
 require_once M360_CORE_PATH . 'includes/social/class-m360-social-links.php';
 require_once M360_CORE_PATH . 'includes/language/class-m360-language-switcher.php';
 require_once M360_CORE_PATH . 'includes/post/class-m360-post-info-component.php';
@@ -199,6 +200,7 @@ final class M360_Core_Runtime_034
         wp_register_script('m360-core-editorial', M360_CORE_URL . 'assets/js/m360-editorial.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-sidebar-navigation', M360_CORE_URL . 'assets/css/m360-sidebar-navigation.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-social-links', M360_CORE_URL . 'assets/css/m360-social-links.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-footer-menu', M360_CORE_URL . 'assets/css/m360-footer-menu.css', ['m360-core-foundation'], M360_CORE_VERSION);
         if (is_singular() && M360_Platform::instance()->registry()->is_enabled('content-discovery-seo')) {
             wp_enqueue_style('m360-core-discovery-canary');
         }
@@ -228,6 +230,7 @@ final class M360_Core_Runtime_034
     {
         M360_Navigation_Shortcodes::register();
         M360_Sidebar_Navigation::register_shortcodes();
+        M360_Footer_Menu::register_shortcodes();
         M360_Social_Links::register_shortcodes();
         M360_Language_Switcher::register_shortcodes();
         M360_Page_Preloader::register_shortcodes();
