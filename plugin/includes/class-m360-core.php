@@ -6,6 +6,7 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php'
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-page-preloader.php';
 require_once M360_CORE_PATH . 'includes/language/class-m360-language-switcher.php';
 require_once M360_CORE_PATH . 'includes/post/class-m360-post-info-component.php';
 require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
@@ -27,6 +28,7 @@ require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php'
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
 require_once M360_CORE_PATH . 'includes/tag/class-m360-tag-controller.php';
 require_once M360_CORE_PATH . 'includes/date/class-m360-date-archive-controller.php';
+require_once M360_CORE_PATH . 'includes/home/class-m360-home-controller.php';
 require_once M360_CORE_PATH . 'includes/privacy/class-m360-consent-manager.php';
 require_once M360_CORE_PATH . 'includes/newsletter/interface-m360-newsletter-provider.php';
 require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-settings.php';
@@ -121,6 +123,7 @@ final class M360_Core_Runtime_034
             M360_Newsletter_Component::register();
         }
         M360_Language_Switcher::register();
+        M360_Page_Preloader::register();
         M360_Header_Orchestrator::register();
         if (M360_Runtime_Profile::enabled('ads_auto_insert')) {
             M360_Ads_Inline_Engine::register();
@@ -132,6 +135,9 @@ final class M360_Core_Runtime_034
         add_filter('widget_text', 'do_shortcode', 11);
         add_filter('widget_text_content', 'do_shortcode', 11);
         add_filter('widget_custom_html_content', 'do_shortcode', 11);
+        if (M360_Editorial_Layout_Module::settings()['mode'] === 'public') {
+            add_filter('template_include', ['M360_Home_Controller', 'template_include'], 29);
+        }
         if (M360_Runtime_Profile::enabled('public_views')) {
             add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
             add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
@@ -162,8 +168,13 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-ui-components', M360_CORE_URL . 'assets/css/m360-ui-components.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-navigation-components', M360_CORE_URL . 'assets/css/m360-navigation-components.css', ['m360-core-foundation', 'm360-core-ui-components'], M360_CORE_VERSION);
         wp_register_script('m360-core-navigation', M360_CORE_URL . 'assets/js/m360-navigation.js', [], M360_CORE_VERSION, true);
+        wp_register_style('m360-core-sticky-header', M360_CORE_URL . 'assets/css/m360-sticky-header.css', [], M360_CORE_VERSION);
+        wp_register_style('m360-core-back-to-top', M360_CORE_URL . 'assets/css/m360-back-to-top.css', [], M360_CORE_VERSION);
+        wp_register_script('m360-core-back-to-top', M360_CORE_URL . 'assets/js/m360-back-to-top.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-language-switcher', M360_CORE_URL . 'assets/css/m360-language-switcher.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_script('m360-core-language-switcher', M360_CORE_URL . 'assets/js/m360-language-switcher.js', [], M360_CORE_VERSION, true);
+        wp_register_style('m360-core-preloader', M360_CORE_URL . 'assets/css/m360-preloader.css', [], M360_CORE_VERSION);
+        wp_register_script('m360-core-preloader', M360_CORE_URL . 'assets/js/m360-preloader.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-post-info', M360_CORE_URL . 'assets/css/m360-post-info.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-latest-news', M360_CORE_URL . 'assets/css/m360-latest-news.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-ads', M360_CORE_URL . 'assets/css/m360-ads.css', ['m360-core-ui-components'], M360_CORE_VERSION);
@@ -213,6 +224,7 @@ final class M360_Core_Runtime_034
     {
         M360_Navigation_Shortcodes::register();
         M360_Language_Switcher::register_shortcodes();
+        M360_Page_Preloader::register_shortcodes();
         M360_Post_Info_Component::register_shortcodes();
         M360_Search_Form_Component::register_shortcodes();
         M360_Header_Orchestrator::register_shortcodes();

@@ -4,12 +4,47 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_Navigation_Shortcodes
 {
     private static bool $breadcrumb_schema_rendered = false;
+    private static bool $back_to_top_rendered = false;
 
     public static function register(): void
     {
         add_shortcode('m360_main_navigation', [self::class, 'main_navigation']);
         add_shortcode('m360_breadcrumb', [self::class, 'breadcrumb']);
         add_shortcode('m360_section_navigation', [self::class, 'section_navigation']);
+        add_shortcode('m360_back_to_top', [self::class, 'back_to_top']);
+        add_action('wp_enqueue_scripts', [self::class, 'enqueue_sticky_header_assets'], 25);
+        add_action('wp_enqueue_scripts', [self::class, 'enqueue_back_to_top_assets'], 30);
+        add_action('wp_footer', [self::class, 'render_back_to_top'], 10);
+    }
+
+    public static function back_to_top(array $atts = []): string
+    {
+        self::enqueue_back_to_top_assets();
+        $is_en = self::is_en();
+        $label = $is_en ? 'Back to top' : 'Voltar ao topo';
+        self::$back_to_top_rendered = true;
+        $icon = '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M6 15l6-6 6 6"/></svg>';
+        return '<button type="button" class="m360-back-to-top" data-m360-back-to-top hidden aria-label="' . esc_attr($label) . '">' . $icon . '<span class="screen-reader-text">' . esc_html($label) . '</span></button>';
+    }
+
+    public static function render_back_to_top(): void
+    {
+        if (self::$back_to_top_rendered || !(bool) apply_filters('m360_back_to_top_enabled', true)) { return; }
+        echo self::back_to_top();
+    }
+
+    public static function enqueue_back_to_top_assets(): void
+    {
+        if (!(bool) apply_filters('m360_back_to_top_enabled', true)) { return; }
+        if (wp_style_is('m360-core-back-to-top', 'registered')) { wp_enqueue_style('m360-core-back-to-top'); }
+        if (wp_script_is('m360-core-back-to-top', 'registered')) { wp_enqueue_script('m360-core-back-to-top'); }
+    }
+
+    public static function enqueue_sticky_header_assets(): void
+    {
+        if (!(bool) apply_filters('m360_sticky_header_enabled', true)) { return; }
+        if (wp_style_is('m360-core-sticky-header', 'registered')) { wp_enqueue_style('m360-core-sticky-header'); }
+        if (wp_script_is('m360-core-navigation', 'registered')) { wp_enqueue_script('m360-core-navigation'); }
     }
 
     public static function main_navigation(array $atts = []): string
@@ -33,6 +68,7 @@ final class M360_Navigation_Shortcodes
         self::enqueue_assets();
         $atts = shortcode_atts([
             'schema' => 'true',
+            'show_current' => 'false',
         ], $atts, 'm360_breadcrumb');
 
         $is_en = self::is_en();
@@ -102,7 +138,9 @@ final class M360_Navigation_Shortcodes
                     $items[] = self::breadcrumb_item($post_type->labels->name, (string) get_post_type_archive_link($post_type->name));
                 }
             }
-            $items[] = self::breadcrumb_item(get_the_title($post_id), get_permalink($post_id), true);
+            if (filter_var($atts['show_current'], FILTER_VALIDATE_BOOLEAN)) {
+                $items[] = self::breadcrumb_item(get_the_title($post_id), get_permalink($post_id), true);
+            }
         } elseif (is_post_type_archive()) {
             $post_type_name = get_query_var('post_type');
             if (is_array($post_type_name)) { $post_type_name = reset($post_type_name); }

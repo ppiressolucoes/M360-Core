@@ -41,6 +41,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | M360 Universal Slot Renderer | `docs/01-modules/M360_Universal_Slot_Renderer_v1.md` | Pipeline único homologado na baseline v0.4.4.5 |
 | M360 Newsletter Foundation | `docs/02-architecture/M360_Newsletter_Foundation_v0.6.1.md` | Arquitetura do consentimento, Double Opt-In, adaptador MailPoet e sincronização |
 | Auditoria Estática dos Plugins Precursores | `docs/02-architecture/M360_Plugin_Precursors_Static_Audit_v1.md` | Inventário, portabilidade, riscos, migração e rollback do Home Editorial e Semantic Relations |
+| M360 Editorial Home Multiportal v1 | `docs/02-architecture/M360_Editorial_Home_Multiportal_v1.md` | Inventário das baselines 0.7.4.0.20/0.7.4.0.23, contrato de configuração, dependências e rollout da Home nativa |
 
 ## 5. Sprints
 
@@ -83,6 +84,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | Homologação Portable Deployment Hotfix | `docs/03-releases/M360_Portable_Deployment_Hotfix_Homologation_2026-07-27.md` | Evidência do upgrade v0.7.4.0.1 no Mengão 360 |
 | M360 Core v0.7.4.0 Release Notes | `releases/v0.7.4.0/M360_Core_v0.7.4.0_Release_Notes.md` | Portable Deployment Hardening e preservação de upgrades existentes |
 | M360 Core v0.7.4.0.1 Release Notes | `releases/v0.7.4.0.1/M360_Core_v0.7.4.0.1_Release_Notes.md` | Hotfix de detecção robusta e diagnóstico da política de implantação |
+| M360 Core v0.7.4.0.33 Release Notes | `releases/v0.7.4.0.33/M360_Core_v0.7.4.0.33_Release_Notes.md` | Correção do idioma de destino e preloader restrito às rotas do Core |
 
 ### Baseline canônico
 

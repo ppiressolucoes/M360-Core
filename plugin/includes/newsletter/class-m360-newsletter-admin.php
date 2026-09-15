@@ -11,7 +11,7 @@ final class M360_Newsletter_Admin
         add_action('admin_post_m360_newsletter_save_delivery', [self::class,'save_delivery']);
     }
     public static function menu(): void
-    { add_submenu_page(null,'M360 Newsletter','Newsletter','manage_options','m360-newsletter-operations',[self::class,'render']); }
+    { add_submenu_page('m360-dashboard','M360 Newsletter','Newsletter','manage_options','m360-newsletter-operations',[self::class,'render']); }
 
     public static function manual_sync(): void
     {

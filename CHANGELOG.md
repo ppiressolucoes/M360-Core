@@ -1,5 +1,65 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.33] — Idioma de destino e preloader portátil
+
+- corrige `[m360_language_navigation]` para exibir a bandeira e o código do idioma de destino, em conformidade com o link, o título e o texto acessível;
+- adiciona o preloader nativo do M360 Core, independente do tema, com máscara sólida e transições curtas de entrada e saída;
+- cobre o carregamento inicial e a navegação por links internos, com restauração segura pelo cache de navegação e limite de quatro segundos;
+- adiciona a opção portátil `navigation.preloader_enabled` ao Site Profile para as rotas públicas assumidas pelo Core e mantém o recurso desativado durante upgrades;
+- disponibiliza `[m360_preloader]` para páginas e templates M360 montados no Elementor, sem interferir no preloader das páginas do News Portal.
+
+## [v0.7.4.0.32] — Idioma no Elementor Theme Builder
+
+- corrige a ausência de renderização do shortcode `[m360_language_navigation]` na prévia do Elementor Theme Builder;
+- preserva o link para a tradução correspondente quando a página ou notícia possui tradução publicada;
+- usa a página inicial do outro idioma como destino seguro quando o objeto de prévia do Elementor não possui tradução vinculada;
+- mantém a regra restrita do botão flutuante `[m360_language_switcher]` em conteúdos sem tradução.
+
+## [v0.7.4.0.31] — Header fixo e idioma na navegação
+
+- incorpora ao Core a fixação automática do contêiner `.m360-header-topbar`, sem script HTML no Elementor;
+- isola os estilos do header fixo e preserva o espaço original da barra durante a rolagem;
+- considera a altura da barra administrativa do WordPress no posicionamento;
+- adiciona `[m360_language_navigation]`, botão inline com flag e código do idioma ativo para uso ao lado da pesquisa;
+- mantém `[m360_language_switcher]` como opção flutuante independente.
+
+## [v0.7.4.0.30] — Isolamento visual e pesquisa no cabeçalho
+
+- corrige a regressão visual ao separar o botão de topo dos assets gerais de navegação;
+- remove a injeção PHP adicional do seletor de idioma introduzida na versão anterior, preservando o componente automático já existente no Core;
+- estabiliza alinhamento, entrada, saída e rolagem do botão de topo com CSS e JavaScript próprios;
+- adiciona o shortcode `[m360_search_toggle]` para substituir a lupa e o formulário HTML mantidos manualmente no Elementor;
+- encapsula a pesquisa flutuante, com textos por idioma, foco, tecla Esc, clique externo e posicionamento responsivo.
+
+## [v0.7.4.0.29] — Controles flutuantes do Core
+
+- refina o botão de voltar ao topo com formato quadrado, bordas arredondadas, contraste e sombra alinhados ao M360 Core;
+- adiciona transições suaves de entrada e saída e uma curva progressiva para a rolagem ao topo;
+- respeita a preferência de redução de movimento do visitante;
+- confirma e amplia o seletor de idioma como componente nativo do Core, com renderização automática e proteção contra botões duplicados.
+
+## [v0.7.4.0.28] — Navegação editorial responsiva
+
+- corrige o estado visual e funcional do controle play/pause do ticker, incluindo o ícone de play após a pausa;
+- evita repetir o título do conteúdo no breadcrumb e limita a trilha a uma linha com reticências no mobile;
+- adiciona o componente nativo `m360_back_to_top`, renderizado automaticamente pelo Core e disponível também como shortcode;
+- mantém o footer do Elementor livre de scripts obrigatórios para a rolagem ao topo.
+
+## [v0.7.4.0.27] — Títulos, links e resumos por categoria
+
+- traduz o rótulo do link de arquivo para `Ver todas` em widgets PT-BR;
+- permite definir a categoria principal, usando seu nome como título e seu arquivo como destino; a URL manual continua disponível quando não houver categoria principal;
+- usa o conteúdo publicado como fallback quando o post não possui resumo manual, garantindo a renderização do limite de palavras;
+- mantém o shortcode e as configurações dos widgets da v0.7.4.0.26.
+
+## [v0.7.4.0.26] — Gestão editorial multi-idioma e menu do Core
+
+- permite criar e editar cada widget editorial com qualquer categoria disponível, sem vínculo fixo entre modelo e editoria;
+- usa o idioma padrão do portal para novas instâncias e filtra as categorias por idioma quando o Polylang está ativo;
+- mantém o shortcode por ID estável após alterações de modelo, título, idioma, categorias e quantidade;
+- renomeia o menu administrativo para `M360 Core` e restaura os submenus Editorial, Discovery & SEO, Ads, Newsletter, Privacy & Consent e Site Profile e módulos;
+- incorpora as correções anteriores de metadados do plugin e do controle play/pause do ticker.
+
 ## [Não lançado] — Fundação do Enriquecimento Editorial DW
 
 - registra módulo desativado, resolução de vínculos explícitos e contrato interno de classificação;

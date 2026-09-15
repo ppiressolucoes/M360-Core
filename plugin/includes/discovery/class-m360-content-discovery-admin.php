@@ -20,9 +20,9 @@ final class M360_Content_Discovery_Admin
     public static function menu(): void
     {
         add_submenu_page(
-            null,
+            'm360-dashboard',
             'Content Discovery & SEO',
-            'Content Discovery',
+            'Discovery & SEO',
             'manage_options',
             'm360-content-discovery',
             [self::class, 'render']

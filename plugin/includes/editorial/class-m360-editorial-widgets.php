@@ -103,10 +103,11 @@ final class M360_Editorial_Widgets
         wp_enqueue_script('m360-core-editorial');
         $layout = $config['layout'];
         $html = '<section class="m360-editorial-widget m360-editorial-widget--layout-' . esc_attr($layout) . '" data-m360-widget="' . esc_attr($config['id']) . '">';
-        if ($config['title'] !== '') {
-            $html .= '<header class="m360-editorial-widget__header"><h2 class="m360-editorial-widget__heading">' . esc_html($config['title']) . '</h2>';
+        $public_title = self::public_title($config);
+        if ($public_title !== '') {
+            $html .= '<header class="m360-editorial-widget__header"><h2 class="m360-editorial-widget__heading">' . esc_html($public_title) . '</h2>';
             $view_all = self::view_all_url($config);
-            if ($view_all !== '') { $html .= '<a class="m360-editorial-widget__view-all" href="' . esc_url($view_all) . '">' . esc_html__('View all', 'm360-core') . ' <span aria-hidden="true">→</span></a>'; }
+            if ($view_all !== '') { $html .= '<a class="m360-editorial-widget__view-all" href="' . esc_url($view_all) . '">' . esc_html(self::view_all_label($config)) . ' <span aria-hidden="true">→</span></a>'; }
             $html .= '</header>';
         }
         if ($layout === '1') { $html .= self::layout_one($posts, $config); }
@@ -124,9 +125,9 @@ final class M360_Editorial_Widgets
         $terms = is_array($terms) ? $terms : [];
         $edit_id = sanitize_key((string) ($_GET['edit_widget'] ?? ''));
         $editing = $edit_id !== '' && isset($widgets[$edit_id]) ? $widgets[$edit_id] : null;
-        $defaults = ['id'=>'','title'=>'','layout'=>'1','categories'=>[],'lang'=>'en','limit'=>4,'excerpt_words'=>22,'show_view_all'=>false,'view_all_url'=>'','featured_tag'=>'','card_count'=>4,'interval'=>6500,'autoplay'=>true];
+        $defaults = ['id'=>'','title'=>'','layout'=>'1','categories'=>[],'lang'=>self::default_language(),'limit'=>4,'excerpt_words'=>22,'show_view_all'=>false,'view_all_url'=>'','featured_tag'=>'','card_count'=>4,'interval'=>6500,'autoplay'=>true];
         $form_widget = $editing ?: $defaults;
-        echo '<p>Crie instâncias por editoria e publique pelo shortcode estável da lista. Nenhuma página é alterada automaticamente.</p>';
+        echo '<p>Crie instâncias reutilizáveis por idioma e escolha qualquer editoria disponível. O shortcode permanece estável quando título, modelo, categorias ou quantidade forem alterados.</p>';
         echo '<details class="m360-editorial-admin__form"' . ($editing ? ' open' : '') . '><summary>' . esc_html($editing ? 'Editar widget: ' . $editing['title'] : 'Cadastrar nova instância') . '</summary>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="m360_platform_save_editorial_widget"><input type="hidden" name="original_id" value="' . esc_attr($editing['id'] ?? '') . '">';
         wp_nonce_field('m360_platform_save_editorial_widget');
@@ -134,13 +135,13 @@ final class M360_Editorial_Widgets
         submit_button($editing ? 'Atualizar widget' : 'Criar widget');
         echo '</form></details>';
 
-        echo '<h2>Widgets cadastrados</h2><table class="widefat striped m360-editorial-admin__list"><thead><tr><th>ID</th><th>Título</th><th>Modelo</th><th>Editorias</th><th>Shortcode</th><th>Ações</th></tr></thead><tbody>';
-        if (!$widgets) { echo '<tr><td colspan="6">Nenhuma instância cadastrada.</td></tr>'; }
+        echo '<h2>Widgets cadastrados</h2><table class="widefat striped m360-editorial-admin__list"><thead><tr><th>ID</th><th>Título</th><th>Modelo</th><th>Idioma</th><th>Editorias</th><th>Shortcode</th><th>Ações</th></tr></thead><tbody>';
+        if (!$widgets) { echo '<tr><td colspan="7">Nenhuma instância cadastrada.</td></tr>'; }
         foreach ($widgets as $widget) {
             $preset = self::presets()[$widget['layout']];
             $model_key = $widget['layout'] === 'newsroom' ? 'Newsroom' : '#' . $widget['layout'];
             $edit_url = add_query_arg(['page'=>'m360-editorial-widgets','edit_widget'=>$widget['id']], admin_url('admin.php'));
-            echo '<tr><td><strong>' . esc_html($widget['id']) . '</strong></td><td>' . esc_html($widget['title'] ?: '—') . '</td><td>' . esc_html($model_key . ' — ' . $preset['label']) . '</td><td>' . esc_html($widget['categories'] ? implode(', ', $widget['categories']) : 'Todas') . '</td><td><code>[m360_editorial_widget id=&quot;' . esc_html($widget['id']) . '&quot;]</code></td><td><a class="button button-small" href="' . esc_url($edit_url) . '">Editar</a> ';
+            echo '<tr><td><strong>' . esc_html($widget['id']) . '</strong></td><td>' . esc_html($widget['title'] ?: '—') . '</td><td>' . esc_html($model_key . ' — ' . $preset['label']) . '</td><td>' . esc_html($widget['lang'] ?: '—') . '</td><td>' . esc_html($widget['categories'] ? implode(', ', $widget['categories']) : 'Todas') . '</td><td><code>[m360_editorial_widget id=&quot;' . esc_html($widget['id']) . '&quot;]</code></td><td><a class="button button-small" href="' . esc_url($edit_url) . '">Editar</a> ';
             echo '<form class="m360-editorial-admin__delete" method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="m360_platform_delete_editorial_widget"><input type="hidden" name="widget_id" value="' . esc_attr($widget['id']) . '">';
             wp_nonce_field('m360_platform_delete_editorial_widget_' . $widget['id']);
             submit_button('Excluir', 'delete small', 'submit', false, ['onclick'=>"return confirm('Excluir esta configuração?')"]);
@@ -152,15 +153,22 @@ final class M360_Editorial_Widgets
     private static function admin_fields(array $widget, array $terms, bool $locked): void
     {
         echo '<table class="form-table"><tbody><tr><th><label>ID técnico</label></th><td><input class="regular-text" name="widget[id]" value="' . esc_attr($widget['id']) . '" ' . ($locked ? 'readonly' : 'required') . '><p class="description">Ex.: brasileirao-home ou transfers-en.</p></td></tr>';
-        echo '<tr><th><label>Título público</label></th><td><input class="regular-text" name="widget[title]" value="' . esc_attr($widget['title']) . '"></td></tr>';
+        $available_terms = self::terms_for_locale($terms, (string) $widget['lang']);
+        $primary_category = (string) ($widget['primary_category'] ?? ($widget['categories'][0] ?? ''));
+        echo '<tr><th><label>Categoria principal</label></th><td><select name="widget[primary_category]"><option value="">Todas as editorias</option>';
+        foreach ($available_terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<option value="' . esc_attr($term->slug) . '" ' . selected($primary_category, $term->slug, false) . '>' . esc_html($term->name . ' (' . $term->slug . ')') . '</option>'; }
+        echo '</select><p class="description">A primeira escolha define automaticamente o título público e o link para todas as notícias, quando esses campos não forem sobrescritos.</p></td></tr>';
+        echo '<tr><th><label>Título público</label></th><td><input class="regular-text" name="widget[title]" value="' . esc_attr($widget['title']) . '" placeholder="Automático pela categoria principal"><p class="description">Deixe vazio para usar o nome da categoria principal.</p></td></tr>';
         echo '<tr><th><label>Modelo</label></th><td><select name="widget[layout]">';
         foreach (self::presets() as $key => $preset) { $model_key = $key === 'newsroom' ? 'Newsroom' : '#' . $key; echo '<option value="' . esc_attr($key) . '" ' . selected($widget['layout'], $key, false) . '>' . esc_html($model_key . ' — ' . $preset['label']) . '</option>'; }
-        echo '</select></td></tr><tr><th><label>Idioma</label></th><td><input class="small-text" name="widget[lang]" value="' . esc_attr($widget['lang']) . '" placeholder="en"><p class="description">Código de consulta, como en ou pt.</p></td></tr>';
+        echo '</select></td></tr><tr><th><label>Idioma</label></th><td><select name="widget[lang]">';
+        foreach (self::language_options() as $slug => $label) { echo '<option value="' . esc_attr($slug) . '" ' . selected($widget['lang'], $slug, false) . '>' . esc_html($label) . '</option>'; }
+        echo '</select><p class="description">O idioma filtra as editorias exibidas. Ao trocar o idioma de um widget existente, salve e reabra para selecionar as editorias correspondentes.</p></td></tr>';
         echo '<tr><th><label>Editorias</label></th><td><details class="m360-editorial-admin__dropdown"><summary>' . esc_html($widget['categories'] ? count($widget['categories']) . ' selecionada(s)' : 'Todas as editorias') . '</summary><div class="m360-editorial-admin__options">';
-        foreach ($terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<label><input type="checkbox" name="widget[categories][]" value="' . esc_attr($term->slug) . '" ' . checked(in_array($term->slug, $widget['categories'], true), true, false) . '> ' . esc_html($term->name . ' (' . $term->slug . ')') . '</label>'; }
-        echo '</div></details><p class="description">Selecione uma ou várias. Sem seleção, consulta as últimas notícias.</p></td></tr>';
+        foreach ($available_terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<label><input type="checkbox" name="widget[categories][]" value="' . esc_attr($term->slug) . '" ' . checked(in_array($term->slug, $widget['categories'], true), true, false) . '> ' . esc_html($term->name . ' (' . $term->slug . ')') . '</label>'; }
+        echo '</div></details><p class="description">Selecione uma ou várias editorias. O modelo visual não fica vinculado a Flamengo ou a outra categoria específica. Sem seleção, consulta as últimas notícias do idioma.</p></td></tr>';
         echo '<tr><th><label>Quantidade e resumo</label></th><td><label>Notícias <input class="small-text" type="number" min="1" max="24" name="widget[limit]" value="' . esc_attr((string) $widget['limit']) . '"></label> &nbsp; <label>Palavras no resumo <input class="small-text" type="number" min="0" max="80" name="widget[excerpt_words]" value="' . esc_attr((string) $widget['excerpt_words']) . '"></label><p class="description">No modelo #5, o máximo é 12. Zero oculta o resumo dos destaques.</p></td></tr>';
-        echo '<tr><th><label>View All</label></th><td><label><input type="checkbox" name="widget[show_view_all]" value="1" ' . checked($widget['show_view_all'], true, false) . '> exibir link</label> &nbsp; <input class="regular-text" type="url" name="widget[view_all_url]" value="' . esc_attr($widget['view_all_url']) . '" placeholder="https://..."><p class="description">Com uma única editoria, o Core usa automaticamente o arquivo da categoria. Para várias editorias, informe a URL.</p></td></tr>';
+        echo '<tr><th><label>View All</label></th><td><label><input type="checkbox" name="widget[show_view_all]" value="1" ' . checked($widget['show_view_all'], true, false) . '> exibir link</label> &nbsp; <input class="regular-text" type="url" name="widget[view_all_url]" value="' . esc_attr($widget['view_all_url']) . '" placeholder="https://..."><p class="description">Com uma categoria principal, o Core gera automaticamente o arquivo correto. A URL manual é usada apenas quando não houver categoria principal.</p></td></tr>';
         echo '<tr><th><label>Top Header Section</label></th><td><label>Tag dos destaques <input class="regular-text" name="widget[featured_tag]" value="' . esc_attr($widget['featured_tag']) . '" placeholder="featured-en"></label> &nbsp; <label>Cards <input class="small-text" type="number" min="1" max="8" name="widget[card_count]" value="' . esc_attr((string) $widget['card_count']) . '"></label><p class="description">Aplicável ao preset Newsroom. As editorias selecionadas alimentam os cards laterais.</p></td></tr>';
         echo '<tr><th><label>Carrossel</label></th><td><label><input type="checkbox" name="widget[autoplay]" value="1" ' . checked($widget['autoplay'], true, false) . '> avanço automático</label> &nbsp; <label>Intervalo <input class="small-text" type="number" min="2500" step="500" name="widget[interval]" value="' . esc_attr((string) $widget['interval']) . '"> ms</label><p class="description">Aplicável ao modelo #5.</p></td></tr></tbody></table>';
     }
@@ -170,6 +178,9 @@ final class M360_Editorial_Widgets
         $categories = $input['categories'] ?? ($input['category'] ?? []);
         if (is_string($categories)) { $categories = preg_split('/\s*,\s*/', $categories) ?: []; }
         $categories = array_slice(array_values(array_unique(array_filter(array_map('sanitize_title', is_array($categories) ? $categories : [])))), 0, 12);
+        $primary_category = sanitize_title((string) ($input['primary_category'] ?? ($categories[0] ?? '')));
+        if ($primary_category !== '' && !in_array($primary_category, $categories, true)) { array_unshift($categories, $primary_category); }
+        $categories = array_slice($categories, 0, 12);
         $layout = (string) ($input['layout'] ?? '1');
         if (!isset(self::presets()[$layout])) { $layout = '1'; }
         $default_count = (int) self::presets()[$layout]['count'];
@@ -180,6 +191,7 @@ final class M360_Editorial_Widgets
             'title' => sanitize_text_field((string) ($input['title'] ?? '')),
             'layout' => $layout,
             'categories' => $categories,
+            'primary_category' => $primary_category,
             'lang' => sanitize_key(substr((string) ($input['lang'] ?? ''), 0, 8)),
             'limit' => $limit,
             'excerpt_words' => max(0, min(80, (int) ($input['excerpt_words'] ?? 22))),
@@ -192,10 +204,44 @@ final class M360_Editorial_Widgets
         ];
     }
 
+    private static function default_language(): string
+    {
+        if (function_exists('pll_default_language')) {
+            $language = sanitize_key((string) pll_default_language('slug'));
+            if ($language !== '') { return $language; }
+        }
+        return str_starts_with(strtolower((string) get_locale()), 'en') ? 'en' : 'pt';
+    }
+
+    private static function language_options(): array
+    {
+        $options = ['pt' => 'Português (pt-BR)', 'en' => 'English (en-US)'];
+        if (!function_exists('pll_languages_list')) { return $options; }
+        $languages = pll_languages_list(['fields' => 'slug']);
+        if (!is_array($languages)) { return $options; }
+        foreach ($languages as $language) {
+            $slug = sanitize_key((string) $language);
+            if ($slug === '') { continue; }
+            if (!isset($options[$slug])) { $options[$slug] = strtoupper($slug); }
+        }
+        return $options;
+    }
+
+    private static function terms_for_locale(array $terms, string $language): array
+    {
+        if ($language === '' || !function_exists('pll_get_term_language')) { return $terms; }
+        return array_values(array_filter($terms, static function ($term) use ($language): bool {
+            if (!$term instanceof WP_Term) { return false; }
+            $term_language = sanitize_key((string) pll_get_term_language($term->term_id, 'slug'));
+            return $term_language === '' || $term_language === $language;
+        }));
+    }
+
     private static function query(array $config): array
     {
         $count = (int) $config['limit'];
         $args = ['post_type'=>'post','post_status'=>'publish','posts_per_page'=>$count,'ignore_sticky_posts'=>true,'no_found_rows'=>true];
+        if ($config['primary_category'] !== '' && !in_array($config['primary_category'], $config['categories'], true)) { array_unshift($config['categories'], $config['primary_category']); }
         if ($config['categories']) { $args['tax_query'] = [['taxonomy'=>'category','field'=>'slug','terms'=>$config['categories'],'operator'=>'IN']]; }
         if ($config['lang'] !== '') { $args['lang'] = apply_filters('m360_editorial_query_language', $config['lang'], $config); }
         $args = apply_filters('m360_editorial_widget_query_args', $args, $config);
@@ -261,19 +307,46 @@ final class M360_Editorial_Widgets
         $html = '<article class="m360-editorial-widget__article m360-editorial-widget__article--' . esc_attr($variant) . '">';
         if ($image) { $html .= '<a class="m360-editorial-widget__media" href="' . esc_url($permalink) . '"><img src="' . esc_url($image) . '" alt="" loading="lazy"></a>'; }
         $html .= '<div class="m360-editorial-widget__content">' . self::category($post) . '<h3><a href="' . esc_url($permalink) . '">' . esc_html(get_the_title($post)) . '</a></h3>' . self::meta($post);
-        if ($excerpt && $excerpt_words > 0) { $summary = wp_trim_words((string) get_the_excerpt($post), $excerpt_words); if ($summary !== '') { $html .= '<p>' . esc_html($summary) . '</p>'; } }
+        if ($excerpt && $excerpt_words > 0) {
+            $source = trim((string) get_the_excerpt($post));
+            if ($source === '') { $source = trim(wp_strip_all_tags(strip_shortcodes((string) $post->post_content))); }
+            $summary = wp_trim_words($source, $excerpt_words);
+            if ($summary !== '') { $html .= '<p>' . esc_html($summary) . '</p>'; }
+        }
         return $html . '</div></article>';
+    }
+
+    private static function primary_term(array $config): ?WP_Term
+    {
+        $slug = sanitize_title((string) ($config['primary_category'] ?? ($config['categories'][0] ?? '')));
+        if ($slug === '') { return null; }
+        $term = get_term_by('slug', $slug, 'category');
+        return $term instanceof WP_Term ? $term : null;
+    }
+
+    private static function public_title(array $config): string
+    {
+        $title = trim((string) ($config['title'] ?? ''));
+        if ($title !== '') { return $title; }
+        $term = self::primary_term($config);
+        return $term instanceof WP_Term ? (string) $term->name : '';
+    }
+
+    private static function view_all_label(array $config): string
+    {
+        $is_pt = str_starts_with(strtolower((string) ($config['lang'] ?? '')), 'pt');
+        return $is_pt ? 'Ver todas' : 'View all';
     }
 
     private static function view_all_url(array $config): string
     {
         if (!$config['show_view_all']) { return ''; }
-        if ($config['view_all_url'] !== '') { return $config['view_all_url']; }
-        if (count($config['categories']) !== 1) { return ''; }
-        $term = get_term_by('slug', $config['categories'][0], 'category');
-        if (!$term instanceof WP_Term) { return ''; }
-        $url = get_term_link($term);
-        return is_wp_error($url) ? '' : (string) $url;
+        $term = self::primary_term($config);
+        if ($term instanceof WP_Term) {
+            $url = get_term_link($term);
+            if (!is_wp_error($url)) { return (string) $url; }
+        }
+        return $config['view_all_url'];
     }
 
     private static function category(WP_Post $post): string

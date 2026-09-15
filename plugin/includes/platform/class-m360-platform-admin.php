@@ -21,8 +21,8 @@ final class M360_Platform_Admin
     public static function menu(): void
     {
         add_menu_page(
-            'M360 Dashboard',
-            'M360 Dashboard',
+            'M360 Core',
+            'M360 Core',
             'manage_options',
             'm360-dashboard',
             [self::class, 'render_dashboard'],
@@ -31,24 +31,24 @@ final class M360_Platform_Admin
         );
         add_submenu_page(
             'm360-dashboard',
-            'M360 Dashboard',
-            'M360 Dashboard',
+            'M360 Core',
+            'Visão geral',
             'manage_options',
             'm360-dashboard',
             [self::class, 'render_dashboard']
         );
         add_submenu_page(
-            null,
+            'm360-dashboard',
             'Plataforma e Site Profile',
-            'Plataforma e Site Profile',
+            'Site Profile e módulos',
             'manage_options',
             'm360-platform',
             [self::class, 'render']
         );
         add_submenu_page(
-            null,
+            'm360-dashboard',
             'Widgets editoriais',
-            'Widgets editoriais',
+            'Editorial',
             'manage_options',
             'm360-editorial-widgets',
             [self::class, 'render_widgets']
@@ -93,7 +93,7 @@ final class M360_Platform_Admin
         <div class="wrap m360-dashboard">
             <div class="m360-dashboard__heading">
                 <div>
-                    <h1>M360 Dashboard</h1>
+                    <h1>M360 Core</h1>
                     <p>Gestão unificada da Publisher Platform, sem dependência de tema ou Elementor.</p>
                 </div>
                 <span class="m360-dashboard__version">v<?php echo esc_html(M360_CORE_VERSION); ?></span>
@@ -310,6 +310,16 @@ final class M360_Platform_Admin
                     <tr><th><label for="m360-vertical">Vertical</label></th><td><input class="regular-text" id="m360-vertical" name="profile[vertical]" value="<?php echo esc_attr($profile['vertical']); ?>" required><p class="description">Ex.: publisher, sports, clean-energy.</p></td></tr>
                     <tr><th><label for="m360-default-locale">Idioma padrão</label></th><td><input class="regular-text" id="m360-default-locale" name="profile[default_locale]" value="<?php echo esc_attr($profile['default_locale']); ?>" required></td></tr>
                     <tr><th><label for="m360-supported-locales">Idiomas suportados</label></th><td><input class="regular-text" id="m360-supported-locales" name="profile[supported_locales]" value="<?php echo esc_attr(implode(', ', $profile['supported_locales'])); ?>" required><p class="description">Separados por vírgula; exemplo: pt-BR, en-US.</p></td></tr>
+                    <tr>
+                        <th>Navegação</th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="profile[navigation][preloader_enabled]" value="1" <?php checked(!empty($profile['navigation']['preloader_enabled'])); ?>>
+                                Ativar preloader nas rotas públicas gerenciadas pelo M360 Core
+                            </label>
+                            <p class="description">O Core detecta suas rotas e páginas com componentes M360. Para templates isolados do Elementor, o shortcode [m360_preloader] também está disponível. O preloader do News Portal pode permanecer ativo nas páginas renderizadas pelo tema.</p>
+                        </td>
+                    </tr>
                     <tr>
                         <th><label for="m360-runtime-mode">Política de implantação</label></th>
                         <td>
