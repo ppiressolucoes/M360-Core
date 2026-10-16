@@ -25,13 +25,13 @@ final class M360_Author_Controller
         echo do_shortcode('[m360_breadcrumb]');
         echo '<section class="m360-author-hero"><div class="m360-author-hero__avatar">' . get_avatar((int) $author->ID, 128) . '</div><div class="m360-author-hero__body"><span class="m360-author-hero__eyebrow">' . esc_html($is_en ? 'Mengão 360 Author' : 'Autor Mengão 360') . '</span><h1>' . esc_html($author->display_name) . '</h1><p class="m360-author-hero__role">' . esc_html($role) . '</p>';
         if ($bio !== '') { echo '<p class="m360-author-hero__bio">' . esc_html($bio) . '</p>'; }
-        echo '<div class="m360-author-stats"><span><strong>' . esc_html((string) $posts_count) . '</strong> ' . esc_html($is_en ? 'articles' : 'artigos') . '</span></div></div></section>';
+        echo '<div class="m360-author-stats"><span><strong>' . esc_html((string) $posts_count) . '</strong> ' . esc_html($is_en ? 'news' : 'notícias') . '</span></div></div></section>';
         if (have_posts()) {
-            echo '<section class="m360-author-results" aria-label="' . esc_attr($is_en ? 'Author articles' : 'Artigos do autor') . '">';
+            echo '<section class="m360-author-results" aria-label="' . esc_attr($is_en ? 'Author news' : 'Notícias do autor') . '">';
             $index = 0;
             while (have_posts()) { the_post(); $index++; echo self::render_card(); echo M360_Ads_Archive_Engine::after_item('author', $index); }
             echo '</section>' . self::pagination();
-        } else { echo '<section class="m360-author-empty"><h2>' . esc_html($is_en ? 'No articles found' : 'Nenhum artigo encontrado') . '</h2></section>'; }
+        } else { echo '<section class="m360-author-empty"><h2>' . esc_html($is_en ? 'No news found' : 'Nenhuma notícia encontrada') . '</h2></section>'; }
         echo '</div></main>';
         wp_reset_postdata();
         return (string) ob_get_clean();

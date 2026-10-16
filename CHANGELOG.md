@@ -1,5 +1,15 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.55] — Core compartilhado PEL e Mengão 360
+
+- consolida o pacote homologado `v0.7.4.0.54` do Mengão 360 como base funcional compartilhada;
+- incorpora o controlador de Home, componentes de navegação, rodapé, utilidades de cabeçalho, preloader, sidebar, links sociais e assets correspondentes;
+- preserva a extensão opcional do Portal Energia Limpa para dicionário externo de links internos e seu runner manual, sem credenciais ou dados de portal;
+- aplica a resolução segura de categoria principal em Últimas Notícias: marcador M360, Yoast, Rank Math, filtro de integração e fallback WordPress;
+- uniformiza os contadores e rótulos de arquivos editoriais como “notícias”/“news”, sem alterar menus configurados pelo tema ou WordPress;
+- não altera automaticamente Site Profile, conteúdo, menus, cookies, preferências de visitantes, tabelas ou credenciais;
+- requer homologação independente por portal antes de qualquer atualização de produção.
+
 ## [v0.7.4.0.1] — Existing Installation Detection Hotfix
 
 - substitui a classificação baseada exclusivamente em `m360_core_version` por detecção de múltiplas opções e tabelas históricas do Core;

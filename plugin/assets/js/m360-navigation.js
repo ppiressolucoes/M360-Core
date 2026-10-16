@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    function initStickyNavigation(shell) {
-        if (shell.closest('.m360-primary-menu-sticky')) { return; }
-        var target = shell.closest('.m360-header-topbar');
+    function initStickyNavigation(target) {
         if (!target) { return; }
         if (target.getAttribute('data-m360-sticky-managed') === 'true') { return; }
 
@@ -54,8 +52,67 @@
         });
     }
 
+    function initMobileNavigation(shell) {
+        if (!shell || shell.getAttribute('data-m360-mobile-nav-managed') === 'true') { return; }
+
+        var toggle = shell.querySelector('.m360-mobile-nav-toggle');
+        var button = shell.querySelector('.m360-mobile-nav-button');
+        var navigation = shell.querySelector('.m360-main-navigation');
+        if (!toggle || !button || !navigation) { return; }
+
+        shell.setAttribute('data-m360-mobile-nav-managed', 'true');
+        var ticking = false;
+
+        function isMobile() {
+            return window.matchMedia('(max-width: 1024px)').matches;
+        }
+
+        function updatePosition() {
+            ticking = false;
+            button.setAttribute('aria-expanded', toggle.checked ? 'true' : 'false');
+
+            if (!isMobile() || !toggle.checked) {
+                navigation.style.removeProperty('--m360-mobile-nav-top');
+                return;
+            }
+
+            var header = shell.closest('.m360-header-topbar') || shell;
+            var top = Math.max(0, Math.min(window.innerHeight, header.getBoundingClientRect().bottom));
+            navigation.style.setProperty('--m360-mobile-nav-top', Math.round(top) + 'px');
+        }
+
+        function requestPositionUpdate() {
+            if (ticking) { return; }
+            ticking = true;
+            window.requestAnimationFrame(updatePosition);
+        }
+
+        toggle.addEventListener('change', updatePosition);
+        window.addEventListener('scroll', requestPositionUpdate, { passive: true });
+        window.addEventListener('resize', function () {
+            if (!isMobile()) { toggle.checked = false; }
+            requestPositionUpdate();
+        });
+        document.addEventListener('click', function (event) {
+            if (toggle.checked && !shell.contains(event.target)) {
+                toggle.checked = false;
+                updatePosition();
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && toggle.checked) {
+                toggle.checked = false;
+                updatePosition();
+                button.focus();
+            }
+        });
+
+        updatePosition();
+    }
+
     function init() {
-        document.querySelectorAll('.m360-navigation-shell').forEach(initStickyNavigation);
+        document.querySelectorAll('.m360-header-topbar').forEach(initStickyNavigation);
+        document.querySelectorAll('.m360-navigation-shell').forEach(initMobileNavigation);
     }
 
     if (document.readyState === 'loading') {

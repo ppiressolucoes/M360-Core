@@ -6,6 +6,11 @@ require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php'
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-page-preloader.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-sidebar-navigation.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-footer-menu.php';
+require_once M360_CORE_PATH . 'includes/navigation/class-m360-header-utility.php';
+require_once M360_CORE_PATH . 'includes/social/class-m360-social-links.php';
 require_once M360_CORE_PATH . 'includes/language/class-m360-language-switcher.php';
 require_once M360_CORE_PATH . 'includes/post/class-m360-post-info-component.php';
 require_once M360_CORE_PATH . 'includes/ui/class-m360-ui-components.php';
@@ -27,6 +32,7 @@ require_once M360_CORE_PATH . 'includes/author/class-m360-author-controller.php'
 require_once M360_CORE_PATH . 'includes/category/class-m360-category-controller.php';
 require_once M360_CORE_PATH . 'includes/tag/class-m360-tag-controller.php';
 require_once M360_CORE_PATH . 'includes/date/class-m360-date-archive-controller.php';
+require_once M360_CORE_PATH . 'includes/home/class-m360-home-controller.php';
 require_once M360_CORE_PATH . 'includes/privacy/class-m360-consent-manager.php';
 require_once M360_CORE_PATH . 'includes/newsletter/interface-m360-newsletter-provider.php';
 require_once M360_CORE_PATH . 'includes/newsletter/class-m360-newsletter-settings.php';
@@ -49,6 +55,8 @@ require_once M360_CORE_PATH . 'includes/discovery/class-m360-legacy-semantic-ada
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-locale-resolver.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-wordpress-catalog-provider.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-db.php';
+require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-external-dictionary-provider.php';
+require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-keyword-dictionary.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-shadow-generator.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-discovery-scheduler.php';
 require_once M360_CORE_PATH . 'includes/discovery/class-m360-semantic-comparator.php';
@@ -121,6 +129,7 @@ final class M360_Core_Runtime_034
             M360_Newsletter_Component::register();
         }
         M360_Language_Switcher::register();
+        M360_Page_Preloader::register();
         M360_Header_Orchestrator::register();
         if (M360_Runtime_Profile::enabled('ads_auto_insert')) {
             M360_Ads_Inline_Engine::register();
@@ -128,10 +137,14 @@ final class M360_Core_Runtime_034
         $this->init_view_engine();
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
+        add_action('elementor/frontend/after_enqueue_styles', [$this, 'enqueue_above_fold_assets'], 20);
         add_action('admin_enqueue_scripts', [$this, 'register_admin_assets']);
         add_filter('widget_text', 'do_shortcode', 11);
         add_filter('widget_text_content', 'do_shortcode', 11);
         add_filter('widget_custom_html_content', 'do_shortcode', 11);
+        if (M360_Editorial_Layout_Module::settings()['mode'] === 'public') {
+            add_filter('template_include', ['M360_Home_Controller', 'template_include'], 29);
+        }
         if (M360_Runtime_Profile::enabled('public_views')) {
             add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
             add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
@@ -162,8 +175,13 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-ui-components', M360_CORE_URL . 'assets/css/m360-ui-components.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-navigation-components', M360_CORE_URL . 'assets/css/m360-navigation-components.css', ['m360-core-foundation', 'm360-core-ui-components'], M360_CORE_VERSION);
         wp_register_script('m360-core-navigation', M360_CORE_URL . 'assets/js/m360-navigation.js', [], M360_CORE_VERSION, true);
+        wp_register_style('m360-core-sticky-header', M360_CORE_URL . 'assets/css/m360-sticky-header.css', [], M360_CORE_VERSION);
+        wp_register_style('m360-core-back-to-top', M360_CORE_URL . 'assets/css/m360-back-to-top.css', [], M360_CORE_VERSION);
+        wp_register_script('m360-core-back-to-top', M360_CORE_URL . 'assets/js/m360-back-to-top.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-language-switcher', M360_CORE_URL . 'assets/css/m360-language-switcher.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_script('m360-core-language-switcher', M360_CORE_URL . 'assets/js/m360-language-switcher.js', [], M360_CORE_VERSION, true);
+        wp_register_style('m360-core-preloader', M360_CORE_URL . 'assets/css/m360-preloader.css', [], M360_CORE_VERSION);
+        wp_register_script('m360-core-preloader', M360_CORE_URL . 'assets/js/m360-preloader.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-post-info', M360_CORE_URL . 'assets/css/m360-post-info.css', ['m360-core-foundation'], M360_CORE_VERSION);
         wp_register_style('m360-core-latest-news', M360_CORE_URL . 'assets/css/m360-latest-news.css', ['m360-core-ui-components'], M360_CORE_VERSION);
         wp_register_style('m360-core-ads', M360_CORE_URL . 'assets/css/m360-ads.css', ['m360-core-ui-components'], M360_CORE_VERSION);
@@ -179,13 +197,42 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-editorial-carousel', M360_CORE_URL . 'assets/css/m360-editorial-carousel.css', ['m360-core-editorial'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-layout', M360_CORE_URL . 'assets/css/m360-editorial-layout.css', ['m360-core-editorial-carousel'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-polish', M360_CORE_URL . 'assets/css/m360-editorial-polish.css', ['m360-core-editorial-layout'], M360_CORE_VERSION);
+        wp_register_style('m360-core-editorial-newsroom-adjustments', M360_CORE_URL . 'assets/css/m360-editorial-newsroom-adjustments.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-sections', M360_CORE_URL . 'assets/css/m360-editorial-sections.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-widgets', M360_CORE_URL . 'assets/css/m360-editorial-widgets.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-ticker', M360_CORE_URL . 'assets/css/m360-editorial-ticker.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-discovery-canary', M360_CORE_URL . 'assets/css/m360-discovery-canary.css', [], M360_CORE_VERSION);
         wp_register_script('m360-core-editorial', M360_CORE_URL . 'assets/js/m360-editorial.js', [], M360_CORE_VERSION, true);
+        wp_register_style('m360-core-sidebar-navigation', M360_CORE_URL . 'assets/css/m360-sidebar-navigation.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-social-links', M360_CORE_URL . 'assets/css/m360-social-links.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-footer-menu', M360_CORE_URL . 'assets/css/m360-footer-menu.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        wp_register_style('m360-core-header-utility', M360_CORE_URL . 'assets/css/m360-header-utility.css', [], M360_CORE_VERSION);
+        wp_register_script('m360-core-header-utility', M360_CORE_URL . 'assets/js/m360-header-utility.js', [], M360_CORE_VERSION, true);
+        $this->enqueue_above_fold_assets();
         if (is_singular() && M360_Platform::instance()->registry()->is_enabled('content-discovery-seo')) {
             wp_enqueue_style('m360-core-discovery-canary');
+        }
+    }
+
+    /**
+     * Loads above-the-fold Elementor components before wp_head is printed.
+     *
+     * Theme Builder shortcodes are rendered after the document head. Waiting
+     * for the shortcode callback to enqueue its styles places the CSS inside
+     * the body and briefly exposes unstyled SVGs from search and post metadata.
+     */
+    public function enqueue_above_fold_assets(): void
+    {
+        if (is_admin() && !wp_doing_ajax()) { return; }
+        M360_Header_Utility::enqueue_assets();
+        if (wp_style_is('m360-core-header-orchestrator', 'registered')) {
+            wp_enqueue_style('m360-core-header-orchestrator');
+        }
+        if (wp_script_is('m360-core-search-form', 'registered')) {
+            wp_enqueue_script('m360-core-search-form');
+        }
+        if (wp_style_is('m360-core-post-info', 'registered')) {
+            wp_enqueue_style('m360-core-post-info');
         }
     }
 
@@ -212,7 +259,12 @@ final class M360_Core_Runtime_034
     public function register_shortcodes(): void
     {
         M360_Navigation_Shortcodes::register();
+        M360_Sidebar_Navigation::register_shortcodes();
+        M360_Footer_Menu::register_shortcodes();
+        M360_Header_Utility::register_shortcodes();
+        M360_Social_Links::register_shortcodes();
         M360_Language_Switcher::register_shortcodes();
+        M360_Page_Preloader::register_shortcodes();
         M360_Post_Info_Component::register_shortcodes();
         M360_Search_Form_Component::register_shortcodes();
         M360_Header_Orchestrator::register_shortcodes();

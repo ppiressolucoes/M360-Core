@@ -23,6 +23,9 @@ final class M360_Site_Profile
             'vertical' => 'publisher',
             'default_locale' => $locale,
             'supported_locales' => [$locale],
+            'navigation' => [
+                'preloader_enabled' => false,
+            ],
             'runtime' => M360_Runtime_Profile::get(),
         ];
     }
@@ -63,6 +66,7 @@ final class M360_Site_Profile
         ))));
         if (!$locales) { $locales = [$default_locale]; }
         if (!in_array($default_locale, $locales, true)) { array_unshift($locales, $default_locale); }
+        $navigation = is_array($input['navigation'] ?? null) ? $input['navigation'] : [];
 
         return [
             'schema_version' => self::SCHEMA_VERSION,
@@ -71,6 +75,9 @@ final class M360_Site_Profile
             'vertical' => sanitize_key((string) ($input['vertical'] ?? 'publisher')) ?: 'publisher',
             'default_locale' => $default_locale,
             'supported_locales' => array_slice($locales, 0, 20),
+            'navigation' => [
+                'preloader_enabled' => !empty($navigation['preloader_enabled']),
+            ],
             'runtime' => M360_Runtime_Profile::sanitize(
                 is_array($input['runtime'] ?? null) ? $input['runtime'] : M360_Runtime_Profile::get()
             ),
@@ -83,7 +90,7 @@ final class M360_Site_Profile
         if (!is_array($decoded) || json_last_error() !== JSON_ERROR_NONE) {
             return new WP_Error('m360_profile_json', 'JSON de perfil inválido.');
         }
-        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','runtime'];
+        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','navigation','runtime'];
         $unknown = array_diff(array_keys($decoded), $allowed);
         if ($unknown) {
             return new WP_Error('m360_profile_keys', 'O perfil contém campos não permitidos: ' . implode(', ', $unknown));

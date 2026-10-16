@@ -3,12 +3,13 @@
 ## Baseline estável
 
 ```text
-0.7.4.0.1
+0.7.4.0.55
 ```
 
 ## Estado operacional
 
-- Release operacional homologada no WordPress: `v0.7.4.0.1 — Existing Installation Detection Hotfix`.
+- Baseline consolidada para homologação: `v0.7.4.0.55 — Core compartilhado PEL e Mengão 360`.
+- Fonte técnica principal: pacote homologado do Mengão 360 `v0.7.4.0.54`, preservando a extensão portátil de dicionário externo e a resolução de categoria principal do PEL.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
 - Content Discovery & SEO homologado com saúde `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`.

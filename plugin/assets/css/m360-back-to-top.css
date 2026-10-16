@@ -1,0 +1,73 @@
+.m360-back-to-top {
+    all: initial;
+    box-sizing: border-box !important;
+    position: fixed !important;
+    right: 22px !important;
+    bottom: calc(22px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 9998 !important;
+    display: grid !important;
+    width: 50px !important;
+    height: 50px !important;
+    padding: 0 !important;
+    place-items: center !important;
+    border: 2px solid rgba(255,255,255,.92) !important;
+    border-radius: 10px !important;
+    background: #d71920 !important;
+    color: #fff !important;
+    box-shadow: 0 9px 24px rgba(0,0,0,.28), inset 0 0 0 1px rgba(0,0,0,.06) !important;
+    cursor: pointer !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translate3d(0,14px,0) scale(.96) !important;
+    transition: opacity .34s ease, transform .34s cubic-bezier(.2,.75,.2,1), visibility 0s linear .34s !important;
+    will-change: opacity, transform;
+}
+
+.m360-back-to-top.is-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translate3d(0,0,0) scale(1) !important;
+    transition-delay: 0s !important;
+}
+
+.m360-back-to-top svg {
+    display: block !important;
+    width: 27px !important;
+    height: 27px !important;
+    margin: 0 !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2.4 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+.m360-back-to-top.is-visible:hover,
+.m360-back-to-top.is-visible:focus-visible {
+    background: #b81218 !important;
+    box-shadow: 0 12px 28px rgba(0,0,0,.34), inset 0 0 0 1px rgba(0,0,0,.06) !important;
+    transform: translate3d(0,-3px,0) scale(1.02) !important;
+}
+
+.m360-back-to-top:focus-visible {
+    outline: 3px solid rgba(215,25,32,.3) !important;
+    outline-offset: 3px !important;
+}
+
+.m360-back-to-top[hidden] { display: none !important; }
+
+@media (max-width: 640px) {
+    .m360-back-to-top {
+        right: 14px !important;
+        bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+        width: 46px !important;
+        height: 46px !important;
+        border-radius: 9px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .m360-back-to-top { transition: none !important; }
+}

@@ -25,11 +25,11 @@ final class M360_Date_Archive_Controller
         echo '<span class="m360-date-hero__eyebrow">' . esc_html($is_en ? 'Mengão 360 Date Archive' : 'Arquivo por data Mengão 360') . '</span>';
         echo '<h1>' . esc_html($archive_title) . '</h1>';
         echo '<p class="m360-date-hero__description">' . esc_html($is_en ? 'News published during this period.' : 'Notícias publicadas neste período.') . '</p>';
-        echo '<div class="m360-date-stats"><span><strong>' . esc_html((string) $post_count) . '</strong> ' . esc_html($is_en ? 'articles' : 'artigos') . '</span></div>';
+        echo '<div class="m360-date-stats"><span><strong>' . esc_html((string) $post_count) . '</strong> ' . esc_html($is_en ? 'news' : 'notícias') . '</span></div>';
         echo '</section>';
 
         if (have_posts()) {
-            echo '<section class="m360-date-results" aria-label="' . esc_attr($is_en ? 'Articles by date' : 'Artigos por data') . '">';
+            echo '<section class="m360-date-results" aria-label="' . esc_attr($is_en ? 'News by date' : 'Notícias por data') . '">';
             $index = 0;
             while (have_posts()) {
                 the_post();
@@ -39,7 +39,7 @@ final class M360_Date_Archive_Controller
             }
             echo '</section>' . self::pagination();
         } else {
-            echo '<section class="m360-date-empty"><h2>' . esc_html($is_en ? 'No articles found for this period' : 'Nenhum artigo encontrado neste período') . '</h2></section>';
+            echo '<section class="m360-date-empty"><h2>' . esc_html($is_en ? 'No news found for this period' : 'Nenhuma notícia encontrada neste período') . '</h2></section>';
         }
 
         echo '</div></main>';

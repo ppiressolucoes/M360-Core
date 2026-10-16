@@ -14,7 +14,7 @@ final class M360_Ads_Admin
 
     public static function admin_menu(): void
     {
-        add_submenu_page(null, 'M360 Ads', 'M360 Ads', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard']);
+        add_submenu_page('m360-dashboard', 'M360 Ads', 'Ads', 'manage_options', 'm360-ads-manager', [self::class, 'render_dashboard']);
         add_submenu_page(null, 'Inventário legado', 'Inventário legado', 'manage_options', 'm360-ads-inventory', [self::class, 'redirect_inventory_to_slots']);
         add_submenu_page(null, 'AdSense Ready', 'AdSense Ready', 'manage_options', 'm360-ads-adsense-ready', [self::class, 'render_adsense_ready']);
         add_submenu_page(null, 'Slots', 'Slots', 'manage_options', 'm360-ads-slots', [self::class, 'render_slots']);
