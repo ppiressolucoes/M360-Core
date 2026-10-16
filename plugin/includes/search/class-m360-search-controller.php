@@ -3,6 +3,29 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Search_Controller
 {
+    public static function restrict_to_language(WP_Query $query): void
+    {
+        if (is_admin() || !$query->is_main_query() || !$query->is_search() || !function_exists('pll_current_language')) { return; }
+        $language = sanitize_key((string) pll_current_language('slug'));
+        if ($language !== '') { $query->set('lang', $language); }
+    }
+
+    public static function redirect_theme_search(): void
+    {
+        if (is_admin() || strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET')) !== 'GET') { return; }
+        $raw_query = $_GET['m360q'] ?? null;
+        if (!is_scalar($raw_query)) { return; }
+        $term = trim(sanitize_text_field(wp_unslash((string) $raw_query)));
+        if ($term === '') { return; }
+        $language = function_exists('pll_current_language') ? sanitize_key((string) pll_current_language('slug')) : '';
+        $home = $language !== '' && function_exists('pll_home_url') ? pll_home_url($language) : home_url('/');
+        if (!is_string($home) || $home === '') { $home = home_url('/'); }
+        $parameters = ['s' => $term];
+        if ($language !== '') { $parameters['lang'] = $language; }
+        wp_safe_redirect(add_query_arg($parameters, $home), 302);
+        exit;
+    }
+
     public static function template_include(string $template): string
     {
         if (!is_search() || is_admin()) { return $template; }
@@ -22,7 +45,9 @@ final class M360_Search_Controller
         ob_start();
         echo '<main class="m360-dynamic-view m360-search-view"><div class="m360-dynamic-view__container">';
         echo do_shortcode('[m360_breadcrumb]');
-        echo '<header class="m360-search-view__header"><span class="m360-search-view__eyebrow">' . esc_html($is_en ? 'Mengão 360 Search' : 'Busca Mengão 360') . '</span><h1>' . esc_html($title) . '</h1><p>' . esc_html($is_en ? 'Search term:' : 'Termo pesquisado:') . ' <strong>' . esc_html($query) . '</strong></p>' . do_shortcode('[m360_search_form variant="compact" show_intro="false"]') . '</header>';
+        $site_name = class_exists('M360_Site_Profile') ? (string) (M360_Site_Profile::get()['site_name'] ?? '') : '';
+        if ($site_name === '') { $site_name = (string) get_bloginfo('name'); }
+        echo '<header class="m360-search-view__header"><span class="m360-search-view__eyebrow">' . esc_html($is_en ? $site_name . ' Search' : 'Busca ' . $site_name) . '</span><h1>' . esc_html($title) . '</h1><p>' . esc_html($is_en ? 'Search term:' : 'Termo pesquisado:') . ' <strong>' . esc_html($query) . '</strong></p>' . do_shortcode('[m360_search_form variant="compact" show_intro="false"]') . '</header>';
 
         if (have_posts()) {
             echo '<section class="m360-search-results" aria-label="' . esc_attr($title) . '">';
@@ -48,8 +73,8 @@ final class M360_Search_Controller
 
     private static function render_card(): string
     {
-        $categories = get_the_category();
-        $category = !empty($categories) ? $categories[0]->name : '';
+        $primary_category = M360_Latest_News_Component::primary_category((int) get_the_ID());
+        $category = $primary_category instanceof WP_Term ? $primary_category->name : '';
         $excerpt = get_the_excerpt();
         if ($excerpt === '') { $excerpt = wp_trim_words(wp_strip_all_tags((string) get_the_content()), 26); }
         ob_start();

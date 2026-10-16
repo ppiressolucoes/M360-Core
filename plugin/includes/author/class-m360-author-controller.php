@@ -16,6 +16,7 @@ final class M360_Author_Controller
         $author = get_queried_object();
         if (!$author instanceof WP_User) { return ''; }
         $is_en = self::is_en();
+        $site_name = class_exists('M360_Site_Profile') ? (string) (M360_Site_Profile::get()['site_name'] ?? get_bloginfo('name')) : (string) get_bloginfo('name');
         $posts_count = count_user_posts((int) $author->ID, 'post', true);
         $bio = get_the_author_meta('description', (int) $author->ID);
         $role = get_the_author_meta('m360_role', (int) $author->ID);
@@ -23,7 +24,7 @@ final class M360_Author_Controller
         ob_start();
         echo '<main class="m360-dynamic-view m360-author-view"><div class="m360-dynamic-view__container">';
         echo do_shortcode('[m360_breadcrumb]');
-        echo '<section class="m360-author-hero"><div class="m360-author-hero__avatar">' . get_avatar((int) $author->ID, 128) . '</div><div class="m360-author-hero__body"><span class="m360-author-hero__eyebrow">' . esc_html($is_en ? 'Mengão 360 Author' : 'Autor Mengão 360') . '</span><h1>' . esc_html($author->display_name) . '</h1><p class="m360-author-hero__role">' . esc_html($role) . '</p>';
+        echo '<section class="m360-author-hero"><div class="m360-author-hero__avatar">' . get_avatar((int) $author->ID, 128) . '</div><div class="m360-author-hero__body"><span class="m360-author-hero__eyebrow">' . esc_html($is_en ? $site_name . ' Author' : 'Autor ' . $site_name) . '</span><h1>' . esc_html($author->display_name) . '</h1><p class="m360-author-hero__role">' . esc_html($role) . '</p>';
         if ($bio !== '') { echo '<p class="m360-author-hero__bio">' . esc_html($bio) . '</p>'; }
         echo '<div class="m360-author-stats"><span><strong>' . esc_html((string) $posts_count) . '</strong> ' . esc_html($is_en ? 'news' : 'notícias') . '</span></div></div></section>';
         if (have_posts()) {

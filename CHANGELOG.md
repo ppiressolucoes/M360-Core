@@ -1,5 +1,14 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.56] — Home por idioma, busca e edição de widgets
+
+- reutiliza `[m360_search_toggle]` e `[m360_search_form]` na navegação da Home do Core, com destino e parâmetro de idioma do Polylang; restringe a consulta principal de busca ao idioma ativo;
+- permite ativar a Home do Core por locale no Site Profile, escolhendo menu e ordem dos widgets editoriais existentes; a capa pt-BR do PEL permanece no tema até ativação explícita;
+- preserva automaticamente a Home legada somente em upgrades da linha 0.7.4.0.54/55; instalações PEL 0.7.4.0.23 não recebem takeover automático;
+- recupera capacidades independentes de busca, autor, categoria, tag e data da linha PEL, com templates sem IDs fixos de Elementor;
+- corrige o seletor de editorias de widgets en-US no painel pt-BR: carrega categorias de todos os idiomas antes de filtrar pelo idioma do widget e preserva as seleções caso a consulta falhe;
+- não altera páginas, menus, widgets salvos nem o HTML/JavaScript manual do cabeçalho. A substituição deste último requer homologação no WordPress.
+
 ## [v0.7.4.0.55] — Core compartilhado PEL e Mengão 360
 
 - consolida o pacote homologado `v0.7.4.0.54` do Mengão 360 como base funcional compartilhada;

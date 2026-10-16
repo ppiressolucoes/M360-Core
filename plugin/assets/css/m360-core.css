@@ -17,6 +17,9 @@
 .m360-core-home-header__container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .m360-core-home-header__brand { color: inherit; font-weight: 800; text-decoration: none; }
 .m360-editorial-home__container { padding-block: 16px 40px; }
+.m360-core-home-nav { display: flex; align-items: stretch; margin-bottom: 24px; background: #161616; }
+.m360-core-home-nav .m360-navigation-shell { flex: 1 1 auto; min-width: 0; }
+.m360-core-home-nav .m360-search-toggle { flex: 0 0 auto; }
 .m360-core-home-footer { margin-top: 32px; background: #111; color: #fff; }
 @media (max-width: 560px) {
     .m360-core-home-header__container,

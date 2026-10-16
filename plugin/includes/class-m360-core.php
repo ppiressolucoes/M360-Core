@@ -84,6 +84,7 @@ final class M360_Core_Runtime_034
     public static function activate(): void
     {
         M360_Runtime_Profile::activate();
+        self::classify_home_ownership();
         update_option('m360_core_version', M360_CORE_VERSION, false);
         update_option('m360_core_activated_at', current_time('mysql'), false);
         M360_Ads_DB::install(M360_Runtime_Profile::is_legacy_compatible());
@@ -112,6 +113,7 @@ final class M360_Core_Runtime_034
     {
         load_plugin_textdomain('m360-core', false, dirname(plugin_basename(M360_CORE_FILE)) . '/languages');
         M360_Runtime_Profile::activate();
+        self::classify_home_ownership();
         update_option('m360_core_version', M360_CORE_VERSION, false);
         M360_Ads_DB::maybe_upgrade();
         M360_Newsletter_DB::maybe_upgrade();
@@ -137,6 +139,8 @@ final class M360_Core_Runtime_034
         $this->init_view_engine();
         add_action('init', [$this, 'register_shortcodes']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
+        add_action('wp_enqueue_scripts', ['M360_Home_Controller', 'enqueue_assets'], 20);
+        add_action('pre_get_posts', ['M360_Search_Controller', 'restrict_to_language']);
         add_action('elementor/frontend/after_enqueue_styles', [$this, 'enqueue_above_fold_assets'], 20);
         add_action('admin_enqueue_scripts', [$this, 'register_admin_assets']);
         add_filter('widget_text', 'do_shortcode', 11);
@@ -145,13 +149,30 @@ final class M360_Core_Runtime_034
         if (M360_Editorial_Layout_Module::settings()['mode'] === 'public') {
             add_filter('template_include', ['M360_Home_Controller', 'template_include'], 29);
         }
-        if (M360_Runtime_Profile::enabled('public_views')) {
+        if (M360_Runtime_Profile::view_enabled('search')) {
             add_filter('template_include', ['M360_Search_Controller', 'template_include'], 30);
+            add_action('template_redirect', ['M360_Search_Controller', 'redirect_theme_search'], 1);
+        }
+        if (M360_Runtime_Profile::view_enabled('author')) {
             add_filter('template_include', ['M360_Author_Controller', 'template_include'], 31);
+        }
+        if (M360_Runtime_Profile::view_enabled('category')) {
             add_filter('template_include', ['M360_Category_Controller', 'template_include'], 32);
+        }
+        if (M360_Runtime_Profile::view_enabled('tag')) {
             add_filter('template_include', ['M360_Tag_Controller', 'template_include'], 33);
+        }
+        if (M360_Runtime_Profile::view_enabled('date')) {
             add_filter('template_include', ['M360_Date_Archive_Controller', 'template_include'], 34);
         }
+    }
+
+    private static function classify_home_ownership(): void
+    {
+        if (get_option('m360_core_legacy_home_ownership', null) !== null) { return; }
+        $previous = (string) get_option('m360_core_version', '');
+        $owned = $previous !== '' && version_compare($previous, '0.7.4.0.54', '>=') && version_compare($previous, M360_CORE_VERSION, '<');
+        add_option('m360_core_legacy_home_ownership', $owned ? '1' : '0', '', false);
     }
 
     private function init_view_engine(): void

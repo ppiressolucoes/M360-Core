@@ -322,6 +322,32 @@ final class M360_Platform_Admin
                         </td>
                     </tr>
                     <tr>
+                        <th>Home gerenciada pelo Core</th>
+                        <td>
+                            <?php
+                            $home_widgets = M360_Editorial_Widgets::all();
+                            $home_menus = wp_get_nav_menus();
+                            foreach ($profile['supported_locales'] as $home_locale):
+                                $home_config = $profile['home']['locales'][$home_locale] ?? ['enabled' => false, 'menu' => '', 'widget_ids' => []];
+                                $home_lang = strtolower(substr($home_locale, 0, 2));
+                                $available_home_widgets = array_filter($home_widgets, static fn($widget) => $widget['lang'] === $home_lang);
+                            ?>
+                                <fieldset style="margin:0 0 18px;padding:12px;border:1px solid #ccd0d4">
+                                    <legend><strong><?php echo esc_html($home_locale); ?></strong></legend>
+                                    <label><input type="checkbox" name="profile[home][locales][<?php echo esc_attr($home_locale); ?>][enabled]" value="1" <?php checked(!empty($home_config['enabled'])); ?>> Assumir a página inicial deste idioma</label>
+                                    <p><label>Menu principal<br><select name="profile[home][locales][<?php echo esc_attr($home_locale); ?>][menu]"><option value="">Seleção automática</option>
+                                        <?php foreach ($home_menus as $home_menu): ?>
+                                            <option value="<?php echo esc_attr((string) $home_menu->term_id); ?>" <?php selected((string) $home_config['menu'], (string) $home_menu->term_id); ?>><?php echo esc_html($home_menu->name); ?></option>
+                                        <?php endforeach; ?>
+                                    </select></label></p>
+                                    <p><label>Widgets editoriais, na ordem de exibição<br><input class="large-text" name="profile[home][locales][<?php echo esc_attr($home_locale); ?>][widget_ids]" value="<?php echo esc_attr(implode(', ', $home_config['widget_ids'])); ?>" placeholder="home-pt-newsroom, home-pt-regulation"></label></p>
+                                    <p class="description">IDs disponíveis: <?php echo esc_html($available_home_widgets ? implode(', ', array_keys($available_home_widgets)) : 'nenhum widget deste idioma cadastrado'); ?>. O Core exige ao menos um ID válido antes de assumir esta Home. O ticker é exibido automaticamente antes dos widgets.</p>
+                                </fieldset>
+                            <?php endforeach; ?>
+                            <p class="description">Use o cadastro de Widgets editoriais para definir Newsroom e blocos de editorias. Configure PT-BR e EN-US separadamente.</p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><label for="m360-runtime-mode">Política de implantação</label></th>
                         <td>
                             <select id="m360-runtime-mode" name="profile[runtime][mode]">
@@ -337,6 +363,11 @@ final class M360_Platform_Admin
                             <?php
                             $runtime_labels = [
                                 'public_views' => 'Assumir templates de busca, autor, categoria, tag e data',
+                                'search_view' => 'Assumir somente o template de resultados de busca',
+                                'author_view' => 'Assumir somente os arquivos de autor',
+                                'category_view' => 'Assumir somente os arquivos de categoria',
+                                'tag_view' => 'Assumir somente os arquivos de tag',
+                                'date_view' => 'Assumir somente os arquivos por data',
                                 'ads_runtime' => 'Disponibilizar renderização e shortcodes de Ads',
                                 'ads_auto_insert' => 'Inserir Ads automaticamente no conteúdo',
                                 'newsletter_runtime' => 'Ativar formulários, endpoint, cron e renderização da Newsletter',

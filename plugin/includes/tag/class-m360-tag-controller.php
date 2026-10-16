@@ -16,12 +16,13 @@ final class M360_Tag_Controller
         $term = get_queried_object();
         if (!$term instanceof WP_Term) { return ''; }
         $is_en = self::is_en();
+        $site_name = class_exists('M360_Site_Profile') ? (string) (M360_Site_Profile::get()['site_name'] ?? get_bloginfo('name')) : (string) get_bloginfo('name');
         $description = term_description($term, 'post_tag');
         $count_label = $is_en ? 'news' : 'notícias';
         ob_start();
         echo '<main class="m360-dynamic-view m360-tag-view"><div class="m360-dynamic-view__container">';
         echo do_shortcode('[m360_breadcrumb]');
-        echo '<section class="m360-tag-hero"><span class="m360-tag-hero__eyebrow">' . esc_html($is_en ? 'Mengão 360 Tag' : 'Tag Mengão 360') . '</span><h1>' . esc_html(single_tag_title('', false)) . '</h1>';
+        echo '<section class="m360-tag-hero"><span class="m360-tag-hero__eyebrow">' . esc_html($is_en ? $site_name . ' Tag' : 'Tag ' . $site_name) . '</span><h1>' . esc_html(single_tag_title('', false)) . '</h1>';
         if ($description !== '') { echo '<div class="m360-tag-hero__description">' . wp_kses_post($description) . '</div>'; }
         echo '<div class="m360-tag-stats"><span><strong>' . esc_html((string) $term->count) . '</strong> ' . esc_html($count_label) . '</span></div></section>';
         if (have_posts()) {

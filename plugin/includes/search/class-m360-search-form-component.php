@@ -34,7 +34,7 @@ final class M360_Search_Form_Component
         $variant = sanitize_key((string) $atts['variant']);
         if (!in_array($variant, self::VARIANTS, true)) { $variant = 'hero'; }
         $is_en = self::is_en();
-        $placeholder = trim((string) $atts['placeholder']) ?: ($is_en ? 'Search news, teams, competitions and players' : 'Busque notícias, times, competições e jogadores');
+        $placeholder = trim((string) $atts['placeholder']) ?: ($is_en ? 'Search news' : 'Busque notícias');
         $button_label = trim((string) $atts['button_label']) ?: ($is_en ? 'Search' : 'Buscar');
         $title = trim((string) $atts['title']) ?: ($is_en ? 'What are you looking for?' : 'O que você procura?');
         $description = trim((string) $atts['description']) ?: ($is_en ? 'Search and find content across the entire portal.' : 'Pesquise e encontre conteúdos em todo o portal.');
@@ -42,11 +42,15 @@ final class M360_Search_Form_Component
         self::enqueue_assets();
         $form_id = wp_unique_id('m360-search-form-');
         $input_id = $form_id . '-field';
-        $action = home_url($is_en ? '/en/' : '/');
+        $language = self::language();
+        $action = function_exists('pll_home_url') ? pll_home_url($language) : home_url('/');
+        if (!is_string($action) || $action === '') { $action = home_url('/'); }
         $query = is_search() ? get_search_query(false) : '';
         $custom_class = sanitize_html_class((string) $atts['class']);
         $classes = 'm360-search-form m360-search-form--' . $variant . ($custom_class !== '' ? ' ' . $custom_class : '');
-        $aria_label = $is_en ? 'Search Mengão 360' : 'Buscar no Mengão 360';
+        $site_name = class_exists('M360_Site_Profile') ? (string) (M360_Site_Profile::get()['site_name'] ?? '') : '';
+        if ($site_name === '') { $site_name = (string) get_bloginfo('name'); }
+        $aria_label = $is_en ? 'Search ' . $site_name : 'Buscar no ' . $site_name;
         $show_intro = self::enabled($atts['show_intro']) && $variant === 'hero';
 
         ob_start();
@@ -55,6 +59,7 @@ final class M360_Search_Form_Component
             echo '<div class="m360-search-form__intro"><h2>' . esc_html($title) . '</h2><p>' . esc_html($description) . '</p></div>';
         }
         echo '<form id="' . esc_attr($form_id) . '" class="m360-search-form__form" role="search" method="get" action="' . esc_url($action) . '" aria-label="' . esc_attr($aria_label) . '">';
+        if (function_exists('pll_current_language')) { echo '<input type="hidden" name="lang" value="' . esc_attr($language) . '">'; }
         echo '<label class="m360-search-form__label" for="' . esc_attr($input_id) . '">' . esc_html($aria_label) . '</label>';
         echo '<span class="m360-search-form__field">' . self::search_icon();
         echo '<input id="' . esc_attr($input_id) . '" class="m360-search-form__input" type="search" name="s" value="' . esc_attr($query) . '" placeholder="' . esc_attr($placeholder) . '" autocomplete="off" enterkeyhint="search" required aria-required="true" data-m360-search-input>';
@@ -83,6 +88,15 @@ final class M360_Search_Form_Component
             if (is_string($language) && $language !== '') { return strtolower($language) === 'en'; }
         }
         return str_starts_with((string) determine_locale(), 'en');
+    }
+
+    private static function language(): string
+    {
+        if (function_exists('pll_current_language')) {
+            $language = sanitize_key((string) pll_current_language('slug'));
+            if ($language !== '') { return $language; }
+        }
+        return self::is_en() ? 'en' : 'pt';
     }
 
     private static function search_icon(): string

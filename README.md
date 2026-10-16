@@ -5,7 +5,7 @@ Publisher Platform modular para WordPress, originada no Projeto Mengão 360 e pr
 ## Estado atual
 
 - Arquitetura vigente: `M360 Platform Architecture v2.2`.
-- Baseline consolidada para homologação: `v0.7.4.0.55 — Core compartilhado PEL e Mengão 360`.
+- Candidata para homologação: `v0.7.4.0.56 — Core compartilhado PEL e Mengão 360`.
 - Próxima frente: bootstrap `portable-safe` e preflight no staging do Portal Energia Limpa.
 - Tag canônica: `v0.7.0`.
 - Linha Newsletter consolidada após homologação funcional em PT-BR e EN-US, com prontidão de entrega `7/7`.
