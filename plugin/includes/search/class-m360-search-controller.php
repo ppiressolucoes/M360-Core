@@ -18,8 +18,7 @@ final class M360_Search_Controller
         $term = trim(sanitize_text_field(wp_unslash((string) $raw_query)));
         if ($term === '') { return; }
         $language = function_exists('pll_current_language') ? sanitize_key((string) pll_current_language('slug')) : '';
-        $home = $language !== '' && function_exists('pll_home_url') ? pll_home_url($language) : home_url('/');
-        if (!is_string($home) || $home === '') { $home = home_url('/'); }
+        $home = M360_Search_Form_Component::action_url($language);
         $parameters = ['s' => $term];
         if ($language !== '') { $parameters['lang'] = $language; }
         wp_safe_redirect(add_query_arg($parameters, $home), 302);

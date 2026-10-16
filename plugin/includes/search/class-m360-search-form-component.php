@@ -17,7 +17,7 @@ final class M360_Search_Form_Component
         $label = $is_en ? 'Open search' : 'Abrir pesquisa';
         $panel_id = wp_unique_id('m360-search-toggle-panel-');
         self::enqueue_assets();
-        return '<div class="m360-search-toggle" data-m360-search-toggle>'
+        return '<div class="m360-search-toggle" style="' . esc_attr(self::palette_style()) . '" data-m360-search-toggle>'
             . '<button type="button" class="m360-search-toggle__trigger" aria-expanded="false" aria-controls="' . esc_attr($panel_id) . '" aria-label="' . esc_attr($label) . '">' . self::search_icon() . '</button>'
             . '<div id="' . esc_attr($panel_id) . '" class="m360-search-toggle__panel" data-m360-search-toggle-panel hidden>'
             . self::shortcode(['variant' => 'header', 'show_intro' => 'false'])
@@ -43,8 +43,7 @@ final class M360_Search_Form_Component
         $form_id = wp_unique_id('m360-search-form-');
         $input_id = $form_id . '-field';
         $language = self::language();
-        $action = function_exists('pll_home_url') ? pll_home_url($language) : home_url('/');
-        if (!is_string($action) || $action === '') { $action = home_url('/'); }
+        $action = self::action_url($language);
         $query = is_search() ? get_search_query(false) : '';
         $custom_class = sanitize_html_class((string) $atts['class']);
         $classes = 'm360-search-form m360-search-form--' . $variant . ($custom_class !== '' ? ' ' . $custom_class : '');
@@ -54,7 +53,7 @@ final class M360_Search_Form_Component
         $show_intro = self::enabled($atts['show_intro']) && $variant === 'hero';
 
         ob_start();
-        echo '<div class="' . esc_attr($classes) . '" data-m360-search-form>';
+        echo '<div class="' . esc_attr($classes) . '" style="' . esc_attr(self::palette_style()) . '" data-m360-search-form>';
         if ($show_intro) {
             echo '<div class="m360-search-form__intro"><h2>' . esc_html($title) . '</h2><p>' . esc_html($description) . '</p></div>';
         }
@@ -97,6 +96,33 @@ final class M360_Search_Form_Component
             if ($language !== '') { return $language; }
         }
         return self::is_en() ? 'en' : 'pt';
+    }
+
+    public static function action_url(string $language): string
+    {
+        $action = home_url('/');
+        if (function_exists('pll_home_url')) {
+            $language_home = (string) pll_home_url($language);
+            $path = (string) wp_parse_url($language_home, PHP_URL_PATH);
+            if (in_array($language, array_filter(explode('/', trim($path, '/'))), true)) {
+                // The translated front page can have a page slug; search must target the language root.
+                $action = home_url('/' . $language . '/');
+            } elseif (wp_parse_url($language_home, PHP_URL_HOST) !== wp_parse_url(home_url('/'), PHP_URL_HOST)) {
+                $scheme = (string) wp_parse_url($language_home, PHP_URL_SCHEME);
+                $host = (string) wp_parse_url($language_home, PHP_URL_HOST);
+                if ($scheme !== '' && $host !== '') { $action = $scheme . '://' . $host . '/'; }
+            }
+        }
+        $filtered = apply_filters('m360_search_form_action_url', $action, $language);
+        return is_string($filtered) && $filtered !== '' ? $filtered : $action;
+    }
+
+    private static function palette_style(): string
+    {
+        $appearance = class_exists('M360_Site_Profile') ? (M360_Site_Profile::get()['appearance'] ?? []) : [];
+        $primary = sanitize_hex_color((string) ($appearance['primary_color'] ?? '')) ?: '#d71920';
+        $secondary = sanitize_hex_color((string) ($appearance['secondary_color'] ?? '')) ?: '#111111';
+        return '--m360-search-primary:' . $primary . ';--m360-search-secondary:' . $secondary;
     }
 
     private static function search_icon(): string

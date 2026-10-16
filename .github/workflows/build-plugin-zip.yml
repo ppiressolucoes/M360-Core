@@ -23,6 +23,9 @@ jobs:
           grep -q "Version: ${VERSION}" plugin/m360-core.php
           grep -q "M360_CORE_VERSION', '${VERSION}'" plugin/m360-core.php
 
+      - name: Validate PHP syntax
+        run: find plugin -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
       - name: Prepare package directory
         run: |
           VERSION="${{ github.event.inputs.version }}"

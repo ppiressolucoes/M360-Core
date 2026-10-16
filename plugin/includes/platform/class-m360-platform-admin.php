@@ -311,6 +311,11 @@ final class M360_Platform_Admin
                     <tr><th><label for="m360-vertical">Vertical</label></th><td><input class="regular-text" id="m360-vertical" name="profile[vertical]" value="<?php echo esc_attr($profile['vertical']); ?>" required><p class="description">Ex.: publisher, sports, clean-energy.</p></td></tr>
                     <tr><th><label for="m360-default-locale">Idioma padrão</label></th><td><input class="regular-text" id="m360-default-locale" name="profile[default_locale]" value="<?php echo esc_attr($profile['default_locale']); ?>" required></td></tr>
                     <tr><th><label for="m360-supported-locales">Idiomas suportados</label></th><td><input class="regular-text" id="m360-supported-locales" name="profile[supported_locales]" value="<?php echo esc_attr(implode(', ', $profile['supported_locales'])); ?>" required><p class="description">Separados por vírgula; exemplo: pt-BR, en-US.</p></td></tr>
+                    <tr><th>Cores do Core</th><td>
+                        <label>Primária <input type="color" name="profile[appearance][primary_color]" value="<?php echo esc_attr($profile['appearance']['primary_color']); ?>"></label>
+                        &nbsp; <label>Secundária <input type="color" name="profile[appearance][secondary_color]" value="<?php echo esc_attr($profile['appearance']['secondary_color']); ?>"></label>
+                        <p class="description">Paleta portátil por portal. Os componentes de busca usam a cor primária para ações e a secundária para estados de interação.</p>
+                    </td></tr>
                     <tr>
                         <th>Navegação</th>
                         <td>

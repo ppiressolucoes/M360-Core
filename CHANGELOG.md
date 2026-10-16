@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.57] — Hotfix da busca e paleta
+
+- corrige o destino do formulário: em Polylang com página inicial estática traduzida, a busca usa a raiz do idioma (`/en/` no PEL) em vez do permalink da página de capa;
+- mantém `lang` explícito no formulário e aplica a mesma resolução de URL ao redirecionamento da busca legada; inclui filtro `m360_search_form_action_url` para instalações com outra estrutura de URLs;
+- adiciona cores primária e secundária ao Site Profile (schema 4, importação dos schemas 1 a 3 preservada) e aplica a paleta ao botão, à lupa e aos estados do formulário de busca;
+- não altera automaticamente a paleta salva, conteúdo, menus ou configurações de widgets; cada portal deve definir suas cores no Site Profile.
+
 ## [v0.7.4.0.56] — Home por idioma, busca e edição de widgets
 
 - reutiliza `[m360_search_toggle]` e `[m360_search_form]` na navegação da Home do Core, com destino e parâmetro de idioma do Polylang; restringe a consulta principal de busca ao idioma ativo;
