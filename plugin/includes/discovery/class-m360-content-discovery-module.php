@@ -5,7 +5,7 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
 {
     private const SETTINGS = 'm360_discovery_settings';
     private const CANARY_POSTS = 'm360_discovery_canary_posts';
-    private const RESOURCE_GUARD_VERSION = '2';
+    private const RESOURCE_GUARD_VERSION = '3';
     private const RESOURCE_GUARD_OPTION = 'm360_discovery_resource_safe_mode';
     private const RESOURCE_GUARD_SWEEP = 'm360_discovery_resource_safe_mode_swept_at';
 
@@ -110,7 +110,7 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     }
 
     /**
-     * Resource incident circuit breaker. It stops every asynchronous write
+     * Resource incident circuit breaker. Version 3 is reapplied after an update to place resource-constrained installations in a safe, read-only state. It stops every asynchronous write
      * path until an administrator explicitly releases the guard. Public
      * rendering stays read-only: it can consume an already promoted snapshot,
      * but never generates, repairs or schedules work during a visit.

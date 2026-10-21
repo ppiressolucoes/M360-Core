@@ -3,6 +3,12 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ad_Slot_Component
 {
+    /** @var array<string,array<string,mixed>|null> */
+    private static array $slot_cache = [];
+    /** @var array<string,array<string,mixed>|null> */
+    private static array $campaign_cache = [];
+    /** @var array<string,array<string,mixed>|null> */
+    private static array $creative_cache = [];
     public static function register_shortcodes(): void
     {
         add_shortcode('m360_ad_slot', [self::class, 'shortcode']);
@@ -84,14 +90,18 @@ final class M360_Ad_Slot_Component
 
     private static function find_slot(string $slot_key): ?array
     {
+        if (array_key_exists($slot_key, self::$slot_cache)) { return self::$slot_cache[$slot_key]; }
         global $wpdb;
         $table = M360_Ads_DB::table('ad_slots');
         $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE slot_key = %s AND is_active = 1 LIMIT 1", $slot_key), ARRAY_A);
-        return is_array($row) ? $row : null;
+        return self::$slot_cache[$slot_key] = is_array($row) ? $row : null;
     }
 
     private static function find_campaign(int $slot_id, string $strict_provider = ''): ?array
     {
+        $cache_key = $slot_id . '|' . $strict_provider . '|' . self::language() . '|' . self::device();
+        if (array_key_exists($cache_key, self::$campaign_cache)) { return self::$campaign_cache[$cache_key]; }
+
         global $wpdb;
         $campaigns = M360_Ads_DB::table('ad_campaigns');
         $relations = M360_Ads_DB::table('ad_slot_campaigns');
@@ -116,21 +126,24 @@ final class M360_Ad_Slot_Component
         $params[] = $language;
         $sql = $wpdb->prepare("SELECT c.*, r.priority AS slot_priority FROM {$relations} r INNER JOIN {$campaigns} c ON c.id = r.campaign_id WHERE r.slot_id = %d AND r.is_active = 1 AND c.status = 'active' AND (c.language = %s OR c.language = 'all') AND (c.device = %s OR c.device = 'all') AND (c.start_at IS NULL OR c.start_at <= %s) AND (c.end_at IS NULL OR c.end_at >= %s){$provider_sql} ORDER BY CASE WHEN c.language = %s THEN 0 ELSE 1 END ASC, r.priority DESC, c.priority DESC, c.id DESC LIMIT 1", ...$params);
         $row = $wpdb->get_row($sql, ARRAY_A);
-        return is_array($row) ? $row : null;
+        return self::$campaign_cache[$cache_key] = is_array($row) ? $row : null;
     }
 
     private static function find_creative(int $campaign_id, string $slot_key, array $slot): ?array
     {
         $language = self::language();
         $device = self::device();
+        $cache_key = $campaign_id . '|' . $slot_key . '|' . $language . '|' . $device . '|' . absint($slot['max_width'] ?? 0) . 'x' . absint($slot['max_height'] ?? 0);
+        if (array_key_exists($cache_key, self::$creative_cache)) { return self::$creative_cache[$cache_key]; }
 
         $strategies = self::creative_strategies($slot_key, $slot);
         foreach ($strategies as $strategy) {
             $row = self::query_creative($campaign_id, $language, $device, $strategy);
-            if (is_array($row)) { return $row; }
+            if (is_array($row)) { return self::$creative_cache[$cache_key] = $row; }
         }
 
-        return self::query_creative($campaign_id, $language, $device, ['mode' => 'campaign']);
+        $row = self::query_creative($campaign_id, $language, $device, ['mode' => 'campaign']);
+        return self::$creative_cache[$cache_key] = is_array($row) ? $row : null;
     }
 
     private static function creative_strategies(string $slot_key, array $slot): array

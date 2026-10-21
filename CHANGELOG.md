@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.58] — Contenção de recursos para ambientes sob pressão
+
+- reaplica o circuito de proteção do Content Discovery na atualização: writer assíncrono e backfill ficam em modo manual e os eventos pendentes são removidos;
+- preserva o renderer público no modo já configurado: páginas continuam lendo snapshots promovidos, sem gerar, reparar ou agendar trabalho em visitas;
+- adiciona cache somente em memória por requisição para slots, campanhas, criativos, mapas de anúncios e contextos, reduzindo leituras SQL repetidas sem criar transientes ou novas escritas;
+- indicado para instalar durante incidentes de CPU/RAM. A retomada do writer exige liberação explícita do modo seguro e acompanhamento posterior da hospedagem.
 ## [v0.7.4.0.57] — Hotfix da busca e paleta
 
 - corrige o destino do formulário: em Polylang com página inicial estática traduzida, a busca usa a raiz do idioma (`/en/` no PEL) em vez do permalink da página de capa;

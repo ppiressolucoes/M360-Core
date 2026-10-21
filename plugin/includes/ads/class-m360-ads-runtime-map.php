@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_Runtime_Map
 {
+    /** @var array<string,bool> */
+    private static array $active_campaign_cache = [];
     private const MAP = [
         'header-top' => ['status'=>'runtime','source'=>'header-orchestrator','trigger'=>'Primeira etapa: campanha elegível'],
         'header-adsense' => ['status'=>'runtime','source'=>'header-orchestrator','trigger'=>'Segunda etapa: fallback AdSense'],
@@ -34,12 +36,17 @@ final class M360_Ads_Runtime_Map
 
     public static function has_active_campaign(string $slot_key): bool
     {
+        $slot_key = sanitize_key($slot_key);
+        if (array_key_exists($slot_key, self::$active_campaign_cache)) { return self::$active_campaign_cache[$slot_key]; }
+
         global $wpdb;
         $slots = M360_Ads_DB::table('ad_slots');
         $relations = M360_Ads_DB::table('ad_slot_campaigns');
         $campaigns = M360_Ads_DB::table('ad_campaigns');
         $now = current_time('mysql');
-        $sql = $wpdb->prepare("SELECT COUNT(*) FROM {$slots} s INNER JOIN {$relations} r ON r.slot_id=s.id INNER JOIN {$campaigns} c ON c.id=r.campaign_id WHERE s.slot_key=%s AND s.is_active=1 AND r.is_active=1 AND c.status='active' AND (c.start_at IS NULL OR c.start_at<=%s) AND (c.end_at IS NULL OR c.end_at>=%s)", sanitize_key($slot_key), $now, $now);
-        return (int) $wpdb->get_var($sql) > 0;
+        $sql = $wpdb->prepare("SELECT COUNT(*) FROM {$slots} s INNER JOIN {$relations} r ON r.slot_id=s.id INNER JOIN {$campaigns} c ON c.id=r.campaign_id WHERE s.slot_key=%s AND s.is_active=1 AND r.is_active=1 AND c.status='active' AND (c.start_at IS NULL OR c.start_at<=%s) AND (c.end_at IS NULL OR c.end_at>=%s)", $slot_key, $now, $now);
+        return self::$active_campaign_cache[$slot_key] = (int) $wpdb->get_var($sql) > 0;
     }
+
+
 }
