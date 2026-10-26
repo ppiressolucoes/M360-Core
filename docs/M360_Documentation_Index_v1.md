@@ -41,6 +41,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | M360 Universal Slot Renderer | `docs/01-modules/M360_Universal_Slot_Renderer_v1.md` | Pipeline único homologado na baseline v0.4.4.5 |
 | M360 Newsletter Foundation | `docs/02-architecture/M360_Newsletter_Foundation_v0.6.1.md` | Arquitetura do consentimento, Double Opt-In, adaptador MailPoet e sincronização |
 | Auditoria Estática dos Plugins Precursores | `docs/02-architecture/M360_Plugin_Precursors_Static_Audit_v1.md` | Inventário, portabilidade, riscos, migração e rollback do Home Editorial e Semantic Relations |
+| M360 Editorial Home Multiportal v1 | `docs/02-architecture/M360_Editorial_Home_Multiportal_v1.md` | Inventário das baselines 0.7.4.0.20/0.7.4.0.23, contrato de configuração, dependências e rollout da Home nativa |
 
 ## 5. Sprints
 
@@ -64,6 +65,7 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | Documento | Caminho | Função |
 |---|---|---|
 | M360 Release History | `docs/03-releases/M360_Release_History_v2.md` | Histórico oficial de releases e marcos arquiteturais |
+| Consolidação Editorial e de Navegação v0.7.4.0.42 | `docs/03-releases/M360_Core_Editorial_Navigation_Consolidation_2026-09-15.md` | Baseline homologada, catálogo de componentes, evidências e artefato oficial |
 | M360 Core v0.4.4.x Release Checklist | `releases/v0.4.4.0/M360_Core_v0.4.4.0_Release_Checklist.md` | Checklist operacional da release v0.4.4.x |
 | M360 Core v0.4.4.5 Release Notes | `releases/v0.4.4.5/M360_Core_v0.4.4.5_Release_Notes.md` | Baseline estável e encerramento da linha AdSense Ready |
 | M360 Core v0.5.5 Release Notes | `releases/v0.5.5/M360_Core_v0.5.5_Release_Notes.md` | Breadcrumb Navigation UX e preparação da linha v0.6.0 |
@@ -83,19 +85,28 @@ A decisão ADR-0007 orienta o M360 Core como camada oficial de interface. O ADR-
 | Homologação Portable Deployment Hotfix | `docs/03-releases/M360_Portable_Deployment_Hotfix_Homologation_2026-07-27.md` | Evidência do upgrade v0.7.4.0.1 no Mengão 360 |
 | M360 Core v0.7.4.0 Release Notes | `releases/v0.7.4.0/M360_Core_v0.7.4.0_Release_Notes.md` | Portable Deployment Hardening e preservação de upgrades existentes |
 | M360 Core v0.7.4.0.1 Release Notes | `releases/v0.7.4.0.1/M360_Core_v0.7.4.0.1_Release_Notes.md` | Hotfix de detecção robusta e diagnóstico da política de implantação |
+| M360 Core v0.7.4.0.33 Release Notes | `releases/v0.7.4.0.33/M360_Core_v0.7.4.0.33_Release_Notes.md` | Correção do idioma de destino e preloader restrito às rotas do Core |
+| M360 Core v0.7.4.0.34 Release Notes | `releases/v0.7.4.0.34/M360_Core_v0.7.4.0.34_Release_Notes.md` | Breadcrumb institucional e alinhamento vertical do menu |
+| M360 Core v0.7.4.0.35 Release Notes | `releases/v0.7.4.0.35/M360_Core_v0.7.4.0.35_Release_Notes.md` | Menu institucional em coluna única no desktop |
+| M360 Core v0.7.4.0.36 Release Notes | `releases/v0.7.4.0.36/M360_Core_v0.7.4.0.36_Release_Notes.md` | Navegação lateral de categorias/arquivos e redes sociais; ticker esportivo permanece no Plus Editorial |
+| M360 Core v0.7.4.0.37 Release Notes | `releases/v0.7.4.0.37/M360_Core_v0.7.4.0.37_Release_Notes.md` | Blocos laterais separados e tipografia editorial configurável |
+| M360 Core v0.7.4.0.38 Release Notes | `releases/v0.7.4.0.38/M360_Core_v0.7.4.0.38_Release_Notes.md` | Nuvem de Tags independente para sidebars |
+| M360 Core v0.7.4.0.39 Release Notes | `releases/v0.7.4.0.39/M360_Core_v0.7.4.0.39_Release_Notes.md` | Variante escura da nuvem de Tags para Footer |
+| M360 Core v0.7.4.0.40 Release Notes | `releases/v0.7.4.0.40/M360_Core_v0.7.4.0.40_Release_Notes.md` | Cor #191919 e distribuição equilibrada das Tags |
+| M360 Core v0.7.4.0.41 Release Notes | `releases/v0.7.4.0.41/M360_Core_v0.7.4.0.41_Release_Notes.md` | Menus nativos reutilizáveis e padronizados no Footer |
+| M360 Core v0.7.4.0.42 Release Notes | `releases/v0.7.4.0.42/M360_Core_v0.7.4.0.42_Release_Notes.md` | Alinhamento da nuvem de Tags no Footer |
 
 ### Baseline canônico
 
 ```text
-Release homologada: v0.7.0 — Publisher Platform Foundation
-Tag canônica: v0.7.0
-Arquitetura: M360 Platform Architecture v2.2 + ADR-0008
-Baseline incorporada: v0.6.4 — Newsletter Delivery Readiness
-Linha Newsletter incorporada: v0.6.5.4 — Newsletter Subscription Placement & UX
-Linha consolidada: v0.7.0 — Publisher Platform Foundation
-Release operacional homologada: v0.7.4.0.1 — Existing Installation Detection Hotfix
-Próxima frente: staging do Portal Energia Limpa em portable-safe
+Release homologada: v0.7.4.0.42 — Editorial e Navegação consolidados
+Tag canônica: v0.7.4.0.42
+Arquitetura: M360 Platform Architecture v2.2 + ADR-0008 + ADR-0010
+Ambiente validado: Mengão 360, PT-BR e EN-US, desktop e mobile
+Política do portal existente: legacy-compatible
+Política para novas instalações: portable-safe
 Cutover semântico: cobertura 100%, ownership automatic, precursor desativado
+Ticker esportivo: responsabilidade do M360 Plus Editorial
 ```
 
 ## 7. Operações
@@ -151,3 +162,7 @@ Toda evolução estrutural deverá atualizar este índice quando criar ou promov
 Nenhum documento mestre deve ficar isolado do índice documental do projeto.
 
 Toda sprint visual, comercial ou de interface deve verificar aderência ao ADR-0007 antes da codificação.
+
+## Enriquecimento Editorial DW — desenvolvimento inicial
+
+[Fundação, contrato interno e testes](01-modules/M360_Editorial_DW_Foundation_Development.md). Módulo desativado; sem conexão ao DW ou apresentação pública. Base aceita: Core 0.7.4.0.20; análise documental na PR #29.

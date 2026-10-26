@@ -1,0 +1,138 @@
+<?php
+if (!defined('ABSPATH')) { exit; }
+
+final class M360_Site_Profile
+{
+    private const OPTION = 'm360_site_profile';
+    private const SCHEMA_VERSION = 3;
+
+    public static function activate(): void
+    {
+        if (get_option(self::OPTION, null) === null) {
+            add_option(self::OPTION, self::defaults(), '', false);
+        }
+    }
+
+    public static function defaults(): array
+    {
+        $locale = self::normalize_locale((string) get_locale()) ?: 'pt-BR';
+        return [
+            'schema_version' => self::SCHEMA_VERSION,
+            'site_key' => sanitize_key((string) wp_parse_url(home_url('/'), PHP_URL_HOST)),
+            'site_name' => sanitize_text_field((string) get_bloginfo('name')),
+            'vertical' => 'publisher',
+            'default_locale' => $locale,
+            'supported_locales' => [$locale],
+            'branding' => [
+                'primary_color' => '#d71920',
+                'secondary_color' => '#b81218',
+            ],
+            'runtime' => M360_Runtime_Profile::get(),
+        ];
+    }
+
+    public static function get(): array
+    {
+        $stored = get_option(self::OPTION, []);
+        return self::sanitize(is_array($stored) ? array_merge(self::defaults(), $stored) : self::defaults());
+    }
+
+    public static function update(array $input): bool
+    {
+        $previous_runtime = M360_Runtime_Profile::get();
+        $clean = self::sanitize($input);
+        $runtime_updated = M360_Runtime_Profile::update($clean['runtime']);
+        $profile_updated = update_option(self::OPTION, $clean, false);
+        if ($previous_runtime !== $clean['runtime']) {
+            if (
+                !empty($previous_runtime['capabilities']['newsletter_runtime'])
+                && empty($clean['runtime']['capabilities']['newsletter_runtime'])
+            ) {
+                wp_clear_scheduled_hook('m360_newsletter_sync_pending');
+                wp_clear_scheduled_hook('m360_newsletter_daily_cleanup');
+            }
+            flush_rewrite_rules(false);
+        }
+        return $profile_updated || $runtime_updated || self::get() === $clean;
+    }
+
+    public static function sanitize(array $input): array
+    {
+        $default_locale = self::normalize_locale((string) ($input['default_locale'] ?? '')) ?: 'pt-BR';
+        $locales = $input['supported_locales'] ?? [$default_locale];
+        if (is_string($locales)) { $locales = preg_split('/[\s,]+/', $locales) ?: []; }
+        $locales = array_values(array_unique(array_filter(array_map(
+            static fn($value) => self::normalize_locale((string) $value),
+            is_array($locales) ? $locales : []
+        ))));
+        if (!$locales) { $locales = [$default_locale]; }
+        if (!in_array($default_locale, $locales, true)) { array_unshift($locales, $default_locale); }
+
+        $branding = is_array($input['branding'] ?? null) ? $input['branding'] : [];
+        return [
+            'schema_version' => self::SCHEMA_VERSION,
+            'site_key' => sanitize_key((string) ($input['site_key'] ?? 'portal')) ?: 'portal',
+            'site_name' => sanitize_text_field((string) ($input['site_name'] ?? get_bloginfo('name'))),
+            'vertical' => sanitize_key((string) ($input['vertical'] ?? 'publisher')) ?: 'publisher',
+            'default_locale' => $default_locale,
+            'supported_locales' => array_slice($locales, 0, 20),
+            'branding' => [
+                'primary_color' => self::sanitize_color((string) ($branding['primary_color'] ?? ''), '#d71920'),
+                'secondary_color' => self::sanitize_color((string) ($branding['secondary_color'] ?? ''), '#b81218'),
+            ],
+            'runtime' => M360_Runtime_Profile::sanitize(
+                is_array($input['runtime'] ?? null) ? $input['runtime'] : M360_Runtime_Profile::get()
+            ),
+        ];
+    }
+
+    public static function import_json(string $json)
+    {
+        $decoded = json_decode($json, true);
+        if (!is_array($decoded) || json_last_error() !== JSON_ERROR_NONE) {
+            return new WP_Error('m360_profile_json', 'JSON de perfil inválido.');
+        }
+        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','branding','runtime'];
+        $unknown = array_diff(array_keys($decoded), $allowed);
+        if ($unknown) {
+            return new WP_Error('m360_profile_keys', 'O perfil contém campos não permitidos: ' . implode(', ', $unknown));
+        }
+        $incoming_schema = (int) ($decoded['schema_version'] ?? 0);
+        if (!in_array($incoming_schema, [1, 2, self::SCHEMA_VERSION], true)) {
+            return new WP_Error('m360_profile_schema', 'Versão de schema do Site Profile incompatível.');
+        }
+        $required = ['site_key','site_name','vertical','default_locale','supported_locales'];
+        $missing = array_diff($required, array_keys($decoded));
+        if ($missing) {
+            return new WP_Error('m360_profile_required', 'O perfil não contém todos os campos obrigatórios.');
+        }
+        if ($incoming_schema === 1) {
+            $decoded['runtime'] = M360_Runtime_Profile::get();
+        }
+        if ($incoming_schema < 3) {
+            $decoded['branding'] = self::defaults()['branding'];
+        }
+        $decoded['schema_version'] = self::SCHEMA_VERSION;
+        self::update($decoded);
+        return self::get();
+    }
+
+    public static function export_json(): string
+    {
+        return (string) wp_json_encode(self::get(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    private static function normalize_locale(string $locale): ?string
+    {
+        $locale = str_replace('_', '-', trim($locale));
+        if (!preg_match('/^[a-zA-Z]{2,3}(?:-[a-zA-Z]{2})?$/', $locale)) { return null; }
+        $parts = explode('-', $locale, 2);
+        return strtolower($parts[0]) . (isset($parts[1]) ? '-' . strtoupper($parts[1]) : '');
+    }
+
+    private static function sanitize_color(string $color, string $fallback): string
+    {
+        $clean = sanitize_hex_color(trim($color));
+        return is_string($clean) && $clean !== '' ? strtolower($clean) : $fallback;
+    }
+}

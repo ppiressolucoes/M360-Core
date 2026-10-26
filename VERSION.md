@@ -3,19 +3,19 @@
 ## Baseline estável
 
 ```text
-0.7.4.0.57
+0.7.4.0.58
 ```
 
 ## Estado operacional
 
-- Candidata para homologação: `v0.7.4.0.57 — correção da rota de busca e paleta do Site Profile`.
+- Candidata para homologação: `v0.7.4.0.58 — contenção de recursos e redução de consultas repetidas`.
 - Fonte técnica principal: pacote homologado do Mengão 360 `v0.7.4.0.54`, preservando a extensão portátil de dicionário externo e a resolução de categoria principal do PEL.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
 - Content Discovery & SEO homologado com saúde `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`.
 - Evidência final do backfill: `2.278` publicados, `2.278` cobertos, `0` ausentes, `2.256` gerados e `17` inalterados.
 - `M360 Semantic Relations 0.9.0` desativado no WordPress em 24/07/2026, sem impacto observado; permanece instalado e com tabelas preservadas para rollback durante a janela de observação.
-- Writer e renderer do Core processam automaticamente novas publicações.
+- O renderer público continua lendo snapshots promovidos; o writer e o backfill ficam pausados pelo circuito de proteção 3 até a hospedagem estabilizar.
 - Arquitetura vigente: `M360 Platform Architecture v2.2`, complementada por `ADR-0008` e `ADR-0009`.
 - Linha homologada atual: `v0.7.x — M360 Publisher Platform`.
 - Novas instalações iniciam em `portable-safe`; upgrades M360 existentes são reconhecidos por múltiplas evidências e preservam `legacy-compatible`.

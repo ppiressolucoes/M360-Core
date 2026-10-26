@@ -353,6 +353,16 @@ final class M360_Platform_Admin
                         </td>
                     </tr>
                     <tr>
+                        <th>Navegação</th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="profile[navigation][preloader_enabled]" value="1" <?php checked(!empty($profile['navigation']['preloader_enabled'])); ?>>
+                                Ativar preloader nas rotas públicas gerenciadas pelo M360 Core
+                            </label>
+                            <p class="description">O Core detecta suas rotas e páginas com componentes M360. Para templates isolados do Elementor, o shortcode [m360_preloader] também está disponível. O preloader do News Portal pode permanecer ativo nas páginas renderizadas pelo tema.</p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><label for="m360-runtime-mode">Política de implantação</label></th>
                         <td>
                             <select id="m360-runtime-mode" name="profile[runtime][mode]">

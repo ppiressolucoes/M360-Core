@@ -1,4 +1,17 @@
-# M360 Release History v2.2 — Baseline Estável
+# M360 Release History v2.3 — Baseline Estável
+## Atualização canônica — setembro de 2026
+
+- Release oficial homologada: `M360 Core v0.7.4.0.42`.
+- Tag canônica: `v0.7.4.0.42`.
+- Ambiente validado: Mengão 360 em PT-BR e EN-US, desktop e mobile.
+- A linha `v0.7.4.0.26–v0.7.4.0.27` consolidou widgets editoriais multi-idioma, seleção livre de categoria, título/arquivo dinâmicos e resumos públicos.
+- A linha `v0.7.4.0.28–v0.7.4.0.33` absorveu controles de navegação antes mantidos em HTML: ticker play/pause, breadcrumb, retorno ao topo, pesquisa, header fixo, idioma e preloader.
+- A linha `v0.7.4.0.34–v0.7.4.0.35` estabilizou breadcrumb e menu institucional em desktop e mobile.
+- A linha `v0.7.4.0.36–v0.7.4.0.40` adicionou redes sociais, Categorias, Arquivos, tipografia editorial e nuvem de Tags para superfícies claras e escuras.
+- `v0.7.4.0.41` incorporou menus nativos do WordPress ao Footer por `[m360_footer_menu]`.
+- `v0.7.4.0.42` alinhou a nuvem de Tags aos menus do Footer e foi aprovada em validação visual em 15/09/2026.
+- O ticker `[m360_sports_competitions_ticker]` permanece no M360 Plus Editorial, preservando a separação de responsabilidades.
+- Esta baseline passa a ser a referência para próximas evoluções e compartilhamento em outros ambientes.
 
 ## Atualização canônica — julho de 2026
 

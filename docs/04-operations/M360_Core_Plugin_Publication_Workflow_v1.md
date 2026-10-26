@@ -1,100 +1,53 @@
-# M360 Core Plugin Publication Workflow v1
+# M360 Core Plugin Publication Workflow v1.1
 
-Status: oficial em preparação
+Status: oficial
 Projeto: Mengão 360 | DW Esportivo
 Produto: M360 Core
-Aplicação inicial: Sprint v0.4.4.0 — M360 AdSense Ready
+Baseline atual: `v0.7.4.0.42`
 
 ## 1. Objetivo
 
-Definir o fluxo operacional mínimo para empacotar, publicar e validar o plugin M360 Core no WordPress sem alterar produção diretamente a partir da branch de desenvolvimento.
+Definir o fluxo para empacotar, homologar e publicar o M360 Core sem alterar produção diretamente a partir de uma branch de desenvolvimento.
 
-## 2. Princípio operacional
-
-Nenhuma versão do M360 Core deve ser aplicada em produção sem:
-
-1. branch dedicada;
-2. pull request;
-3. documentação de sprint/release atualizada;
-4. pacote ZIP completo gerado por workflow;
-5. validação em WordPress;
-6. plano de rollback.
-
-## 3. Fluxo simplificado
+## 2. Fluxo oficial
 
 ```text
-branch de sprint
+branch de desenvolvimento
   ↓
-PR draft / revisão
+revisão e documentação
   ↓
-workflow na main: Build M360 Core Plugin ZIP
-  ↓
-source_ref = branch da sprint
-  ↓
-artifact m360-core-v{version}.zip
+build do ZIP instalável
   ↓
 instalação em WordPress de homologação
   ↓
-validação visual
+validação PT-BR/EN-US e desktop/mobile
   ↓
-merge em main
+commit e tag imutável
   ↓
-release oficial
+Pull Request para main
+  ↓
+merge e GitHub Release com ZIP/checksum
 ```
 
-## 4. Workflow de build completo do plugin
+## 3. Build local reproduzível
 
-Arquivo na `main`:
+Na raiz do repositório:
+
+```powershell
+.\scripts\build-plugin-package.ps1 -Version 0.7.4.0.42
+```
+
+Saída esperada:
 
 ```text
-.github/workflows/build-m360-core-plugin-zip.yml
+outputs/m360-core-v0.7.4.0.42/m360-core-v0.7.4.0.42.zip
 ```
 
-Nome no GitHub Actions:
+O workflow `.github/workflows/build-m360-core-plugin-zip.yml` oferece o build equivalente no GitHub Actions.
 
-```text
-Build M360 Core Plugin ZIP
-```
+## 4. Conteúdo do pacote
 
-Tipo:
-
-```text
-workflow_dispatch
-```
-
-Inputs:
-
-```text
-source_ref: sprint/v0.4.4.0-adsense-ready
-version: 0.4.4.3
-```
-
-O workflow:
-
-- faz checkout do `source_ref`;
-- valida `plugin/m360-core.php`;
-- valida o header `Version`;
-- valida a constante `M360_CORE_VERSION`;
-- executa `php -l` no entrypoint e nos arquivos PHP de `includes`;
-- empacota apenas o conteúdo de `plugin/`;
-- gera artifact instalável `m360-core-v{version}.zip`.
-
-## 5. Workflows modulares
-
-Workflows modulares servem para validar componentes, não para instalar no WordPress.
-
-Exemplos:
-
-```text
-Build M360 Ads Inventory Library
-Build M360 Ads Inline Engine
-```
-
-Esses artifacts são úteis para revisão técnica, mas não substituem o plugin completo.
-
-## 6. Conteúdo do pacote instalável
-
-O ZIP completo deve conter:
+O ZIP contém somente o plugin instalável:
 
 ```text
 m360-core/
@@ -102,69 +55,40 @@ m360-core/
   assets/
   includes/
   languages/
+  templates/
+  views/
 ```
 
-Ficam fora do ZIP:
+Documentação, testes, histórico Git, releases e pacotes anteriores permanecem fora do ZIP.
 
-- `.git`;
-- `.github`;
-- `docs`;
-- `tests`;
-- `releases`;
-- arquivos ZIP anteriores.
+## 5. Checklist técnico
 
-## 7. Checklist antes do build
+- versão do header e `M360_CORE_VERSION` coincidentes;
+- `VERSION.md`, `CHANGELOG.md`, índice e release notes atualizados;
+- `php -l` executado quando o runtime PHP estiver disponível;
+- ZIP aberto e conteúdo obrigatório inspecionado;
+- nenhum componente de outro pacote incorporado por engano;
+- checksum SHA-256 registrado.
 
-Antes de gerar o ZIP completo:
+## 6. Checklist de homologação
 
-- confirmar versão em `plugin/m360-core.php`;
-- confirmar documentação da sprint;
-- confirmar release checklist;
-- confirmar PR revisado;
-- confirmar que shortcodes existentes continuam compatíveis;
-- confirmar que o plugin não depende de arquivos fora de `plugin/`.
+- plugin ativa sem erro fatal;
+- painel `M360 Core` e submenus carregam;
+- Home e conteúdo individual carregam em PT-BR e EN-US;
+- widgets editoriais preservam categoria, idioma, título, resumo e link de arquivo;
+- breadcrumb, pesquisa, idioma, preloader, header fixo e retorno ao topo funcionam;
+- Categorias, Arquivos, Tags, menus do Footer e redes sociais renderizam;
+- desktop e mobile não apresentam regressão visual;
+- cache do WordPress/CDN é limpo e o CSS do Elementor é regenerado quando necessário.
 
-## 8. Checklist pós-instalação no WordPress
+## 7. Rollback
 
-Após instalar/atualizar o plugin:
+1. preservar o ZIP da versão homologada anterior;
+2. reinstalar o pacote anterior;
+3. limpar cache e regenerar CSS;
+4. validar páginas críticas nos dois idiomas;
+5. registrar a ocorrência e criar nova versão para a correção.
 
-- verificar ativação do plugin;
-- limpar cache do WordPress/CDN, se aplicável;
-- abrir `M360 Ads → Dashboard`;
-- abrir `M360 Ads → Inventário Piloto`;
-- abrir `M360 Ads → AdSense Ready`;
-- validar os slots piloto:
-  - `header-top`;
-  - `content-bottom`;
-  - `sidebar-community`;
-  - `sidebar-square`;
-- validar o slot novo `article-after-paragraph-2`;
-- abrir um post individual e conferir anúncio após o segundo parágrafo;
-- validar shortcode `[m360_ad_slot id="header-top"]`;
-- validar API PHP `m360_ads_render_slot('header-top')`;
-- validar idioma PT-BR;
-- validar idioma EN-US;
-- validar slot vazio com placeholder.
+## 8. Critério de publicação
 
-## 9. Rollback
-
-Rollback recomendado:
-
-1. manter ZIP da versão anterior homologada;
-2. desativar o plugin atual, se necessário;
-3. reinstalar pacote anterior;
-4. limpar cache;
-5. validar os quatro slots homologados;
-6. registrar ocorrência no histórico operacional.
-
-## 10. Critério de publicação
-
-A versão só deve ser considerada publicada quando:
-
-- o ZIP completo foi gerado pelo workflow `Build M360 Core Plugin ZIP`;
-- o plugin foi instalado com sucesso;
-- o admin carregou sem erro fatal;
-- os slots renderizaram no front-end;
-- o Inline Ads Engine foi validado em post real;
-- o checklist AdSense Ready ficou acessível;
-- não houve regressão nos shortcodes nem na API PHP.
+A versão é oficial quando o pacote homologado, a documentação, o commit, a tag, a `main` e a GitHub Release apontam para a mesma baseline funcional.
