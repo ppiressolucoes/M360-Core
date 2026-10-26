@@ -3,12 +3,12 @@
 ## Baseline estável
 
 ```text
-0.7.4.0.58
+0.7.4.0.61
 ```
 
 ## Estado operacional
 
-- Candidata para homologação: `v0.7.4.0.58 — contenção de recursos e redução de consultas repetidas`.
+- Candidata para homologação: `v0.7.4.0.61 — detecção de próxima leva desde a abertura inicial da página dedicada`.
 - Fonte técnica principal: pacote homologado do Mengão 360 `v0.7.4.0.54`, preservando a extensão portátil de dicionário externo e a resolução de categoria principal do PEL.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.

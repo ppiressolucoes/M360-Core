@@ -1,5 +1,25 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.61] — Próxima leva disponível na abertura inicial
+
+- corrige a consulta da primeira leva da página dedicada para buscar `limit + 1` sempre que a navegação por cursor estiver ativa, mesmo antes de existir um cursor na URL;
+- usa o único registro adicional apenas para determinar se o botão “CARREGAR MAIS” deve ser exibido e o remove do HTML da leva atual;
+- mantém blocos-resumo buscando exatamente o limite configurado, sem item adicional, contagem total, offset crescente ou polling.
+
+## [v0.7.4.0.60] — Detecção da página dedicada de Últimas Notícias
+
+- reconhece automaticamente a página dedicada configurada ou localizada por idioma, mesmo quando o shortcode ainda mantém `pagination="false"` por causa da contenção temporária de produção;
+- substitui nessa página o link circular “Ver todas as notícias” por “CARREGAR MAIS”, com cursor assinado no endereço da próxima leva;
+- mantém posts e barra lateral como blocos-resumo apontando para a página dedicada, sem cursor, polling ou recarga automática;
+- preserva a consulta limitada a `limit + 1`, a ordenação estável por data e ID e `no_found_rows=true`, sem contagem total ou deslocamento crescente.
+
+## [v0.7.4.0.59] — Últimas Notícias por cursor
+
+- substitui a paginação numérica do `[m360_latest_news]` por navegação sequencial com cursor assinado quando `pagination="true"` ou `navigation="cursor"` é usado;
+- consulta uma leva mais um item, ordenada de forma estável por data e ID, sem total de páginas, `FOUND_ROWS()` ou deslocamento crescente por `paged`;
+- mantém posts e sidebar sem paginação e adiciona link acessível para a página dedicada, resolvido por URL explícita, configuração por idioma, filtro ou páginas conhecidas;
+- redireciona URLs legadas com `m360_news_page` e cursores inválidos ao URL limpo antes da renderização; páginas por cursor recebem `noindex,follow`;
+- separa a chave de cache por idioma, contexto, cursor e opções de apresentação, preservando o cache de dez minutos e sem criar endpoint ou polling público.
 ## [v0.7.4.0.58] — Contenção de recursos para ambientes sob pressão
 
 - reaplica o circuito de proteção do Content Discovery na atualização: writer assíncrono e backfill ficam em modo manual e os eventos pendentes são removidos;
