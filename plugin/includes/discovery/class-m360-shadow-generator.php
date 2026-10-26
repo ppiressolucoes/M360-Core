@@ -22,11 +22,13 @@ final class M360_Shadow_Generator
 
     public static function run_scheduled(int $post_id, string $trigger = 'async'): void
     {
+        if (M360_Content_Discovery_Module::resource_guard_enabled()) { return; }
         (new self())->generate($post_id, $trigger);
     }
 
     public function enqueue(int $post_id, string $trigger = 'manual_async'): bool
     {
+        if (M360_Content_Discovery_Module::resource_guard_enabled()) { return false; }
         $args = [$post_id, sanitize_key($trigger)];
         if (wp_next_scheduled(self::CRON_HOOK, $args)) { return true; }
         return wp_schedule_single_event(time() + 15, self::CRON_HOOK, $args);

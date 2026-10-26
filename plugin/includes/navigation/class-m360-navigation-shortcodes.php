@@ -54,11 +54,12 @@ final class M360_Navigation_Shortcodes
         $menu = self::resolve_main_menu($atts, self::is_en());
         if (!$menu) { return ''; }
         $menu_id = 'm360-mobile-nav-' . wp_rand(1000, 999999);
-        $html = wp_nav_menu(['menu'=>$menu->term_id,'container'=>'nav','container_class'=>'m360-main-navigation','menu_class'=>'m360-main-navigation__menu','echo'=>false,'fallback_cb'=>false,'depth'=>3]);
+        $navigation_id = $menu_id . '-panel';
+        $html = wp_nav_menu(['menu'=>$menu->term_id,'container'=>'nav','container_id'=>$navigation_id,'container_class'=>'m360-main-navigation','menu_class'=>'m360-main-navigation__menu','echo'=>false,'fallback_cb'=>false,'depth'=>3]);
         if (!is_string($html) || $html === '') { return ''; }
         return '<div class="m360-navigation-shell m360-ui-nav">'
             . '<input class="m360-mobile-nav-toggle" id="' . esc_attr($menu_id) . '" type="checkbox" aria-hidden="true">'
-            . '<label class="m360-mobile-nav-button" for="' . esc_attr($menu_id) . '" aria-label="Menu"><span></span><span></span><span></span></label>'
+            . '<label class="m360-mobile-nav-button" for="' . esc_attr($menu_id) . '" aria-label="Menu" aria-controls="' . esc_attr($navigation_id) . '" aria-expanded="false"><span></span><span></span><span></span></label>'
             . $html
             . '</div>';
     }

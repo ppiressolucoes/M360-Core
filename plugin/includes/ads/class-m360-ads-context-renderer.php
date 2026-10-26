@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Ads_Context_Renderer
 {
+    /** @var array<string,array<int,array<string,mixed>>> */
+    private static array $slots_cache = [];
     public static function register_shortcodes(): void
     {
         add_shortcode('m360_ad_context', [self::class, 'shortcode']);
@@ -61,8 +63,10 @@ final class M360_Ads_Context_Renderer
         $context = sanitize_key($context);
         $position = sanitize_key((string) ($args['position'] ?? ''));
         $limit = absint($args['limit'] ?? 0);
-        $table = M360_Ads_DB::table('ad_slots');
+        $cache_key = $context . '|' . $position . '|' . $limit;
+        if (array_key_exists($cache_key, self::$slots_cache)) { return self::$slots_cache[$cache_key]; }
 
+        $table = M360_Ads_DB::table('ad_slots');
         $where = ['page_context = %s', 'is_active = 1'];
         $params = [$context];
         if ($position !== '') {
@@ -75,7 +79,7 @@ final class M360_Ads_Context_Renderer
 
         $prepared = $wpdb->prepare($sql, ...$params);
         $rows = $wpdb->get_results($prepared, ARRAY_A);
-        return is_array($rows) ? $rows : [];
+        return self::$slots_cache[$cache_key] = is_array($rows) ? $rows : [];
     }
 
     public static function detect_context(): string

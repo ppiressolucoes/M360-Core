@@ -47,6 +47,11 @@ final class M360_Runtime_Profile
             'mode' => $legacy ? 'legacy-compatible' : 'portable-safe',
             'capabilities' => [
                 'public_views' => $legacy,
+                'search_view' => false,
+                'author_view' => false,
+                'category_view' => false,
+                'tag_view' => false,
+                'date_view' => false,
                 'ads_runtime' => $legacy,
                 'ads_auto_insert' => $legacy,
                 'newsletter_runtime' => $legacy,
@@ -72,6 +77,12 @@ final class M360_Runtime_Profile
     {
         $settings = self::get();
         return !empty($settings['capabilities'][sanitize_key($capability)]);
+    }
+
+    public static function view_enabled(string $view): bool
+    {
+        $view = sanitize_key($view);
+        return self::enabled('public_views') || (in_array($view, ['search', 'author', 'category', 'tag', 'date'], true) && self::enabled($view . '_view'));
     }
 
     public static function is_legacy_compatible(): bool

@@ -15,6 +15,7 @@ final class M360_Content_Discovery_Admin
         add_action('admin_post_m360_discovery_save_writer', [self::class, 'save_writer']);
         add_action('admin_post_m360_discovery_start_backfill', [self::class, 'start_backfill']);
         add_action('admin_post_m360_discovery_stop_backfill', [self::class, 'stop_backfill']);
+        add_action('admin_post_m360_discovery_release_resource_guard', [self::class, 'release_resource_guard']);
     }
 
     public static function menu(): void
@@ -57,7 +58,11 @@ final class M360_Content_Discovery_Admin
                 <span class="m360-discovery-admin__version">v<?php echo esc_html(M360_CORE_VERSION); ?></span>
             </header>
 
-            <?php if ($notice !== ''): ?><div class="notice <?php echo in_array($notice, ['success', 'queued', 'canary_saved', 'renderer_saved', 'writer_saved', 'backfill_started', 'backfill_stopped'], true) ? 'notice-success' : 'notice-error'; ?> inline"><p><?php echo esc_html(self::notice_message($notice)); ?></p></div><?php endif; ?>
+            <?php if ($notice !== ''): ?><div class="notice <?php echo in_array($notice, ['success', 'queued', 'canary_saved', 'renderer_saved', 'writer_saved', 'backfill_started', 'backfill_stopped', 'resource_guard_released'], true) ? 'notice-success' : 'notice-error'; ?> inline"><p><?php echo esc_html(self::notice_message($notice)); ?></p></div><?php endif; ?>
+
+            <?php if (M360_Content_Discovery_Module::resource_guard_enabled()): ?>
+                <div class="notice notice-warning inline"><p><strong>Modo seguro de recursos ativo.</strong> O writer assíncrono e o backfill permanecem interrompidos. O renderer público pode ler somente snapshots já promovidos; para uma notícia nova, gere o snapshot isolado abaixo. Só libere este modo após a hospedagem estabilizar.</p><form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"><input type="hidden" name="action" value="m360_discovery_release_resource_guard"><?php wp_nonce_field('m360_discovery_release_resource_guard'); ?><button type="submit" class="button">Liberar modo seguro</button></form></div>
+            <?php endif; ?>
 
             <div class="m360-discovery-admin__cards">
                 <article class="m360-discovery-admin__metric"><span>Saúde</span><strong class="is-<?php echo esc_attr((string) $health['status']); ?>"><?php echo esc_html((string) $health['status']); ?></strong><small><?php echo esc_html($enabled ? 'Módulo ativo' : 'Módulo inativo'); ?></small></article>
@@ -200,6 +205,13 @@ final class M360_Content_Discovery_Admin
         self::redirect_notice('backfill_stopped');
     }
 
+    public static function release_resource_guard(): void
+    {
+        if (!current_user_can('manage_options')) { wp_die('Sem permissão.'); }
+        check_admin_referer('m360_discovery_release_resource_guard');
+        self::redirect_notice(M360_Content_Discovery_Module::release_resource_guard() ? 'resource_guard_released' : 'resource_guard_locked');
+    }
+
     private static function redirect_notice(string $notice): void
     {
         wp_safe_redirect(add_query_arg(['page'=>'m360-content-discovery','m360_discovery_notice'=>sanitize_key($notice)], admin_url('admin.php')));
@@ -216,9 +228,11 @@ final class M360_Content_Discovery_Admin
             'renderer_save_failed'=>'Não foi possível persistir o modo do renderer; a configuração anterior foi preservada.',
             'writer_saved'=>'Modo do writer do Core atualizado. O precursor e suas tabelas permanecem inalterados.',
             'writer_save_failed'=>'Não foi possível persistir o modo do writer; a configuração anterior foi preservada.',
-            'backfill_started'=>'Backfill do Core iniciado em lotes de 10 posts pelo WP-Cron.',
+            'backfill_started'=>'Backfill do Core iniciado em lotes de 3 posts pelo WP-Cron.',
             'backfill_start_failed'=>'O backfill exige módulo em shadow e writer automático.',
             'backfill_stopped'=>'Backfill interrompido de forma reversível; snapshots ativos foram preservados.',
+            'resource_guard_released'=>'Modo seguro liberado. O writer continua manual até uma reativação explícita.',
+            'resource_guard_locked'=>'O modo seguro foi fixado por M360_CORE_RESOURCE_SAFE_MODE no wp-config.php. Remova a constante somente após a estabilização.',
             'queued'=>'Geração shadow enfileirada no WP-Cron.',
             'invalid_post'=>'Post inexistente, não publicado ou fora dos tipos configurados.',
             'unsupported_locale'=>'Locale ausente ou não suportado; nenhum fallback cruzado foi aplicado.',

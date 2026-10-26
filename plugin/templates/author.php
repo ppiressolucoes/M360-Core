@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) { exit; }
 
-if (class_exists('M360_Author_Controller')) {
-    M360_Author_Controller::render_shell();
-}
+get_header();
+if (class_exists('M360_Author_Controller')) { echo M360_Author_Controller::render(); }
+get_footer();

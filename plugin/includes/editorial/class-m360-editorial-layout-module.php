@@ -26,7 +26,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
             'typography' => ['type' => 'object', 'portable' => true],
         ];
     }
-    public function asset_handles(): array { return ['styles' => ['m360-core-editorial','m360-core-editorial-carousel','m360-core-editorial-layout','m360-core-editorial-polish','m360-core-editorial-sections','m360-core-editorial-widgets','m360-core-editorial-ticker'], 'scripts' => ['m360-core-editorial']]; }
+    public function asset_handles(): array { return ['styles' => ['m360-core-editorial','m360-core-editorial-carousel','m360-core-editorial-layout','m360-core-editorial-polish','m360-core-editorial-newsroom-adjustments','m360-core-editorial-sections','m360-core-editorial-widgets','m360-core-editorial-ticker'], 'scripts' => ['m360-core-editorial']]; }
     public function is_required(): bool { return false; }
     public function default_enabled(): bool { return false; }
 
@@ -252,6 +252,10 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
             'featured_category' => 'destaque',
             'featured_tag' => '',
             'featured_limit' => 5,
+            'show_featured_excerpt' => 'true',
+            'show_featured_meta' => 'true',
+            'show_indicators' => 'true',
+            'show_side_controls' => 'true',
             'card_categories' => '',
             'international_category' => 'internacional',
             'include_international' => 'true',
@@ -281,10 +285,24 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         $html = '<section class="m360-editorial m360-editorial-newsroom"' . self::typography_style_attribute() . '>';
         if (filter_var($atts['show_title'], FILTER_VALIDATE_BOOLEAN) && $atts['title'] !== '') { $html .= '<h' . $level . ' class="m360-editorial-newsroom__heading">' . esc_html($atts['title']) . '</h' . $level . '>'; }
         $autoplay = filter_var($atts['autoplay'], FILTER_VALIDATE_BOOLEAN);
+        $show_featured_excerpt = filter_var($atts['show_featured_excerpt'], FILTER_VALIDATE_BOOLEAN);
+        $show_featured_meta = filter_var($atts['show_featured_meta'], FILTER_VALIDATE_BOOLEAN);
+        $show_indicators = filter_var($atts['show_indicators'], FILTER_VALIDATE_BOOLEAN);
+        $show_side_controls = filter_var($atts['show_side_controls'], FILTER_VALIDATE_BOOLEAN);
         $html .= '<div class="m360-editorial-newsroom__layout"><div class="m360-editorial-newsroom__carousel" data-m360-editorial-carousel data-interval="' . esc_attr((string)max(2500,(int)$atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '">';
-        foreach ($featured as $index => $post) { $html .= self::newsroom_featured($post, min(6,$level+1), $index); }
+        foreach ($featured as $index => $post) { $html .= self::newsroom_featured($post, min(6,$level+1), $index, $show_featured_excerpt, $show_featured_meta); }
         if (count($featured) > 1) {
             $html .= '<div class="m360-editorial-newsroom__controls"><button type="button" data-m360-editorial-prev aria-label="' . esc_attr__('Previous story','m360-core') . '">&#8249;</button><button type="button" data-m360-editorial-next aria-label="' . esc_attr__('Next story','m360-core') . '">&#8250;</button></div>';
+            if ($show_side_controls) {
+                $html .= '<div class="m360-editorial-newsroom__side-controls"><button type="button" class="m360-editorial-newsroom__side-control m360-editorial-newsroom__side-control--previous" data-m360-editorial-prev aria-label="' . esc_attr__('Previous story','m360-core') . '">&#8249;</button><button type="button" class="m360-editorial-newsroom__side-control m360-editorial-newsroom__side-control--next" data-m360-editorial-next aria-label="' . esc_attr__('Next story','m360-core') . '">&#8250;</button></div>';
+            }
+            if ($show_indicators) {
+                $html .= '<div class="m360-editorial-newsroom__indicators" aria-label="' . esc_attr__('Featured story slides','m360-core') . '">';
+                foreach ($featured as $index => $post) {
+                    $html .= '<button type="button" data-m360-editorial-indicator="' . esc_attr((string)$index) . '" aria-label="' . esc_attr(sprintf(__('Show slide %1$d of %2$d','m360-core'), $index + 1, count($featured))) . '" aria-current="' . ($index === 0 ? 'true' : 'false') . '"><span class="screen-reader-text">' . esc_html(get_the_title($post)) . '</span></button>';
+                }
+                $html .= '</div>';
+            }
         }
         $html .= '</div>';
         $html .= '<div class="m360-editorial-newsroom__cards">';
@@ -292,16 +310,28 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         return $html . '</div></div></section>';
     }
 
-    private static function newsroom_featured(WP_Post $post, int $level, int $index): string
+    private static function newsroom_featured(WP_Post $post, int $level, int $index, bool $show_excerpt, bool $show_meta): string
     {
         $image = get_the_post_thumbnail_url($post, 'large');
         $html = '<article class="m360-editorial-newsroom__featured" data-m360-editorial-slide' . ($index > 0 ? ' hidden' : '') . ' aria-hidden="' . ($index > 0 ? 'true' : 'false') . '"><a class="m360-editorial-newsroom__media" href="' . esc_url(get_permalink($post)) . '">';
         if ($image) { $html .= '<img src="' . esc_url($image) . '" alt="" loading="eager">'; }
-        $html .= '</a><div class="m360-editorial-newsroom__featured-content">' . self::category_badge($post);
+        $html .= '</a><div class="m360-editorial-newsroom__featured-content">';
         $html .= '<h' . $level . '><a href="' . esc_url(get_permalink($post)) . '">' . esc_html(get_the_title($post)) . '</a></h' . $level . '>';
-        $excerpt = wp_trim_words((string) get_the_excerpt($post), 24);
-        if ($excerpt !== '') { $html .= '<p>' . esc_html($excerpt) . '</p>'; }
+        $html .= '<div class="m360-editorial-newsroom__details">' . self::category_badge($post);
+        if ($show_meta) { $html .= self::newsroom_meta($post); }
+        $html .= '</div>';
+        if ($show_excerpt) {
+            $excerpt = wp_trim_words((string) get_the_excerpt($post), 24);
+            if ($excerpt !== '') { $html .= '<p>' . esc_html($excerpt) . '</p>'; }
+        }
         return $html . '</div></article>';
+    }
+
+    private static function newsroom_meta(WP_Post $post): string
+    {
+        $timestamp = (int) get_post_time('U', false, $post);
+        $author = get_the_author_meta('display_name', (int) $post->post_author);
+        return '<div class="m360-editorial-newsroom__meta"><time datetime="' . esc_attr(get_the_date('c', $post)) . '">' . esc_html(date_i18n(get_option('date_format'), $timestamp)) . '</time><span>' . esc_html((string)$author) . '</span></div>';
     }
 
     private static function newsroom_card(WP_Post $post, int $level): string
@@ -345,7 +375,7 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
     public static function invalidate_post(int $post_id, $post): void { if ($post instanceof WP_Post && $post->post_type === self::settings()['post_type']) { self::bump(); } }
     public static function invalidate_term(int $term_id, int $tt_id, string $taxonomy): void { $s=self::settings(); if (in_array($taxonomy,[$s['category_taxonomy'],$s['tag_taxonomy']],true)) { self::bump(); } }
     private static function bump(): void { update_option(self::CACHE_VERSION,(string)microtime(true),false); }
-    private static function assets(): void { wp_enqueue_style('m360-core-editorial'); wp_enqueue_style('m360-core-editorial-carousel'); wp_enqueue_style('m360-core-editorial-layout'); wp_enqueue_style('m360-core-editorial-polish'); wp_enqueue_style('m360-core-editorial-sections'); wp_enqueue_script('m360-core-editorial'); }
+    private static function assets(): void { wp_enqueue_style('m360-core-editorial'); wp_enqueue_style('m360-core-editorial-carousel'); wp_enqueue_style('m360-core-editorial-layout'); wp_enqueue_style('m360-core-editorial-polish'); wp_enqueue_style('m360-core-editorial-newsroom-adjustments'); wp_enqueue_style('m360-core-editorial-sections'); wp_enqueue_script('m360-core-editorial'); }
     private static function heading(array $atts): int { return max(2,min(6,(int)($atts['heading_level'] ?: self::settings()['heading_level']))); }
     private static function precursor_active(): bool { return class_exists('M360_Home_Editorial'); }
 }

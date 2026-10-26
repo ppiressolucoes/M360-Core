@@ -55,6 +55,10 @@ final class M360_Editorial_Widgets
     {
         $widgets = self::all();
         $original_id = sanitize_key($original_id);
+        if ($original_id !== '' && isset($widgets[$original_id]) && empty($input['categories_loaded'])) {
+            $input['categories'] = $widgets[$original_id]['categories'];
+            $input['primary_category'] = $widgets[$original_id]['primary_category'];
+        }
         $widget = self::sanitize($input, $original_id);
         if ($widget['id'] === '') { return new WP_Error('m360_widget_id', 'Informe um ID válido para o widget.'); }
         if ($original_id === '' && !isset($widgets[$widget['id']]) && count($widgets) >= self::MAX_INSTANCES) {
@@ -121,7 +125,8 @@ final class M360_Editorial_Widgets
     public static function render_admin(): void
     {
         $widgets = self::all();
-        $terms = get_terms(['taxonomy' => 'category', 'hide_empty' => false]);
+        // Fetch all languages first; the admin language may differ from the widget language.
+        $terms = get_terms(['taxonomy' => 'category', 'hide_empty' => false, 'lang' => '']);
         $terms = is_array($terms) ? $terms : [];
         $edit_id = sanitize_key((string) ($_GET['edit_widget'] ?? ''));
         $editing = $edit_id !== '' && isset($widgets[$edit_id]) ? $widgets[$edit_id] : null;
@@ -165,8 +170,9 @@ final class M360_Editorial_Widgets
         echo '</select></td></tr><tr><th><label>Idioma</label></th><td><select name="widget[lang]">';
         foreach (self::language_options() as $slug => $label) { echo '<option value="' . esc_attr($slug) . '" ' . selected($widget['lang'], $slug, false) . '>' . esc_html($label) . '</option>'; }
         echo '</select><p class="description">O idioma filtra as editorias exibidas. Ao trocar o idioma de um widget existente, salve e reabra para selecionar as editorias correspondentes.</p></td></tr>';
-        echo '<tr><th><label>Editorias</label></th><td><details class="m360-editorial-admin__dropdown"><summary>' . esc_html($widget['categories'] ? count($widget['categories']) . ' selecionada(s)' : 'Todas as editorias') . '</summary><div class="m360-editorial-admin__options">';
+        echo '<tr><th><label>Editorias</label></th><td><input type="hidden" name="widget[categories_loaded]" value="' . ($available_terms ? '1' : '0') . '"><details class="m360-editorial-admin__dropdown"><summary>' . esc_html($widget['categories'] ? count($widget['categories']) . ' selecionada(s)' : 'Todas as editorias') . '</summary><div class="m360-editorial-admin__options">';
         foreach ($available_terms as $term) { if (!$term instanceof WP_Term) { continue; } echo '<label><input type="checkbox" name="widget[categories][]" value="' . esc_attr($term->slug) . '" ' . checked(in_array($term->slug, $widget['categories'], true), true, false) . '> ' . esc_html($term->name . ' (' . $term->slug . ')') . '</label>'; }
+        if (!$available_terms) { echo '<p class="description">Nenhuma categoria disponível neste idioma. Verifique o idioma atribuído às categorias no Polylang antes de salvar alterações.</p>'; }
         echo '</div></details><p class="description">Selecione uma ou várias editorias. O modelo visual não fica vinculado a Flamengo ou a outra categoria específica. Sem seleção, consulta as últimas notícias do idioma.</p></td></tr>';
         echo '<tr><th><label>Quantidade e resumo</label></th><td><label>Notícias <input class="small-text" type="number" min="1" max="24" name="widget[limit]" value="' . esc_attr((string) $widget['limit']) . '"></label> &nbsp; <label>Palavras no resumo <input class="small-text" type="number" min="0" max="80" name="widget[excerpt_words]" value="' . esc_attr((string) $widget['excerpt_words']) . '"></label><p class="description">No modelo #5, o máximo é 12. Zero oculta o resumo dos destaques.</p></td></tr>';
         echo '<tr><th><label>View All</label></th><td><label><input type="checkbox" name="widget[show_view_all]" value="1" ' . checked($widget['show_view_all'], true, false) . '> exibir link</label> &nbsp; <input class="regular-text" type="url" name="widget[view_all_url]" value="' . esc_attr($widget['view_all_url']) . '" placeholder="https://..."><p class="description">Com uma categoria principal, o Core gera automaticamente o arquivo correto. A URL manual é usada apenas quando não houver categoria principal.</p></td></tr>';

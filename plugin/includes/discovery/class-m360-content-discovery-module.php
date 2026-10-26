@@ -5,6 +5,9 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
 {
     private const SETTINGS = 'm360_discovery_settings';
     private const CANARY_POSTS = 'm360_discovery_canary_posts';
+    private const RESOURCE_GUARD_VERSION = '3';
+    private const RESOURCE_GUARD_OPTION = 'm360_discovery_resource_safe_mode';
+    private const RESOURCE_GUARD_SWEEP = 'm360_discovery_resource_safe_mode_swept_at';
 
     public function id(): string { return 'content-discovery-seo'; }
     public function label(): string { return 'Content Discovery & SEO'; }
@@ -45,12 +48,14 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
             add_option(self::CANARY_POSTS, self::sanitize_post_ids($legacy_canary), '', false);
         }
         M360_Discovery_DB::activate();
+        self::apply_resource_guard(true);
     }
 
     public function deactivate(): void {}
 
     public function boot(): void
     {
+        self::apply_resource_guard();
         M360_Shadow_Generator::register();
         M360_Discovery_Scheduler::register();
         M360_Canary_Renderer::register();
@@ -100,8 +105,56 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
             'renderer_canary_posts' => [],
             'public_render_mode' => 'shortcode',
             'contextual_links_max' => 3,
-            'writer_mode' => 'automatic',
+            'writer_mode' => 'manual',
         ];
+    }
+
+    /**
+     * Resource incident circuit breaker. Version 3 is reapplied after an update to place resource-constrained installations in a safe, read-only state. It stops every asynchronous write
+     * path until an administrator explicitly releases the guard. Public
+     * rendering stays read-only: it can consume an already promoted snapshot,
+     * but never generates, repairs or schedules work during a visit.
+     */
+    public static function resource_guard_enabled(): bool
+    {
+        if (defined('M360_CORE_RESOURCE_SAFE_MODE') && M360_CORE_RESOURCE_SAFE_MODE) { return true; }
+        return (bool) get_option(self::RESOURCE_GUARD_OPTION, false);
+    }
+
+    public static function release_resource_guard(): bool
+    {
+        $updated = update_option(self::RESOURCE_GUARD_OPTION, false, false);
+        wp_cache_delete(self::RESOURCE_GUARD_OPTION, 'options');
+        return $updated || !self::resource_guard_enabled();
+    }
+
+    private static function apply_resource_guard(bool $force = false): void
+    {
+        $stored = get_option(self::SETTINGS, []);
+        $stored = is_array($stored) ? $stored : [];
+        $marker = (string) get_option('m360_discovery_resource_guard_version', '');
+        $needs_migration = $force || $marker !== self::RESOURCE_GUARD_VERSION;
+        if ($needs_migration) {
+            $stored['writer_mode'] = 'manual';
+            // v0.7.4.0.53 also disabled the reader to contain the incident.
+            // Restore the automatic renderer for installations migrated from
+            // that guard. It only reads promoted rows and is safe while the
+            // writer and backfill remain stopped.
+            if ($marker === '1') {
+                $stored['public_render_mode'] = 'automatic';
+            }
+            update_option(self::SETTINGS, $stored, false);
+            update_option(self::RESOURCE_GUARD_OPTION, true, false);
+            update_option('m360_discovery_resource_guard_version', self::RESOURCE_GUARD_VERSION, false);
+            wp_cache_delete(self::SETTINGS, 'options');
+            wp_cache_delete(self::RESOURCE_GUARD_OPTION, 'options');
+        }
+
+        if (!self::resource_guard_enabled()) { return; }
+        $last_sweep = (int) get_option(self::RESOURCE_GUARD_SWEEP, 0);
+        if (!$needs_migration && $last_sweep > (time() - 300)) { return; }
+        if (class_exists('M360_Discovery_Scheduler')) { M360_Discovery_Scheduler::stop_all(); }
+        update_option(self::RESOURCE_GUARD_SWEEP, time(), false);
     }
 
     /** @return array<string,mixed> */
@@ -109,6 +162,7 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     {
         $stored = get_option(self::SETTINGS, []);
         $input = is_array($stored) ? array_merge(self::defaults(), $stored) : self::defaults();
+        $guarded = self::resource_guard_enabled();
         return [
             'mode' => in_array((string) $input['mode'], ['off', 'legacy-read', 'shadow'], true) ? (string) $input['mode'] : 'off',
             'legacy_read_fallback' => (bool) $input['legacy_read_fallback'],
@@ -119,7 +173,7 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
             'renderer_canary_posts' => self::sanitize_post_ids((array) get_option(self::CANARY_POSTS, $input['renderer_canary_posts'])),
             'public_render_mode' => in_array((string) $input['public_render_mode'], ['shortcode', 'automatic'], true) ? (string) $input['public_render_mode'] : 'shortcode',
             'contextual_links_max' => max(0, min(3, (int) $input['contextual_links_max'])),
-            'writer_mode' => in_array((string) $input['writer_mode'], ['manual', 'automatic'], true) ? (string) $input['writer_mode'] : 'manual',
+            'writer_mode' => $guarded ? 'manual' : (in_array((string) $input['writer_mode'], ['manual', 'automatic'], true) ? (string) $input['writer_mode'] : 'manual'),
         ];
     }
 
@@ -127,6 +181,8 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     {
         $stored = get_option(self::SETTINGS, []);
         $stored = is_array($stored) ? $stored : [];
+        // The renderer only consumes promoted snapshots. It is independent
+        // from the guarded writer and can therefore be recovered separately.
         $stored['public_render_mode'] = in_array($mode, ['shortcode', 'automatic'], true) ? $mode : 'shortcode';
         $stored['contextual_links_max'] = max(0, min(3, $max_links));
         $updated = update_option(self::SETTINGS, $stored, false);
@@ -140,7 +196,7 @@ final class M360_Content_Discovery_Module implements M360_Module_Interface
     {
         $stored = get_option(self::SETTINGS, []);
         $stored = is_array($stored) ? $stored : [];
-        $stored['writer_mode'] = in_array($mode, ['manual', 'automatic'], true) ? $mode : 'manual';
+        $stored['writer_mode'] = self::resource_guard_enabled() ? 'manual' : (in_array($mode, ['manual', 'automatic'], true) ? $mode : 'manual');
         $updated = update_option(self::SETTINGS, $stored, false);
         wp_cache_delete(self::SETTINGS, 'options');
         return $updated || self::settings()['writer_mode'] === $stored['writer_mode'];

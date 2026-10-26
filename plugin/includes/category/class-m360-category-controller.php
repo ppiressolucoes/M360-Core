@@ -16,20 +16,21 @@ final class M360_Category_Controller
         $term = get_queried_object();
         if (!$term instanceof WP_Term) { return ''; }
         $is_en = self::is_en();
+        $site_name = class_exists('M360_Site_Profile') ? (string) (M360_Site_Profile::get()['site_name'] ?? get_bloginfo('name')) : (string) get_bloginfo('name');
         $description = term_description($term, 'category');
-        $count_label = $is_en ? 'articles' : 'artigos';
+        $count_label = $is_en ? 'news' : 'notícias';
         ob_start();
         echo '<main class="m360-dynamic-view m360-category-view"><div class="m360-dynamic-view__container">';
         echo do_shortcode('[m360_breadcrumb]');
-        echo '<section class="m360-category-hero"><span class="m360-category-hero__eyebrow">' . esc_html($is_en ? 'Mengão 360 Category' : 'Categoria Mengão 360') . '</span><h1>' . esc_html(single_cat_title('', false)) . '</h1>';
+        echo '<section class="m360-category-hero"><span class="m360-category-hero__eyebrow">' . esc_html($is_en ? $site_name . ' Category' : 'Categoria ' . $site_name) . '</span><h1>' . esc_html(single_cat_title('', false)) . '</h1>';
         if ($description !== '') { echo '<div class="m360-category-hero__description">' . wp_kses_post($description) . '</div>'; }
         echo '<div class="m360-category-stats"><span><strong>' . esc_html((string) $term->count) . '</strong> ' . esc_html($count_label) . '</span></div></section>';
         if (have_posts()) {
-            echo '<section class="m360-category-results" aria-label="' . esc_attr($is_en ? 'Category articles' : 'Artigos da categoria') . '">';
+            echo '<section class="m360-category-results" aria-label="' . esc_attr($is_en ? 'Category news' : 'Notícias da categoria') . '">';
             $index = 0;
             while (have_posts()) { the_post(); $index++; echo self::render_card(); echo M360_Ads_Archive_Engine::after_item('category', $index); }
             echo '</section>' . self::pagination();
-        } else { echo '<section class="m360-category-empty"><h2>' . esc_html($is_en ? 'No articles found' : 'Nenhum artigo encontrado') . '</h2></section>'; }
+        } else { echo '<section class="m360-category-empty"><h2>' . esc_html($is_en ? 'No news found' : 'Nenhuma notícia encontrada') . '</h2></section>'; }
         echo '</div></main>';
         wp_reset_postdata();
         return (string) ob_get_clean();

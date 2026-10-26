@@ -1,5 +1,37 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.58] — Contenção de recursos para ambientes sob pressão
+
+- reaplica o circuito de proteção do Content Discovery na atualização: writer assíncrono e backfill ficam em modo manual e os eventos pendentes são removidos;
+- preserva o renderer público no modo já configurado: páginas continuam lendo snapshots promovidos, sem gerar, reparar ou agendar trabalho em visitas;
+- adiciona cache somente em memória por requisição para slots, campanhas, criativos, mapas de anúncios e contextos, reduzindo leituras SQL repetidas sem criar transientes ou novas escritas;
+- indicado para instalar durante incidentes de CPU/RAM. A retomada do writer exige liberação explícita do modo seguro e acompanhamento posterior da hospedagem.
+## [v0.7.4.0.57] — Hotfix da busca e paleta
+
+- corrige o destino do formulário: em Polylang com página inicial estática traduzida, a busca usa a raiz do idioma (`/en/` no PEL) em vez do permalink da página de capa;
+- mantém `lang` explícito no formulário e aplica a mesma resolução de URL ao redirecionamento da busca legada; inclui filtro `m360_search_form_action_url` para instalações com outra estrutura de URLs;
+- adiciona cores primária e secundária ao Site Profile (schema 4, importação dos schemas 1 a 3 preservada) e aplica a paleta ao botão, à lupa e aos estados do formulário de busca;
+- não altera automaticamente a paleta salva, conteúdo, menus ou configurações de widgets; cada portal deve definir suas cores no Site Profile.
+
+## [v0.7.4.0.56] — Home por idioma, busca e edição de widgets
+
+- reutiliza `[m360_search_toggle]` e `[m360_search_form]` na navegação da Home do Core, com destino e parâmetro de idioma do Polylang; restringe a consulta principal de busca ao idioma ativo;
+- permite ativar a Home do Core por locale no Site Profile, escolhendo menu e ordem dos widgets editoriais existentes; a capa pt-BR do PEL permanece no tema até ativação explícita;
+- preserva automaticamente a Home legada somente em upgrades da linha 0.7.4.0.54/55; instalações PEL 0.7.4.0.23 não recebem takeover automático;
+- recupera capacidades independentes de busca, autor, categoria, tag e data da linha PEL, com templates sem IDs fixos de Elementor;
+- corrige o seletor de editorias de widgets en-US no painel pt-BR: carrega categorias de todos os idiomas antes de filtrar pelo idioma do widget e preserva as seleções caso a consulta falhe;
+- não altera páginas, menus, widgets salvos nem o HTML/JavaScript manual do cabeçalho. A substituição deste último requer homologação no WordPress.
+
+## [v0.7.4.0.55] — Core compartilhado PEL e Mengão 360
+
+- consolida o pacote homologado `v0.7.4.0.54` do Mengão 360 como base funcional compartilhada;
+- incorpora o controlador de Home, componentes de navegação, rodapé, utilidades de cabeçalho, preloader, sidebar, links sociais e assets correspondentes;
+- preserva a extensão opcional do Portal Energia Limpa para dicionário externo de links internos e seu runner manual, sem credenciais ou dados de portal;
+- aplica a resolução segura de categoria principal em Últimas Notícias: marcador M360, Yoast, Rank Math, filtro de integração e fallback WordPress;
+- uniformiza os contadores e rótulos de arquivos editoriais como “notícias”/“news”, sem alterar menus configurados pelo tema ou WordPress;
+- não altera automaticamente Site Profile, conteúdo, menus, cookies, preferências de visitantes, tabelas ou credenciais;
+- requer homologação independente por portal antes de qualquer atualização de produção.
+
 ## [v0.7.4.0.42] — Alinhamento da nuvem de Tags no Footer
 
 - remove margem e preenchimento internos da variante escura do `[m360_tag_cloud]`;

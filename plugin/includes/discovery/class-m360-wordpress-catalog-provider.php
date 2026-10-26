@@ -18,7 +18,9 @@ final class M360_WordPress_Catalog_Provider implements M360_Catalog_Provider_Int
         $args = [
             'post_type' => $post_types,
             'post_status' => 'publish',
-            'posts_per_page' => 80,
+            // A bounded candidate window avoids a full editorial scan for each
+            // asynchronous snapshot while preserving enough recency for links.
+            'posts_per_page' => 30,
             'post__not_in' => [$source_post_id],
             'ignore_sticky_posts' => true,
             'no_found_rows' => true,

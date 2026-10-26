@@ -77,9 +77,18 @@
         });
     });
 
-    window.addEventListener('resize', function () {
-        document.querySelectorAll('[data-m360-search-toggle]').forEach(function (toggle) { closeToggle(toggle, false); });
-    });
+    function repositionOpenToggles() {
+        document.querySelectorAll('[data-m360-search-toggle]').forEach(function (toggle) {
+            var button = toggle.querySelector('.m360-search-toggle__trigger');
+            var panel = toggle.querySelector('[data-m360-search-toggle-panel]');
+            if (button && panel && !panel.hidden) { positionPanel(button, panel); }
+        });
+    }
+
+    window.addEventListener('resize', repositionOpenToggles);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', repositionOpenToggles);
+    }
 
     document.addEventListener('submit', function (event) {
         var form = event.target;

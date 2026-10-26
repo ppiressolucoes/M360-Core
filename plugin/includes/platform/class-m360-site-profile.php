@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_Site_Profile
 {
     private const OPTION = 'm360_site_profile';
-    private const SCHEMA_VERSION = 2;
+    private const SCHEMA_VERSION = 4;
 
     public static function activate(): void
     {
@@ -26,6 +26,8 @@ final class M360_Site_Profile
             'navigation' => [
                 'preloader_enabled' => false,
             ],
+            'appearance' => ['primary_color' => '#d71920', 'secondary_color' => '#111111'],
+            'home' => ['locales' => []],
             'runtime' => M360_Runtime_Profile::get(),
         ];
     }
@@ -67,6 +69,22 @@ final class M360_Site_Profile
         if (!$locales) { $locales = [$default_locale]; }
         if (!in_array($default_locale, $locales, true)) { array_unshift($locales, $default_locale); }
         $navigation = is_array($input['navigation'] ?? null) ? $input['navigation'] : [];
+        $appearance = is_array($input['appearance'] ?? null) ? $input['appearance'] : [];
+        $home = is_array($input['home'] ?? null) ? $input['home'] : [];
+        $home_locales = is_array($home['locales'] ?? null) ? $home['locales'] : [];
+        $clean_home_locales = [];
+        foreach ($locales as $locale) {
+            $configuration = is_array($home_locales[$locale] ?? null) ? $home_locales[$locale] : [];
+            $widget_ids = $configuration['widget_ids'] ?? [];
+            if (is_string($widget_ids)) { $widget_ids = preg_split('/[\s,]+/', $widget_ids) ?: []; }
+            $clean_home_locales[$locale] = [
+                'enabled' => !empty($configuration['enabled']),
+                'menu' => sanitize_text_field((string) ($configuration['menu'] ?? '')),
+                'widget_ids' => array_slice(array_values(array_unique(array_filter(array_map(
+                    'sanitize_key', is_array($widget_ids) ? $widget_ids : []
+                )))), 0, 12),
+            ];
+        }
 
         return [
             'schema_version' => self::SCHEMA_VERSION,
@@ -78,6 +96,11 @@ final class M360_Site_Profile
             'navigation' => [
                 'preloader_enabled' => !empty($navigation['preloader_enabled']),
             ],
+            'appearance' => [
+                'primary_color' => sanitize_hex_color((string) ($appearance['primary_color'] ?? '')) ?: '#d71920',
+                'secondary_color' => sanitize_hex_color((string) ($appearance['secondary_color'] ?? '')) ?: '#111111',
+            ],
+            'home' => ['locales' => $clean_home_locales],
             'runtime' => M360_Runtime_Profile::sanitize(
                 is_array($input['runtime'] ?? null) ? $input['runtime'] : M360_Runtime_Profile::get()
             ),
@@ -90,13 +113,13 @@ final class M360_Site_Profile
         if (!is_array($decoded) || json_last_error() !== JSON_ERROR_NONE) {
             return new WP_Error('m360_profile_json', 'JSON de perfil inválido.');
         }
-        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','navigation','runtime'];
+        $allowed = ['schema_version','site_key','site_name','vertical','default_locale','supported_locales','navigation','appearance','home','runtime'];
         $unknown = array_diff(array_keys($decoded), $allowed);
         if ($unknown) {
             return new WP_Error('m360_profile_keys', 'O perfil contém campos não permitidos: ' . implode(', ', $unknown));
         }
         $incoming_schema = (int) ($decoded['schema_version'] ?? 0);
-        if (!in_array($incoming_schema, [1, self::SCHEMA_VERSION], true)) {
+        if (!in_array($incoming_schema, [1, 2, 3, self::SCHEMA_VERSION], true)) {
             return new WP_Error('m360_profile_schema', 'Versão de schema do Site Profile incompatível.');
         }
         $required = ['site_key','site_name','vertical','default_locale','supported_locales'];

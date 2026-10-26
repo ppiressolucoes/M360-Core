@@ -1,64 +1,70 @@
 # M360 Core
 
-Plugin WordPress modular do ecossistema M360 para interface editorial, navegação, publicidade, consentimento, newsletter, busca, páginas dinâmicas e descoberta de conteúdo.
+Publisher Platform modular para WordPress, originada no Projeto Mengão 360 e preparada para atender múltiplos portais.
 
-## Baseline oficial
+## Estado atual
 
-- versão homologada: `0.7.4.0.42`;
-- tag imutável: `v0.7.4.0.42`;
-- ambiente homologado: Mengão 360, PT-BR e EN-US;
-- arquitetura: M360 Publisher Platform modular, com bootstrap `legacy-compatible` no portal existente e `portable-safe` em novas instalações.
+- Arquitetura vigente: `M360 Platform Architecture v2.2`.
+- Candidata para homologação: `v0.7.4.0.58 — contenção de recursos para ambientes sob pressão`.
+- Próxima frente: bootstrap `portable-safe` e preflight no staging do Portal Energia Limpa.
+- Tag canônica: `v0.7.0`.
+- Linha Newsletter consolidada após homologação funcional em PT-BR e EN-US, com prontidão de entrega `7/7`.
+- Linha estratégica vigente: `v0.7.x — M360 Publisher Platform`.
+- Home Editorial e Content Discovery & SEO absorvidos pelo Core; os dois plugins precursores estão desativados e preservados somente para rollback.
+- Novas instalações utilizam bootstrap `portable-safe`; instalações existentes preservam compatibilidade legada.
 
-## Componentes editoriais e de navegação
+## Fonte única da verdade
 
-A linha consolidada inclui:
+Este repositório é a base oficial de código, arquitetura, decisões, releases, runbooks e roadmap do M360 Core. Para manutenção e novas evoluções, consulte nesta ordem:
 
-- widgets editoriais reutilizáveis por idioma, categoria, modelo e quantidade;
-- tipografia editorial configurável;
-- breadcrumb, pesquisa, troca de idioma, preloader, header fixo e botão de retorno ao topo;
-- blocos independentes de Categorias, Arquivos e Tags;
-- menus nativos do WordPress padronizados para o Footer;
-- links de redes sociais reutilizáveis.
+1. tag da última release homologada;
+2. `VERSION.md` e `CHANGELOG.md`;
+3. `docs/M360_Documentation_Index_v1.md`;
+4. arquitetura, ADRs, runbooks e release notes relacionados ao escopo.
 
-Shortcodes principais do ciclo 0.7.4.0.26–0.7.4.0.42:
+A tag `v0.7.0` identifica a baseline imutável homologada. Novas mudanças devem ser entregues por branch e Pull Request, sem alterar tags existentes.
+
+## Componentes consolidados
+
+- M360 Navigation e Dynamic Views.
+- M360 Universal Slot Renderer.
+- M360 Ad Slot Component.
+- M360 Ads Inventory Library e Inventory Seeder.
+- M360 Ads Context, Inline e Archive Engines.
+- APIs e shortcodes publicitários compatíveis com PT-BR e EN-US.
+- Gestão visual de slots, diagnóstico de runtime e auditoria AdSense Readiness.
+- Privacy & Consent Foundation com contrato independente de CMP.
+- Newsletter M360 com consentimento independente, Double Opt-In, MailPoet, sincronização, auditoria, proteção, prontidão e componentes PT-BR/EN-US.
+- Publisher Platform Foundation com kernel modular, Site Profile portável, diagnóstico e preservação dos plugins precursores.
+- Editorial Layout & Home com newsroom, ticker, seções e widgets editoriais.
+- Content Discovery & SEO com storage próprio, writer, renderer, scheduler e cobertura integral PT-BR/EN-US.
+- Dicionário externo opcional para links internos, configurado por integração do portal e sem credenciais no Core.
+- M360 Dashboard unificado para operação dos componentes da plataforma.
+
+## Próximas evoluções
+
+- homologação do `portable-safe` em instalação WordPress limpa;
+- piloto progressivo de Internacionalização e Discovery no Portal Energia Limpa;
+- estabilização pós-cutover do Content Discovery & SEO;
+- política de retenção e arquivamento dos storages legados;
+- evolução modular de Newsletter, Ads e Consent sob o M360 Dashboard;
+- seleção de CMP certificada, conforme estratégia de monetização e regiões atendidas;
+- Mega Bolão 360 MVP Comercial;
+- Painel Operacional DW;
+- SEO programático e expansão de competições.
+
+## Portabilidade
+
+O mesmo código deve servir ao Mengão 360, ao Portal Energia Limpa e a futuros projetos do portfólio. Configurações portáteis ficam no Site Profile; conteúdo, pessoas, campanhas, credenciais e segredos permanecem em cada instalação.
+
+Em novas instalações, templates públicos, Ads automático, Newsletter e Consent ficam desligados. A ativação ocorre por capacidade, após inventário, shadow/preview, homologação e plano de rollback.
+
+Consulte `ROADMAP.md` e `docs/04-roadmap/M360_Backlog_Roadmap_Sprints_Futuras_v1.md`.
+
+## Fluxo de desenvolvimento
 
 ```text
-[m360_editorial_widget id="..."]
-[m360_breadcrumb]
-[m360_search_toggle]
-[m360_language_navigation]
-[m360_preloader]
-[m360_back_to_top]
-[m360_categories]
-[m360_archives]
-[m360_tag_cloud]
-[m360_footer_menu menu="..." title="..." surface="dark"]
-[m360_social_links]
+Issue → Branch → Pull Request → Release → ZIP → WordPress → Homologação
 ```
 
-O ticker `[m360_sports_competitions_ticker]` pertence ao **M360 Plus Editorial** e permanece fora deste pacote.
-
-## Estrutura do pacote
-
-```text
-plugin/
-├── m360-core.php
-├── assets/
-├── includes/
-├── languages/
-├── templates/
-└── views/
-```
-
-O ZIP instalável é gerado exclusivamente a partir de `plugin/`:
-
-```powershell
-.\scripts\build-plugin-package.ps1 -Version 0.7.4.0.42
-```
-
-Documentação de referência:
-
-- `VERSION.md` e `CHANGELOG.md`;
-- `docs/M360_Documentation_Index_v1.md`;
-- `docs/03-releases/M360_Core_Editorial_Navigation_Consolidation_2026-09-15.md`;
-- `releases/v0.7.4.0.42/M360_Core_v0.7.4.0.42_Release_Notes.md`.
+Nenhuma alteração estrutural deve chegar à produção sem checklist, evidências de homologação, documentação atualizada e rollback definido.

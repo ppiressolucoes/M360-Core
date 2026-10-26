@@ -14,8 +14,9 @@ final class M360_Discovery_Scheduler
 
     private const QUEUE_OPTION = 'm360_discovery_writer_queue';
     private const BACKFILL_OPTION = 'm360_discovery_backfill_state';
+    private const GLOBAL_LOCK = 'm360_discovery_writer_global_lock';
     private const RETRY_LIMIT = 3;
-    private const BACKFILL_BATCH = 10;
+    private const BACKFILL_BATCH = 3;
 
     public static function register(): void
     {
@@ -106,6 +107,12 @@ final class M360_Discovery_Scheduler
             return;
         }
 
+        if (!self::acquire_global_lock()) {
+            self::unlock($post_id);
+            self::schedule($post_id, 'global_lock_retry', 120, $attempt, true);
+            return;
+        }
+
         $queue = self::queue();
         $trigger = sanitize_key((string) ($queue[(string) $post_id]['trigger'] ?? 'publication'));
         self::mark($post_id, 'running', '', $attempt);
@@ -123,6 +130,7 @@ final class M360_Discovery_Scheduler
             }
             self::mark($post_id, 'failed', $code, $attempt);
         } finally {
+            self::release_global_lock();
             self::unlock($post_id);
         }
     }
@@ -156,16 +164,27 @@ final class M360_Discovery_Scheduler
         update_option(self::BACKFILL_OPTION, $state, false);
     }
 
+    /** Stop every asynchronous discovery path while the resource guard is active. */
+    public static function stop_all(): void
+    {
+        wp_clear_scheduled_hook(self::PROCESS_HOOK);
+        wp_clear_scheduled_hook(self::BACKFILL_HOOK);
+        wp_clear_scheduled_hook(M360_Shadow_Generator::CRON_HOOK);
+        self::stop_backfill();
+    }
+
     public static function backfill_batch(): void
     {
         $state = self::backfill_state();
         if (($state['status'] ?? '') !== 'running' || !self::writer_enabled()) { return; }
+        if (!self::acquire_global_lock()) { return; }
         $ids = self::next_backfill_ids(max(0, (int) ($state['cursor'] ?? 0)), self::BACKFILL_BATCH);
         if (!$ids) {
             $state['status'] = 'completed';
             $state['finished_at'] = current_time('mysql');
             $state['updated_at'] = current_time('mysql');
             update_option(self::BACKFILL_OPTION, $state, false);
+            self::release_global_lock();
             return;
         }
 
@@ -193,8 +212,9 @@ final class M360_Discovery_Scheduler
         $state['updated_at'] = current_time('mysql');
         update_option(self::BACKFILL_OPTION, $state, false);
         if (!wp_next_scheduled(self::BACKFILL_HOOK)) {
-            wp_schedule_single_event(time() + 20, self::BACKFILL_HOOK);
+            wp_schedule_single_event(time() + 60, self::BACKFILL_HOOK);
         }
+        self::release_global_lock();
     }
 
     public static function summary(): array
@@ -215,8 +235,26 @@ final class M360_Discovery_Scheduler
 
     private static function writer_enabled(): bool
     {
+        if (M360_Content_Discovery_Module::resource_guard_enabled()) { return false; }
         $settings = M360_Content_Discovery_Module::settings();
         return ($settings['mode'] ?? 'off') === 'shadow' && ($settings['writer_mode'] ?? 'manual') === 'automatic';
+    }
+
+    private static function acquire_global_lock(): bool
+    {
+        $now = time();
+        if (add_option(self::GLOBAL_LOCK, $now, '', false)) { return true; }
+        $started = (int) get_option(self::GLOBAL_LOCK, 0);
+        if ($started > 0 && $started < ($now - 300)) {
+            update_option(self::GLOBAL_LOCK, $now, false);
+            return true;
+        }
+        return false;
+    }
+
+    private static function release_global_lock(): void
+    {
+        delete_option(self::GLOBAL_LOCK);
     }
 
     private static function eligible_post(int $post_id): bool
