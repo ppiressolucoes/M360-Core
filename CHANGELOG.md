@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.59] — Últimas Notícias por cursor
+
+- substitui a paginação numérica do `[m360_latest_news]` por navegação sequencial com cursor assinado quando `pagination="true"` ou `navigation="cursor"` é usado;
+- consulta uma leva mais um item, ordenada de forma estável por data e ID, sem total de páginas, `FOUND_ROWS()` ou deslocamento crescente por `paged`;
+- mantém posts e sidebar sem paginação e adiciona link acessível para a página dedicada, resolvido por URL explícita, configuração por idioma, filtro ou páginas conhecidas;
+- redireciona URLs legadas com `m360_news_page` e cursores inválidos ao URL limpo antes da renderização; páginas por cursor recebem `noindex,follow`;
+- separa a chave de cache por idioma, contexto, cursor e opções de apresentação, preservando o cache de dez minutos e sem criar endpoint ou polling público.
 ## [v0.7.4.0.58] — Contenção de recursos para ambientes sob pressão
 
 - reaplica o circuito de proteção do Content Discovery na atualização: writer assíncrono e backfill ficam em modo manual e os eventos pendentes são removidos;
