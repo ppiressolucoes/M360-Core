@@ -73,9 +73,9 @@ final class M360_Latest_News_Component
         $show_ads = filter_var($args['show_ads'], FILTER_VALIDATE_BOOLEAN);
         $exclude_current = filter_var($args['exclude_current'], FILTER_VALIDATE_BOOLEAN);
         $current_post_id = $exclude_current && is_singular('post') ? absint(get_queried_object_id()) : 0;
-        $navigation = self::navigation_mode($args, $layout);
+        $archive_url = self::resolve_archive_url($args, $language, $is_en);
+        $navigation = self::navigation_mode($args, $layout, $archive_url);
         $cursor = $navigation === 'cursor' ? self::request_cursor($language) : null;
-        $archive_url = $navigation === 'none' ? self::resolve_archive_url($args, $language, $is_en) : '';
         $archive_label = trim((string) $args['archive_label']);
         if ($archive_label === '') { $archive_label = $is_en ? 'View all news' : 'Ver todas as notícias'; }
 
@@ -176,16 +176,19 @@ final class M360_Latest_News_Component
         }
     }
 
-    private static function navigation_mode(array $args, string $layout): string
+    private static function navigation_mode(array $args, string $layout, string $archive_url): string
     {
         if ($layout !== 'list') { return 'none'; }
         $mode = sanitize_key((string) ($args['navigation'] ?? ''));
-        if ($mode === '') {
-            // Compatibility: old dedicated pages used pagination="true".
-            // It now enables bounded cursor navigation, never numeric pages.
-            $mode = filter_var($args['pagination'] ?? false, FILTER_VALIDATE_BOOLEAN) ? 'cursor' : 'none';
-        }
-        return $mode === 'cursor' ? 'cursor' : 'none';
+        if ($mode === 'cursor') { return 'cursor'; }
+        if ($mode !== '') { return 'none'; }
+
+        // Compatibility: pagination="true" now means bounded cursor navigation.
+        // A list placed on its own configured archive also enables the cursor
+        // automatically, even when the temporary production setting still says
+        // pagination="false". Posts and sidebars remain summary blocks.
+        $legacy_enabled = filter_var($args['pagination'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        return ($legacy_enabled || self::is_current_archive_url($archive_url)) ? 'cursor' : 'none';
     }
 
     private static function render_cursor_navigation(WP_Post $last_post, string $language, bool $is_en): string
@@ -194,7 +197,7 @@ final class M360_Latest_News_Component
         if ($cursor === '') { return ''; }
         $base = self::current_url_without([self::CURSOR_PARAM, self::LEGACY_PAGE_PARAM]);
         $url = add_query_arg(self::CURSOR_PARAM, rawurlencode($cursor), $base) . '#m360-latest-news';
-        $label = $is_en ? 'Load more news' : 'Carregar mais notícias';
+        $label = $is_en ? 'LOAD MORE' : 'CARREGAR MAIS';
         return '<nav class="m360-latest-news__cursor" aria-label="' . esc_attr($is_en ? 'More latest news' : 'Mais últimas notícias') . '"><a class="m360-latest-news__more-link" href="' . esc_url($url) . '" rel="next">' . esc_html($label) . '</a></nav>';
     }
 
@@ -260,6 +263,23 @@ final class M360_Latest_News_Component
         $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) wp_unslash($_SERVER['REQUEST_URI']) : '/';
         $relative = remove_query_arg($params, $request_uri);
         return home_url($relative ?: '/');
+    }
+
+    private static function is_current_archive_url(string $archive_url): bool
+    {
+        if ($archive_url === '') { return false; }
+        $current_url = self::current_url_without([self::CURSOR_PARAM, self::LEGACY_PAGE_PARAM]);
+        $archive_parts = wp_parse_url($archive_url);
+        $current_parts = wp_parse_url($current_url);
+        if (!is_array($archive_parts) || !is_array($current_parts)) { return false; }
+
+        $archive_host = strtolower((string) ($archive_parts['host'] ?? ''));
+        $current_host = strtolower((string) ($current_parts['host'] ?? ''));
+        if ($archive_host !== '' && $current_host !== '' && $archive_host !== $current_host) { return false; }
+
+        $archive_path = '/' . ltrim((string) ($archive_parts['path'] ?? '/'), '/');
+        $current_path = '/' . ltrim((string) ($current_parts['path'] ?? '/'), '/');
+        return untrailingslashit($archive_path) === untrailingslashit($current_path);
     }
 
     private static function resolve_archive_url(array $args, string $language, bool $is_en): string

@@ -1,5 +1,7 @@
 # Sprint — Evolução do componente Últimas Notícias por cursor
 
+> Complemento v0.7.4.0.60: a página dedicada é reconhecida pelo URL resolvido e ativa o cursor automaticamente mesmo quando o shortcode ainda conserva `pagination="false"`. Fora dela, o bloco permanece um resumo com link para o arquivo.
+
 ## Contexto
 
 A telemetria agregada da Hostinger registrou acessos a URLs com `m360_news_page` e números extremos. Isso torna a paginação numérica anterior um mecanismo plausível de amplificação de consultas, pois ela aceitava um número de página sem limite e exigia o cálculo do total. A métrica compartilhada entre domínios não permite atribuir àquele componente a saturação de CPU e memória.

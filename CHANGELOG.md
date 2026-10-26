@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.60] — Detecção da página dedicada de Últimas Notícias
+
+- reconhece automaticamente a página dedicada configurada ou localizada por idioma, mesmo quando o shortcode ainda mantém `pagination="false"` por causa da contenção temporária de produção;
+- substitui nessa página o link circular “Ver todas as notícias” por “CARREGAR MAIS”, com cursor assinado no endereço da próxima leva;
+- mantém posts e barra lateral como blocos-resumo apontando para a página dedicada, sem cursor, polling ou recarga automática;
+- preserva a consulta limitada a `limit + 1`, a ordenação estável por data e ID e `no_found_rows=true`, sem contagem total ou deslocamento crescente.
+
 ## [v0.7.4.0.59] — Últimas Notícias por cursor
 
 - substitui a paginação numérica do `[m360_latest_news]` por navegação sequencial com cursor assinado quando `pagination="true"` ou `navigation="cursor"` é usado;
