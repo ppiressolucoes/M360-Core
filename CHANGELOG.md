@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.61] — Próxima leva disponível na abertura inicial
+
+- corrige a consulta da primeira leva da página dedicada para buscar `limit + 1` sempre que a navegação por cursor estiver ativa, mesmo antes de existir um cursor na URL;
+- usa o único registro adicional apenas para determinar se o botão “CARREGAR MAIS” deve ser exibido e o remove do HTML da leva atual;
+- mantém blocos-resumo buscando exatamente o limite configurado, sem item adicional, contagem total, offset crescente ou polling.
+
 ## [v0.7.4.0.60] — Detecção da página dedicada de Últimas Notícias
 
 - reconhece automaticamente a página dedicada configurada ou localizada por idioma, mesmo quando o shortcode ainda mantém `pagination="false"` por causa da contenção temporária de produção;

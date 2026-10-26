@@ -89,7 +89,7 @@ final class M360_Latest_News_Component
             if (is_string($cached) && $cached !== '') { return $cached; }
         }
 
-        $query = self::query($limit, $language, $current_post_id, $cursor);
+        $query = self::query($limit, $language, $current_post_id, $cursor, $navigation === 'cursor');
         $has_more = false;
         if ($navigation === 'cursor' && count($query->posts) > $limit) {
             array_pop($query->posts);
@@ -135,12 +135,12 @@ final class M360_Latest_News_Component
      * Cursor pagination deliberately fetches one extra post and never asks
      * MySQL for a total row count or a deep OFFSET/page number.
      */
-    private static function query(int $limit, string $language, int $current_post_id, ?array $cursor): WP_Query
+    private static function query(int $limit, string $language, int $current_post_id, ?array $cursor, bool $fetch_extra): WP_Query
     {
         $query_args = [
             'post_type' => 'post',
             'post_status' => 'publish',
-            'posts_per_page' => $cursor ? $limit + 1 : $limit,
+            'posts_per_page' => $fetch_extra ? $limit + 1 : $limit,
             'ignore_sticky_posts' => true,
             'no_found_rows' => true,
             'orderby' => ['date' => 'DESC', 'ID' => 'DESC'],
