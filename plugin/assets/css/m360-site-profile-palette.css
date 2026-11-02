@@ -53,6 +53,14 @@
 .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a,
 .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a:hover,
 .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a:focus-visible { color: #fff !important; }
+.m360-header-navigation-bar { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; width: 100%; min-height: 54px; margin: 0 !important; padding: 0 !important; background: var(--m360-primary); }
+.m360-header-navigation-bar__column { display: flex; min-width: 0; min-height: 54px; align-items: center; justify-content: center; margin: 0 !important; padding: 0 !important; }
+.m360-header-navigation-bar__column--menu { justify-content: flex-start; }
+.m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav { position: static !important; width: 100%; min-height: 54px; }
+.m360-header-navigation-bar .m360-language-navigation { height: 54px; }
+.m360-header-navigation-bar .m360-search-toggle { display: flex; width: 100%; height: 54px; align-items: center; justify-content: center; }
+.m360-header-navigation-bar .m360-search-toggle__trigger { width: 54px !important; min-height: 54px !important; margin: 0 !important; }
+.m360-header-navigation-bar .m360-mobile-nav-button { display: none !important; }
 .m360-post-info__avatar-frame { border-color: var(--m360-primary) !important; }
 .m360-back-to-top,
 .m360-lang-toggle,
@@ -93,4 +101,13 @@ body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
 .m360-language-navigation__flag svg { display: block !important; width: 21px !important; height: 14px !important; opacity: 1 !important; visibility: visible !important; }
 @media (max-width: 782px) {
     body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 46px; }
+}
+@media (max-width: 1024px) {
+    .m360-header-navigation-bar .m360-mobile-nav-button { display: inline-flex !important; }
+}
+@media (max-width: 640px) {
+    .m360-header-navigation-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .m360-header-navigation-bar__column--menu,
+    .m360-header-navigation-bar__column--language,
+    .m360-header-navigation-bar__column--search { justify-content: center; }
 }

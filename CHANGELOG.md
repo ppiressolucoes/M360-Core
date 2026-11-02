@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.69] — Barra de navegação unificada
+
+- adiciona `[m360_header_navigation]`, reunindo menu, idioma e busca em uma única estrutura;
+- usa colunas `80% | 10% | 10%` em desktop/tablet e `33% | 33% | 33%` no mobile;
+- aplica sticky ao conjunto completo, evitando perda de alinhamento durante a rolagem;
+- mantém `[m360_main_navigation]`, `[m360_language_navigation]` e `[m360_search_toggle]` disponíveis.
+
 ## [v0.7.4.0.68] — Sticky da barra completa
 
 - escolhe a seção Elementor que contém navegação, idioma e busca como alvo do sticky;

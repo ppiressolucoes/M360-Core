@@ -9,6 +9,7 @@ final class M360_Navigation_Shortcodes
     public static function register(): void
     {
         add_shortcode('m360_main_navigation', [self::class, 'main_navigation']);
+        add_shortcode('m360_header_navigation', [self::class, 'header_navigation']);
         add_shortcode('m360_breadcrumb', [self::class, 'breadcrumb']);
         add_shortcode('m360_section_navigation', [self::class, 'section_navigation']);
         add_shortcode('m360_back_to_top', [self::class, 'back_to_top']);
@@ -71,6 +72,31 @@ final class M360_Navigation_Shortcodes
             . '<input class="m360-mobile-nav-toggle" id="' . esc_attr($menu_id) . '" type="checkbox" aria-hidden="true">'
             . '<label class="m360-mobile-nav-button" for="' . esc_attr($menu_id) . '" aria-label="Menu" aria-controls="' . esc_attr($navigation_id) . '" aria-expanded="false"><span></span><span></span><span></span></label>'
             . $html
+            . '</div>';
+    }
+
+    public static function header_navigation(array $atts = []): string
+    {
+        $atts = shortcode_atts([
+            'menu_pt' => '',
+            'menu_en' => '',
+            'menu' => '',
+        ], $atts, 'm360_header_navigation');
+
+        $navigation = self::main_navigation($atts);
+        $language = class_exists('M360_Language_Switcher')
+            ? M360_Language_Switcher::render_navigation()
+            : '';
+        $search = class_exists('M360_Search_Form_Component')
+            ? M360_Search_Form_Component::toggle_shortcode()
+            : '';
+
+        if ($navigation === '' && $language === '' && $search === '') { return ''; }
+        self::enqueue_assets();
+        return '<div class="m360-header-navigation-bar" data-m360-header-navigation>'
+            . '<div class="m360-header-navigation-bar__column m360-header-navigation-bar__column--menu">' . $navigation . '</div>'
+            . '<div class="m360-header-navigation-bar__column m360-header-navigation-bar__column--language">' . $language . '</div>'
+            . '<div class="m360-header-navigation-bar__column m360-header-navigation-bar__column--search">' . $search . '</div>'
             . '</div>';
     }
 

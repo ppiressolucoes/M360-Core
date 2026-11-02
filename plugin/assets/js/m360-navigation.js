@@ -111,10 +111,12 @@
     }
 
     function init() {
+        document.querySelectorAll('.m360-header-navigation-bar').forEach(initStickyNavigation);
         document.querySelectorAll('.m360-header-topbar').forEach(function (target) {
-            if (!target.querySelector('.m360-navigation-shell.m360-ui-nav')) { initStickyNavigation(target); }
+            if (!target.querySelector('.m360-navigation-shell.m360-ui-nav, .m360-header-navigation-bar')) { initStickyNavigation(target); }
         });
         document.querySelectorAll('.m360-navigation-shell.m360-ui-nav').forEach(function (shell) {
+            if (shell.closest('.m360-header-navigation-bar')) { return; }
             var target = shell.closest('.elementor-top-section, .elementor-section, .elementor-container');
             if (!target || !target.querySelector('.m360-language-navigation, .m360-lang-toggle, .m360-search-form, .m360-search-toggle')) {
                 target = shell;
