@@ -1,22 +1,22 @@
-# M360 Core — PEL Controlled Deployment v0.1.3
+# M360 Core — PEL Controlled Deployment v0.1.4
 
-Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.10.zip`. Ele aplica somente o perfil controlado do PEL.
+Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.62.zip`. Ele aplica somente o perfil controlado do PEL.
 
 ## Sequência
 
-1. Verificar o SHA do ZIP candidato: `80F311F7B8295E7B5FA9AE31A7E585CFAC2C34100E148840A92FE9751A483CB5`.
-2. Instalar e ativar o M360 Core v0.7.4.0.10.
+1. Verificar o SHA do ZIP candidato registrado na release do Core v0.7.4.0.62.
+2. Instalar e ativar o M360 Core v0.7.4.0.62.
 3. Verificar `portable-safe` e `fresh-installation-no-evidence` em M360 > Plataforma.
 4. Instalar este complemento e, em M360 Dashboard > PEL — Implantação, selecionar **Aplicar perfil PEL controlado**.
 5. Homologar cada shortcode em uma página/template Elementor de teste antes de qualquer publicação.
 
 ## Gates do perfil
 
-- Preserva Elementor e Cream Magazine; não assume templates públicos.
+- Preserva Elementor e Cream Magazine por padrão; a assunção da Home é um checkbox explícito de cutover.
 - Mantém Ads, Newsletter e Consent Runtime desligados.
-- Editorial usa somente shortcodes inseridos de forma explícita.
+- Editorial usa shortcodes inseridos de forma explícita ou, após o gate de cutover, a Home configurada no Site Profile.
 - Discovery gera snapshots manualmente, sem fallback externo, writer automático ou injeção no conteúdo.
-- Site Profile usa primária `#ff3d00` e secundária `#fc893c`.
+- Site Profile usa primária `#ff3d00` e secundária `#fc893c`; o Core propaga esses tokens para os componentes e blocos.
 - Não altera conteúdo, usuários, campanhas, listas, credenciais, segredos ou dados de MailPoet/AdSense/CMP.
 
 ## Homologação por funcionalidade
@@ -32,6 +32,10 @@ Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.10
 | Consent, Newsletter, Ads | diagnóstico de provider | Sem runtime público |
 
 Qualquer ativação de Ads, Newsletter, Consent, injeção automática de Discovery ou takeover de templates exige uma autorização específica e um registro de homologação.
+
+## Cutover da Home
+
+Na tela **PEL — Implantação**, marque `Assumir a Home pt-BR/en-US pelo Core nesta aplicação` somente durante o cutover autorizado. O deployment cadastra um widget Newsroom mínimo por idioma, associa o menu `EL360 Menu Principal en-US` à Home em inglês e muda o módulo editorial para `public`. Desmarcado, o perfil permanece em `hybrid` e o Cream Magazine continua controlando a Home.
 
 ## Página de resultados sem takeover
 

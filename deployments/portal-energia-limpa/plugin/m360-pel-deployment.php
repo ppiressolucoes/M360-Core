@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 PEL Controlled Deployment
  * Description: Perfil operacional controlado do M360 Core para o Portal Energia Limpa.
- * Version: 0.1.3
+ * Version: 0.1.4
  * Requires at least: 6.0
  * Requires PHP: 8.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_PEL_Controlled_Deployment
 {
     private const OPTION = 'm360_pel_controlled_deployment';
-    private const VERSION = '0.1.3';
+    private const VERSION = '0.1.4';
 
     public static function register(): void
     {
@@ -159,6 +159,8 @@ final class M360_PEL_Controlled_Deployment
         // The Site Profile is the only portable identity written by this add-on.
         // Runtime capabilities remain off: no public template ownership, Ads,
         // Newsletter or Consent output is enabled by this operation.
+        $home_takeover = !empty($_POST['home_takeover']);
+        $home_widgets = $home_takeover ? self::ensure_home_widgets() : ['pt-BR' => [], 'en-US' => []];
         M360_Site_Profile::update([
             'schema_version' => 2,
             'site_key' => 'portal-energia-limpa',
@@ -166,9 +168,15 @@ final class M360_PEL_Controlled_Deployment
             'vertical' => 'clean-energy-publisher',
             'default_locale' => 'pt-BR',
             'supported_locales' => ['pt-BR', 'en-US'],
-            'branding' => [
+            'appearance' => [
                 'primary_color' => '#ff3d00',
                 'secondary_color' => '#fc893c',
+            ],
+            'home' => [
+                'locales' => [
+                    'pt-BR' => ['enabled' => $home_takeover, 'menu' => '', 'widget_ids' => $home_widgets['pt-BR']],
+                    'en-US' => ['enabled' => $home_takeover, 'menu' => 'EL360 Menu Principal en-US', 'widget_ids' => $home_widgets['en-US']],
+                ],
             ],
             'runtime' => [
                 'mode' => 'portable-safe',
@@ -192,7 +200,7 @@ final class M360_PEL_Controlled_Deployment
         // Hybrid means explicitly placed shortcodes only; it never takes over
         // Elementor, the active theme, or any existing template.
         update_option('m360_editorial_settings', [
-            'mode' => 'hybrid',
+            'mode' => $home_takeover ? 'public' : 'hybrid',
             'legacy_shortcodes' => 'precursor',
             'post_type' => 'post',
             'category_taxonomy' => 'category',
@@ -220,6 +228,7 @@ final class M360_PEL_Controlled_Deployment
             'applied' => true,
             'applied_at' => current_time('mysql'),
             'core_version' => defined('M360_CORE_VERSION') ? M360_CORE_VERSION : '',
+            'home_takeover' => $home_takeover,
         ]), false);
 
         self::redirect('applied');
@@ -259,15 +268,18 @@ final class M360_PEL_Controlled_Deployment
             </tbody></table>
 
             <h2>Ativação controlada</h2>
-            <p>Esta ação grava somente o Site Profile e as configurações de módulos acima. Não publica widgets, não modifica Elementor/Cream Magazine, não injeta anúncios, não cria formulários, não inicia cron de newsletter e não habilita CMP local.</p>
+            <p>Por padrão, esta ação grava somente o Site Profile e as configurações de módulos acima. A Home do tema permanece ativa.</p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="m360_pel_apply_profile">
                 <?php wp_nonce_field('m360_pel_apply_profile'); ?>
+                <p><label><input type="checkbox" name="home_takeover" value="1"> Assumir a Home pt-BR/en-US pelo Core nesta aplicação (cutover autorizado)</label></p>
+                <p class="description">Ao marcar, o deployment cadastra widgets Newsroom mínimos, usa a paleta PEL e ativa a Home pública do Core. O Cream Magazine e o Elementor continuam preservados para rollback.</p>
                 <?php submit_button('Aplicar perfil PEL controlado', 'primary', 'submit', false, self::application_ready() ? [] : ['disabled' => 'disabled']); ?>
             </form>
 
             <h2>Blocos liberados para homologação manual</h2>
             <p><code>[m360_search_form variant="header"]</code> · <code>[m360_breadcrumb]</code> · <code>[m360_latest_news pagination="true"]</code> · <code>[m360_post_info]</code> · <code>[m360_editorial_widget id="..."]</code>.</p>
+            <p>Menu en-US recomendado: <code>[m360_main_navigation menu_pt="EL360 Menu Principal en-US"]</code> ou <code>menu_en="EL360 Menu Principal en-US"</code>.</p>
             <p>Para Discovery, valide primeiro os snapshots e os canários; somente após autorização use os shortcodes de renderer no template de post. A injeção automática permanece bloqueada.</p>
         </div>
         <?php
@@ -275,7 +287,34 @@ final class M360_PEL_Controlled_Deployment
 
     private static function defaults(): array
     {
-        return ['version' => self::VERSION, 'applied' => false, 'applied_at' => '', 'core_version' => ''];
+        return ['version' => self::VERSION, 'applied' => false, 'applied_at' => '', 'core_version' => '', 'home_takeover' => false];
+    }
+
+    private static function ensure_home_widgets(): array
+    {
+        $result = ['pt-BR' => [], 'en-US' => []];
+        if (!class_exists('M360_Editorial_Widgets')) { return $result; }
+        foreach ([['pt-BR', 'pel-home-pt-newsroom'], ['en-US', 'pel-home-en-newsroom']] as [$locale, $id]) {
+            $lang = strtolower(substr($locale, 0, 2));
+            $widgets = M360_Editorial_Widgets::all();
+            if (!isset($widgets[$id])) {
+                $saved = M360_Editorial_Widgets::save([
+                    'id' => $id,
+                    'title' => '',
+                    'layout' => 'newsroom',
+                    'lang' => $lang,
+                    'limit' => 5,
+                    'categories' => [],
+                    'featured_tag' => '',
+                    'card_count' => 4,
+                    'interval' => 6500,
+                    'autoplay' => true,
+                ]);
+                if (is_wp_error($saved)) { continue; }
+            }
+            $result[$locale][] = $id;
+        }
+        return $result;
     }
 
     private static function core_ready(): bool
