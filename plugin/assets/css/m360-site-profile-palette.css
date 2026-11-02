@@ -80,6 +80,13 @@ body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
 .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button { width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important; padding: 0 !important; flex: 0 0 48px; }
 .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button span { width: 24px !important; height: 3px !important; flex: 0 0 3px; }
 .m360-editorial-widget__list .m360-editorial-widget__article--mini { border-bottom: 0 !important; }
+.m360-editorial-widget .m360-editorial-widget__article,
+.m360-editorial-widget .m360-editorial-widget__list,
+.m360-editorial-widget hr { border-bottom: 0 !important; }
+.elementor-widget-shortcode:has(.m360-navigation-shell.m360-ui-nav),
+.elementor-element:has(.m360-navigation-shell.m360-ui-nav) { margin-block: 0 !important; padding-block: 0 !important; min-height: 0 !important; }
+.m360-lang-toggle__flag svg,
+.m360-language-navigation__flag svg { display: block !important; width: 21px !important; height: 14px !important; opacity: 1 !important; visibility: visible !important; }
 @media (max-width: 782px) {
     body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 46px; }
 }

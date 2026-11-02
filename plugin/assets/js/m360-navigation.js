@@ -111,7 +111,10 @@
     }
 
     function init() {
-        document.querySelectorAll('.m360-header-topbar').forEach(initStickyNavigation);
+        document.querySelectorAll('.m360-header-topbar').forEach(function (target) {
+            if (!target.querySelector('.m360-navigation-shell.m360-ui-nav')) { initStickyNavigation(target); }
+        });
+        document.querySelectorAll('.m360-navigation-shell.m360-ui-nav').forEach(initStickyNavigation);
         document.querySelectorAll('.m360-navigation-shell').forEach(initMobileNavigation);
     }
 

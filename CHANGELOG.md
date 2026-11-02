@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.67] — Sticky no shell do Theme Builder
+
+- aplica sticky diretamente no `m360-navigation-shell` quando o Theme Builder não emite `m360-header-topbar`;
+- neutraliza margem, padding e altura mínima do widget Elementor que contém a navegação;
+- remove bordas inferiores residuais de artigos/listas do Newsroom;
+- reforça a visibilidade do SVG do seletor flutuante de idioma.
+
 ## [v0.7.4.0.66] — Sticky navigation e limpeza visual do newsroom
 
 - fixa o shell de navegação no topo durante a rolagem, incluindo compensação do admin bar;
