@@ -51,7 +51,7 @@ final class M360_Language_Switcher
             . ' hreflang="' . esc_attr((string) $target['locale']) . '"'
             . ' title="' . esc_attr((string) $target['title']) . '"'
             . ' aria-label="' . esc_attr((string) $target['aria_label']) . '">'
-            . '<span class="m360-lang-toggle__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . esc_html((string) $target['flag']) . '</span>'
+            . '<span class="m360-lang-toggle__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . self::flag_markup((string) $target['code']) . '</span>'
             . '<span class="m360-lang-toggle__code">' . esc_html((string) $target['code']) . '</span>'
             . '</a></div>';
     }
@@ -67,7 +67,7 @@ final class M360_Language_Switcher
             : sprintf('Idioma atual: %s. %s', $active_label, (string) $target['aria_label']);
         return '<div class="m360-language-navigation" data-m360-language-navigation>'
             . '<a class="m360-language-navigation__link" href="' . esc_url((string) $target['url']) . '" hreflang="' . esc_attr((string) $target['locale']) . '" title="' . esc_attr((string) $target['title']) . '" aria-label="' . esc_attr($aria_label) . '">'
-            . '<span class="m360-language-navigation__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . esc_html((string) $target['flag']) . '</span>'
+            . '<span class="m360-language-navigation__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . self::flag_markup((string) $target['code']) . '</span>'
             . '<span class="m360-language-navigation__code">' . esc_html((string) $target['code']) . '</span>'
             . '<span class="m360-language-navigation__arrow" aria-hidden="true">↔</span>'
             . '</a></div>';
@@ -78,6 +78,14 @@ final class M360_Language_Switcher
         $slug = function_exists('pll_current_language') ? strtolower((string) pll_current_language('slug')) : '';
         $is_en = str_starts_with($slug, 'en');
         return ['code' => $is_en ? 'EN' : 'PT', 'flag' => $is_en ? '🇺🇸' : '🇧🇷'];
+    }
+
+    private static function flag_markup(string $code): string
+    {
+        if (strtoupper($code) === 'EN') {
+            return '<svg viewBox="0 0 21 14" role="presentation" focusable="false"><rect width="21" height="14" fill="#fff"/><path d="M0 1h21M0 3h21M0 5h21M0 7h21M0 9h21M0 11h21M0 13h21" stroke="#c8102e" stroke-width="1"/><rect width="9" height="7.5" fill="#1b3f8b"/><path d="M0 0l9 7.5M9 0L0 7.5" stroke="#fff" stroke-width="1.4"/><path d="M4.5 0v7.5M0 3.75h9" stroke="#c8102e" stroke-width="1"/></svg>';
+        }
+        return '<svg viewBox="0 0 21 14" role="presentation" focusable="false"><rect width="21" height="14" fill="#009b3a"/><path d="M10.5 1.2L19.7 7l-9.2 5.8L1.3 7z" fill="#ffdf00"/><circle cx="10.5" cy="7" r="3.2" fill="#143d8d"/></svg>';
     }
 
     private static function target(bool $allow_home_fallback = false): array

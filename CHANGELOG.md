@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.65] — Correção de alinhamento e renderização visual PEL
+
+- substitui a bandeira baseada em emoji por SVG inline estável para PT/EN;
+- fixa a altura do seletor de idioma em 54px e remove margens verticais do shell de navegação;
+- usa tokens do Site Profile diretamente no CSS do botão de âncora;
+- reforça a remoção da linha inferior redundante do último item mini.
+
 ## [v0.7.4.0.64] — Ajustes finais de integração PEL en-US
 
 - permite que `menu_en` seja resolvido também no preview do Theme Builder quando o contexto do editor ainda não informa o idioma;

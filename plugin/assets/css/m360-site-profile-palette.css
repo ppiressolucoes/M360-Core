@@ -73,3 +73,5 @@
 /* Keep shortcode output measurable inside Elementor Theme Builder widgets. */
 .elementor-widget-shortcode .m360-navigation-shell,
 .elementor-element .m360-navigation-shell { width: 100%; max-width: 100%; min-height: 1px; }
+.m360-navigation-shell.m360-ui-nav,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation { margin: 0 !important; padding: 0 !important; min-height: 0 !important; }
