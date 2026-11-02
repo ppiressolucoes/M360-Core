@@ -66,6 +66,9 @@
 .m360-search-form__button { background: var(--m360-primary) !important; }
 .m360-search-form__button:hover,
 .m360-search-form__button:focus-visible { background: var(--m360-secondary) !important; }
+.m360-editorial-ticker__controls button { background: var(--m360-secondary) !important; color: #fff !important; }
+.m360-editorial-ticker__controls button:hover,
+.m360-editorial-ticker__controls button:focus-visible { background: var(--m360-primary) !important; color: #fff !important; }
 
 /* Keep shortcode output measurable inside Elementor Theme Builder widgets. */
 .elementor-widget-shortcode .m360-navigation-shell,

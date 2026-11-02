@@ -387,7 +387,7 @@ final class M360_Navigation_Shortcodes
     {
         $candidates = $is_en
             ? [$atts['menu_en'], $atts['menu_pt'], 'EL360 Menu Principal en-US', 'primary menu English', 'Primary Menu English', 'primary-menu-english', 'main-menu-en']
-            : [$atts['menu_pt'], $atts['menu'], 'main-menu-pt', 'Primary Menu', 'primary-menu'];
+            : [$atts['menu_pt'], $atts['menu_en'], $atts['menu'], 'main-menu-pt', 'Primary Menu', 'primary-menu'];
         if ((string)$atts['menu'] !== '') { array_unshift($candidates, $atts['menu']); }
         foreach (array_unique(array_filter($candidates)) as $candidate) { $menu = wp_get_nav_menu_object($candidate); if ($menu instanceof WP_Term) { return $menu; } }
         return null;

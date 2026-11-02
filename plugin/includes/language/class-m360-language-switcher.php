@@ -22,7 +22,7 @@ final class M360_Language_Switcher
     {
         if (is_admin()) { return; }
 
-        $target = self::target();
+        $target = self::target(true);
         if (wp_style_is('m360-core-language-switcher', 'registered')) {
             wp_enqueue_style('m360-core-language-switcher');
         }

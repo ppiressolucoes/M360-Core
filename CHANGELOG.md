@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.64] — Ajustes finais de integração PEL en-US
+
+- permite que `menu_en` seja resolvido também no preview do Theme Builder quando o contexto do editor ainda não informa o idioma;
+- mantém o seletor flutuante de idioma visível com fallback para a Home quando a página não possui tradução singular;
+- corrige altura, margem e proporção da bandeira no seletor da barra de navegação;
+- remove a linha inferior redundante do último item mini dos widgets editoriais;
+- aplica a cor secundária do Site Profile aos controles do ticker.
+
 ## [v0.7.4.0.63] — Contraste e preview do Theme Builder
 
 - corrige o contraste das etiquetas de categoria, mantendo texto branco sobre a cor primária;
