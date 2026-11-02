@@ -18,6 +18,12 @@
 .m360-editorial-ticker__category,
 .m360-ui-card__eyebrow,
 .m360-ui-breadcrumb a { color: var(--m360-primary) !important; }
+.m360-editorial-newsroom__category,
+.m360-editorial-widget__category,
+.m360-latest-news__category,
+.m360-post-info__category,
+.m360-editorial-ticker__category,
+.m360-ui-card__eyebrow { color: #fff !important; background: var(--m360-primary) !important; }
 .m360-section-navigation a,
 .m360-latest-news__archive-link,
 .m360-latest-news__more-link { border-color: var(--m360-primary) !important; }
@@ -42,16 +48,25 @@
 .m360-main-navigation__menu > li.current-menu-item > a,
 .m360-main-navigation__menu > li.current-menu-ancestor > a { background: color-mix(in srgb, var(--m360-secondary) 28%, transparent) !important; }
 .m360-breadcrumb a:hover,
-.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a:hover,
 .m360-latest-news__title a:hover,
 .m360-section-navigation a:hover { color: var(--m360-secondary) !important; }
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a:hover,
+.m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu .sub-menu a:focus-visible { color: #fff !important; }
 .m360-post-info__avatar-frame { border-color: var(--m360-primary) !important; }
-.m360-back-to-top { background: var(--m360-primary) !important; }
+.m360-back-to-top,
+.m360-lang-toggle,
+.m360-language-navigation__link { background: var(--m360-secondary) !important; color: #fff !important; }
 .m360-back-to-top:hover,
-.m360-back-to-top:focus-visible { background: var(--m360-secondary) !important; }
-.m360-search-form__button,
-.m360-lang-toggle { background: var(--m360-primary) !important; }
-.m360-search-form__button:hover,
-.m360-search-form__button:focus-visible,
+.m360-back-to-top:focus-visible,
 .m360-lang-toggle:hover,
-.m360-lang-toggle:focus-visible { background: var(--m360-secondary) !important; }
+.m360-lang-toggle:focus-visible,
+.m360-language-navigation__link:hover,
+.m360-language-navigation__link:focus-visible { background: var(--m360-primary) !important; color: #fff !important; }
+.m360-search-form__button { background: var(--m360-primary) !important; }
+.m360-search-form__button:hover,
+.m360-search-form__button:focus-visible { background: var(--m360-secondary) !important; }
+
+/* Keep shortcode output measurable inside Elementor Theme Builder widgets. */
+.elementor-widget-shortcode .m360-navigation-shell,
+.elementor-element .m360-navigation-shell { width: 100%; max-width: 100%; min-height: 1px; }

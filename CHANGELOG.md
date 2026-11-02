@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.63] — Contraste e preview do Theme Builder
+
+- corrige o contraste das etiquetas de categoria, mantendo texto branco sobre a cor primária;
+- ajusta âncora de topo, seletor de idioma e seletor de navegação para utilizar a cor secundária com estados legíveis;
+- mantém texto branco nos submenus em foco/hover;
+- adiciona fallback visual de bandeiras por CSS quando emojis não são renderizados;
+- enfileira estilos de navegação e paleta no preview/editor do Elementor para permitir ajuste de margens no Theme Builder.
+
 ## [v0.7.4.0.62] — Acoplagem progressiva do PEL
 
 - adiciona ponte de paleta do Site Profile para os componentes, blocos e shortcodes M360, usando primária e secundária do portal sem depender das cores fixas do tema;

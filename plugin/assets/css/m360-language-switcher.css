@@ -29,7 +29,35 @@
     background: #bd1119;
 }
 
-.m360-lang-toggle__flag { font-size: 18px; }
+.m360-lang-toggle__flag,
+.m360-language-navigation__flag {
+    display: inline-flex;
+    width: 21px;
+    height: 14px;
+    flex: 0 0 21px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 0;
+    line-height: 1;
+    border-radius: 1px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.22);
+}
+.m360-lang-toggle__flag::before,
+.m360-language-navigation__flag::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.m360-lang-toggle__flag[data-flag="EN"]::before,
+.m360-language-navigation__flag[data-flag="EN"]::before {
+    background: linear-gradient(90deg, transparent 0 38%, #fff 38% 44%, #c8102e 44% 56%, #fff 56% 62%, transparent 62%), linear-gradient(0deg, transparent 0 38%, #fff 38% 44%, #c8102e 44% 56%, #fff 56% 62%, transparent 62%), repeating-linear-gradient(0deg, #b22234 0 1px, #fff 1px 2px);
+}
+.m360-lang-toggle__flag[data-flag="PT"]::before,
+.m360-language-navigation__flag[data-flag="PT"]::before {
+    background: radial-gradient(circle at 63% 50%, #143d8d 0 18%, #ffdf00 19% 28%, transparent 29%), linear-gradient(45deg, transparent 0 43%, #ffdf00 44% 56%, transparent 57%), linear-gradient(90deg, #009b3a 0 40%, #ffdf00 40% 60%, #009b3a 60%);
+}
 
 .m360-language-navigation {
     position: relative;
@@ -70,7 +98,7 @@
     outline-offset: -4px;
 }
 
-.m360-language-navigation__flag { font-size: 17px; line-height: 1; }
+.m360-language-navigation__flag { line-height: 1; }
 .m360-language-navigation__code { letter-spacing: .03em; }
 .m360-language-navigation__arrow { font-size: 12px; opacity: .72; }
 

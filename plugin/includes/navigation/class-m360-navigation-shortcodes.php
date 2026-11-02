@@ -14,6 +14,8 @@ final class M360_Navigation_Shortcodes
         add_shortcode('m360_back_to_top', [self::class, 'back_to_top']);
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_sticky_header_assets'], 25);
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_back_to_top_assets'], 30);
+        add_action('elementor/preview/enqueue_styles', [self::class, 'enqueue_editor_assets'], 25);
+        add_action('elementor/editor/after_enqueue_styles', [self::class, 'enqueue_editor_assets'], 25);
         add_action('wp_footer', [self::class, 'render_back_to_top'], 10);
     }
 
@@ -45,6 +47,14 @@ final class M360_Navigation_Shortcodes
         if (!(bool) apply_filters('m360_sticky_header_enabled', true)) { return; }
         if (wp_style_is('m360-core-sticky-header', 'registered')) { wp_enqueue_style('m360-core-sticky-header'); }
         if (wp_script_is('m360-core-navigation', 'registered')) { wp_enqueue_script('m360-core-navigation'); }
+    }
+
+    public static function enqueue_editor_assets(): void
+    {
+        self::enqueue_assets();
+        if (wp_style_is('m360-core-site-profile-palette', 'registered')) {
+            wp_enqueue_style('m360-core-site-profile-palette');
+        }
     }
 
     public static function main_navigation(array $atts = []): string
