@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.62] — Acoplagem progressiva do PEL
+
+- adiciona ponte de paleta do Site Profile para os componentes, blocos e shortcodes M360, usando primária e secundária do portal sem depender das cores fixas do tema;
+- permite que `[m360_main_navigation menu_pt="..."]` resolva o menu configurado também no en-US, com fallback explícito para `EL360 Menu Principal en-US`;
+- prepara o cutover da Home do Portal Energia Limpa por perfil controlado, mantendo a assunção pública opt-in e reversível;
+- preserva a convivência com Cream Magazine e Elementor até a ativação autorizada do takeover.
+
 ## [v0.7.4.0.61] — Próxima leva disponível na abertura inicial
 
 - corrige a consulta da primeira leva da página dedicada para buscar `limit + 1` sempre que a navegação por cursor estiver ativa, mesmo antes de existir um cursor na URL;

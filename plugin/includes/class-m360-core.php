@@ -222,6 +222,12 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-editorial-sections', M360_CORE_URL . 'assets/css/m360-editorial-sections.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-widgets', M360_CORE_URL . 'assets/css/m360-editorial-widgets.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-ticker', M360_CORE_URL . 'assets/css/m360-editorial-ticker.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
+        wp_register_style('m360-core-site-profile-palette', M360_CORE_URL . 'assets/css/m360-site-profile-palette.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        $appearance = (array) (M360_Site_Profile::get()['appearance'] ?? []);
+        $primary = sanitize_hex_color((string) ($appearance['primary_color'] ?? '')) ?: '#d71920';
+        $secondary = sanitize_hex_color((string) ($appearance['secondary_color'] ?? '')) ?: '#111111';
+        wp_add_inline_style('m360-core-site-profile-palette', ':root{--m360-primary:' . esc_attr($primary) . ';--m360-secondary:' . esc_attr($secondary) . ';--m360-ui-red:' . esc_attr($primary) . ';--m360-ui-red-dark:' . esc_attr($secondary) . ';--m360-red:' . esc_attr($primary) . ';--m360-red-dark:' . esc_attr($secondary) . ';}');
+        wp_enqueue_style('m360-core-site-profile-palette');
         wp_register_style('m360-core-discovery-canary', M360_CORE_URL . 'assets/css/m360-discovery-canary.css', [], M360_CORE_VERSION);
         wp_register_script('m360-core-editorial', M360_CORE_URL . 'assets/js/m360-editorial.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-sidebar-navigation', M360_CORE_URL . 'assets/css/m360-sidebar-navigation.css', ['m360-core-foundation'], M360_CORE_VERSION);
