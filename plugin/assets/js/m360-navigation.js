@@ -114,7 +114,13 @@
         document.querySelectorAll('.m360-header-topbar').forEach(function (target) {
             if (!target.querySelector('.m360-navigation-shell.m360-ui-nav')) { initStickyNavigation(target); }
         });
-        document.querySelectorAll('.m360-navigation-shell.m360-ui-nav').forEach(initStickyNavigation);
+        document.querySelectorAll('.m360-navigation-shell.m360-ui-nav').forEach(function (shell) {
+            var target = shell.closest('.elementor-top-section, .elementor-section, .elementor-container');
+            if (!target || !target.querySelector('.m360-language-navigation, .m360-lang-toggle, .m360-search-form, .m360-search-toggle')) {
+                target = shell;
+            }
+            initStickyNavigation(target);
+        });
         document.querySelectorAll('.m360-navigation-shell').forEach(initMobileNavigation);
     }
 

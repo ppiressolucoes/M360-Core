@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.68] — Sticky da barra completa
+
+- escolhe a seção Elementor que contém navegação, idioma e busca como alvo do sticky;
+- mantém os três componentes juntos durante a rolagem;
+- reforça o desenho do ícone mobile com três barras independentes;
+- zera espaçamento também na seção Elementor que hospeda o conjunto da barra.
+
 ## [v0.7.4.0.67] — Sticky no shell do Theme Builder
 
 - aplica sticky diretamente no `m360-navigation-shell` quando o Theme Builder não emite `m360-header-topbar`;
