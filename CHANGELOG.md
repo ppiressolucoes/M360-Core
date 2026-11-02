@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.66] — Sticky navigation e limpeza visual do newsroom
+
+- fixa o shell de navegação no topo durante a rolagem, incluindo compensação do admin bar;
+- normaliza o ícone de menu mobile com dimensões fixas;
+- remove todos os separadores inferiores dos mini-itens que criavam linhas duplas no newsroom;
+- mantém a bandeira SVG inline para o seletor flutuante e da barra.
+
 ## [v0.7.4.0.65] — Correção de alinhamento e renderização visual PEL
 
 - substitui a bandeira baseada em emoji por SVG inline estável para PT/EN;

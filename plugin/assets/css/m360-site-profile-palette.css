@@ -75,3 +75,11 @@
 .elementor-element .m360-navigation-shell { width: 100%; max-width: 100%; min-height: 1px; }
 .m360-navigation-shell.m360-ui-nav,
 .m360-navigation-shell.m360-ui-nav .m360-main-navigation { margin: 0 !important; padding: 0 !important; min-height: 0 !important; }
+.m360-navigation-shell.m360-ui-nav { position: sticky !important; top: 0; z-index: 100000; }
+body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
+.m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button { width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important; padding: 0 !important; flex: 0 0 48px; }
+.m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button span { width: 24px !important; height: 3px !important; flex: 0 0 3px; }
+.m360-editorial-widget__list .m360-editorial-widget__article--mini { border-bottom: 0 !important; }
+@media (max-width: 782px) {
+    body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 46px; }
+}
