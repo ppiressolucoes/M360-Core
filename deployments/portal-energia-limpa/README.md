@@ -1,11 +1,11 @@
-# M360 Core — PEL Controlled Deployment v0.1.9
+# M360 Core — PEL Controlled Deployment v0.1.10
 
-Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.67.zip`. Ele aplica somente o perfil controlado do PEL.
+Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.68.zip`. Ele aplica somente o perfil controlado do PEL.
 
 ## Sequência
 
-1. Verificar o SHA do ZIP candidato registrado na release do Core v0.7.4.0.67.
-2. Instalar e ativar o M360 Core v0.7.4.0.67.
+1. Verificar o SHA do ZIP candidato registrado na release do Core v0.7.4.0.68.
+2. Instalar e ativar o M360 Core v0.7.4.0.68.
 3. Verificar `portable-safe` e `fresh-installation-no-evidence` em M360 > Plataforma.
 4. Instalar este complemento e, em M360 Dashboard > PEL — Implantação, selecionar **Aplicar perfil PEL controlado**.
 5. Homologar cada shortcode em uma página/template Elementor de teste antes de qualquer publicação.
