@@ -1,9 +1,9 @@
 {
-  "profile_version": "0.1.13",
+  "profile_version": "0.1.15",
   "target": "portal-energia-limpa",
   "core_package": {
-    "version": "0.7.4.0.71",
-    "sha256": "152AF4CD2BA202D6268C3A1007EEEDA734A037C63B28403F86CB6C90284237AD"
+    "version": "0.7.4.0.73",
+    "sha256": "BCB64FE9EDACAB7058FB128572416405CB60C499804C0AF29A101266120EA178"
   },
   "site_profile": {
     "site_key": "portal-energia-limpa",
