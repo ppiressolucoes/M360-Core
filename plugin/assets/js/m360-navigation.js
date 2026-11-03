@@ -34,10 +34,19 @@
             target.classList.toggle('m360-is-fixed', shouldFix);
             target.style.setProperty('--m360-sticky-admin-offset', adminOffset() + 'px');
             if (target.classList.contains('m360-header-navigation-bar')) {
-                target.style.setProperty('width', '100vw');
-                target.style.setProperty('max-width', '100vw');
-                target.style.setProperty('left', '0px');
-                target.style.setProperty('right', '0px');
+                if (shouldFix) {
+                    target.style.setProperty('width', '100%');
+                    target.style.setProperty('max-width', '1140px');
+                    target.style.setProperty('left', '50%');
+                    target.style.setProperty('right', 'auto');
+                    target.style.setProperty('transform', 'translateX(-50%)');
+                } else {
+                    target.style.removeProperty('width');
+                    target.style.removeProperty('max-width');
+                    target.style.removeProperty('left');
+                    target.style.removeProperty('right');
+                    target.style.removeProperty('transform');
+                }
             }
             placeholder.style.height = shouldFix ? target.getBoundingClientRect().height + 'px' : '0px';
         }

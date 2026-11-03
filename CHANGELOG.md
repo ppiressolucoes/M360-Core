@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.71] — Contêiner interno de 1140px
+
+- centraliza a barra unificada no mesmo limite de 1140px do Theme Builder;
+- mantém a barra centralizada quando fixa durante a rolagem;
+- garante o botão mobile dentro da primeira coluna no carregamento;
+- preserva 100% de largura somente abaixo do breakpoint mobile.
+
 ## [v0.7.4.0.70] — Correção de breakpoint e largura do sticky
 
 - esconde o botão mobile no desktop e mantém o menu completo em tablet/desktop;
