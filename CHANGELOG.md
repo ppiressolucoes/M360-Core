@@ -1,5 +1,10 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.73] — Remoção dos pseudo-separadores do Newsroom
+
+- neutraliza pseudo-elementos de colunas e cards do Newsroom que desenhavam linhas duplicadas;
+- preserva o gradiente do artigo principal em destaque.
+
 ## [v0.7.4.0.72] — Tablet sem overflow e fallback de bandeira
 
 - limita a barra unificada a 100% da viewport entre 768px e 1024px;

@@ -93,6 +93,16 @@ body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
 .m360-editorial-widget .m360-editorial-widget__article,
 .m360-editorial-widget .m360-editorial-widget__list,
 .m360-editorial-widget hr { border-bottom: 0 !important; }
+.m360-editorial-widget .m360-editorial-widget__column::before,
+.m360-editorial-widget .m360-editorial-widget__column::after,
+.m360-editorial-widget .m360-editorial-widget__article--portrait::before,
+.m360-editorial-widget .m360-editorial-widget__article--portrait::after,
+.m360-editorial-widget .m360-editorial-widget__article--card::before,
+.m360-editorial-widget .m360-editorial-widget__article--card::after,
+.m360-editorial-widget .m360-editorial-widget__article--lead::before,
+.m360-editorial-widget .m360-editorial-widget__article--lead::after,
+.m360-editorial-widget .m360-editorial-widget__article--mini::before,
+.m360-editorial-widget .m360-editorial-widget__article--mini::after { display: none !important; content: none !important; border: 0 !important; box-shadow: none !important; }
 .elementor-top-section:has(.m360-navigation-shell.m360-ui-nav),
 .elementor-section:has(.m360-navigation-shell.m360-ui-nav),
 .elementor-container:has(.m360-navigation-shell.m360-ui-nav) { margin-block: 0 !important; padding-block: 0 !important; min-height: 0 !important; }
