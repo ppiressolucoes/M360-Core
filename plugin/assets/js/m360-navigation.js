@@ -33,6 +33,12 @@
             var shouldFix = window.scrollY + adminOffset() >= threshold;
             target.classList.toggle('m360-is-fixed', shouldFix);
             target.style.setProperty('--m360-sticky-admin-offset', adminOffset() + 'px');
+            if (target.classList.contains('m360-header-navigation-bar')) {
+                target.style.setProperty('width', '100vw');
+                target.style.setProperty('max-width', '100vw');
+                target.style.setProperty('left', '0px');
+                target.style.setProperty('right', '0px');
+            }
             placeholder.style.height = shouldFix ? target.getBoundingClientRect().height + 'px' : '0px';
         }
 

@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.70] — Correção de breakpoint e largura do sticky
+
+- esconde o botão mobile no desktop e mantém o menu completo em tablet/desktop;
+- exibe o botão mobile apenas abaixo de 768px;
+- força a barra unificada a ocupar a largura da viewport durante a rolagem;
+- mantém busca e idioma dentro do mesmo wrapper fixo.
+
 ## [v0.7.4.0.69] — Barra de navegação unificada
 
 - adiciona `[m360_header_navigation]`, reunindo menu, idioma e busca em uma única estrutura;
