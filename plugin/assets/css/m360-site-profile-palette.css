@@ -100,6 +100,14 @@ body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
 .elementor-element:has(.m360-navigation-shell.m360-ui-nav) { margin-block: 0 !important; padding-block: 0 !important; min-height: 0 !important; }
 .m360-lang-toggle__flag svg,
 .m360-language-navigation__flag svg { display: block !important; width: 21px !important; height: 14px !important; opacity: 1 !important; visibility: visible !important; }
+.m360-language-flag-fallback { position: relative; z-index: 2; }
+@media (min-width: 768px) and (max-width: 1024px) {
+    .m360-header-navigation-bar { width: 100%; max-width: 100%; grid-template-columns: minmax(0, 8fr) minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; }
+    .m360-header-navigation-bar__column { min-width: 0; overflow: hidden; }
+    .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button { display: inline-flex !important; }
+    .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-main-navigation { display: none !important; }
+    .m360-header-navigation-bar.m360-core-sticky-target.m360-is-fixed { left: 0 !important; transform: none !important; max-width: 100% !important; }
+}
 @media (max-width: 782px) {
     body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 46px; }
 }

@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.72] — Tablet sem overflow e fallback de bandeira
+
+- limita a barra unificada a 100% da viewport entre 768px e 1024px;
+- impede overflow das três colunas no tablet;
+- mantém o botão mobile na primeira coluna nessa faixa;
+- adiciona fallback textual de bandeira ao botão flutuante e ao seletor da barra.
+
 ## [v0.7.4.0.71] — Contêiner interno de 1140px
 
 - centraliza a barra unificada no mesmo limite de 1140px do Theme Builder;

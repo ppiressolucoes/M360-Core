@@ -51,7 +51,7 @@ final class M360_Language_Switcher
             . ' hreflang="' . esc_attr((string) $target['locale']) . '"'
             . ' title="' . esc_attr((string) $target['title']) . '"'
             . ' aria-label="' . esc_attr((string) $target['aria_label']) . '">'
-            . '<span class="m360-lang-toggle__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . self::flag_markup((string) $target['code']) . '</span>'
+            . '<span class="m360-lang-toggle__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . self::flag_markup((string) $target['code']) . '<span class="m360-language-flag-fallback">' . esc_html((string) $target['flag']) . '</span></span>'
             . '<span class="m360-lang-toggle__code">' . esc_html((string) $target['code']) . '</span>'
             . '</a></div>';
     }
@@ -67,7 +67,7 @@ final class M360_Language_Switcher
             : sprintf('Idioma atual: %s. %s', $active_label, (string) $target['aria_label']);
         return '<div class="m360-language-navigation" data-m360-language-navigation>'
             . '<a class="m360-language-navigation__link" href="' . esc_url((string) $target['url']) . '" hreflang="' . esc_attr((string) $target['locale']) . '" title="' . esc_attr((string) $target['title']) . '" aria-label="' . esc_attr($aria_label) . '">'
-            . '<span class="m360-language-navigation__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . self::flag_markup((string) $target['code']) . '</span>'
+            . '<span class="m360-language-navigation__flag" data-flag="' . esc_attr((string) $target['code']) . '" aria-hidden="true">' . self::flag_markup((string) $target['code']) . '<span class="m360-language-flag-fallback">' . esc_html((string) $target['flag']) . '</span></span>'
             . '<span class="m360-language-navigation__code">' . esc_html((string) $target['code']) . '</span>'
             . '<span class="m360-language-navigation__arrow" aria-hidden="true">↔</span>'
             . '</a></div>';
