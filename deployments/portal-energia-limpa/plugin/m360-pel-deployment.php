@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 PEL Controlled Deployment
  * Description: Perfil operacional controlado do M360 Core para o Portal Energia Limpa.
- * Version: 0.1.17
+ * Version: 0.1.18
  * Requires at least: 6.0
  * Requires PHP: 8.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_PEL_Controlled_Deployment
 {
     private const OPTION = 'm360_pel_controlled_deployment';
-    private const VERSION = '0.1.17';
+    private const VERSION = '0.1.18';
 
     public static function register(): void
     {
@@ -21,6 +21,7 @@ final class M360_PEL_Controlled_Deployment
         add_action('init', [self::class, 'register_shortcodes'], 30);
         add_action('wp_enqueue_scripts', [self::class, 'register_assets']);
         add_filter('get_search_form', [self::class, 'filter_native_search_form'], 999, 2);
+        add_filter('m360_search_use_elementor_theme_locations', [self::class, 'use_elementor_search_shell']);
         add_action('init', [self::class, 'migrate_dynamic_view_ownership'], 5);
     }
 
@@ -50,6 +51,11 @@ final class M360_PEL_Controlled_Deployment
             return do_shortcode('[m360_search_form variant="header"]');
         }
         return self::search_form([]);
+    }
+
+    public static function use_elementor_search_shell(bool $enabled): bool
+    {
+        return self::profile_applied() ? true : $enabled;
     }
 
     /**
