@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.78] — Search Results do Elementor no roteamento do Core
+
+- permite que o template Search Results/Archive ativo no Elementor forneça o corpo da busca pública;
+- preserva o renderer de busca do Core como fallback quando não houver template dinâmico do Elementor;
+- mantém o ownership da rota e a filtragem de idioma sob o M360 Core.
+
 ## [v0.7.4.0.77] — Rotas dinâmicas do Core no PEL
 
 - incorpora a base de produção `v0.7.4.0.76`, incluindo a correção do Discovery Cron;
