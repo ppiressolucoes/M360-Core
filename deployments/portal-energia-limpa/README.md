@@ -1,11 +1,11 @@
-# M360 Core — PEL Controlled Deployment v0.1.15
+# M360 Core — PEL Controlled Deployment v0.1.16
 
-Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.73.zip`. Ele aplica somente o perfil controlado do PEL.
+Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.77.zip`. Ele aplica somente o perfil controlado do PEL.
 
 ## Sequência
 
-1. Verificar o SHA do ZIP candidato registrado na release do Core v0.7.4.0.73.
-2. Instalar e ativar o M360 Core v0.7.4.0.73.
+1. Verificar o SHA do ZIP candidato registrado na release do Core v0.7.4.0.77.
+2. Instalar e ativar o M360 Core v0.7.4.0.77.
 3. Verificar `portable-safe` e `fresh-installation-no-evidence` em M360 > Plataforma.
 4. Instalar este complemento e, em M360 Dashboard > PEL — Implantação, selecionar **Aplicar perfil PEL controlado**.
 5. Homologar cada shortcode em uma página/template Elementor de teste antes de qualquer publicação.
@@ -31,7 +31,7 @@ Este complemento é instalado **depois** do ZIP candidato `m360-core-v0.7.4.0.73
 | Discovery | snapshots + canário + shortcodes renderer | Sem injeção automática |
 | Consent, Newsletter, Ads | diagnóstico de provider | Sem runtime público |
 
-Qualquer ativação de Ads, Newsletter, Consent, injeção automática de Discovery ou takeover de templates exige uma autorização específica e um registro de homologação.
+O perfil assume no Core as rotas públicas de busca, autor, categoria, tag e data. Ads, Newsletter, Consent, injeção automática de Discovery e takeover da Home continuam exigindo uma autorização específica e um registro de homologação.
 
 ## Cutover da Home
 

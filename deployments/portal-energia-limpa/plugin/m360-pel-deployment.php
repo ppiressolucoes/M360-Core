@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 PEL Controlled Deployment
  * Description: Perfil operacional controlado do M360 Core para o Portal Energia Limpa.
- * Version: 0.1.15
+ * Version: 0.1.16
  * Requires at least: 6.0
  * Requires PHP: 8.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_PEL_Controlled_Deployment
 {
     private const OPTION = 'm360_pel_controlled_deployment';
-    private const VERSION = '0.1.15';
+    private const VERSION = '0.1.16';
 
     public static function register(): void
     {
@@ -21,6 +21,7 @@ final class M360_PEL_Controlled_Deployment
         add_action('init', [self::class, 'register_shortcodes'], 30);
         add_action('wp_enqueue_scripts', [self::class, 'register_assets']);
         add_filter('get_search_form', [self::class, 'filter_native_search_form'], 999, 2);
+        add_action('init', [self::class, 'migrate_dynamic_view_ownership'], 5);
     }
 
     public static function register_shortcodes(): void
@@ -45,7 +46,40 @@ final class M360_PEL_Controlled_Deployment
     public static function filter_native_search_form(string $form, array $args = []): string
     {
         if (is_admin() || !self::profile_applied()) { return $form; }
+        if (shortcode_exists('m360_search_form')) {
+            return do_shortcode('[m360_search_form variant="header"]');
+        }
         return self::search_form([]);
+    }
+
+    /**
+     * Move an already applied PEL profile to the Core-owned public views.
+     * This is idempotent and leaves Ads, Newsletter and Consent disabled.
+     */
+    public static function migrate_dynamic_view_ownership(): void
+    {
+        if (!self::profile_applied() || !class_exists('M360_Site_Profile')) { return; }
+        $profile = M360_Site_Profile::get();
+        $runtime = is_array($profile['runtime'] ?? null) ? $profile['runtime'] : [];
+        $capabilities = is_array($runtime['capabilities'] ?? null) ? $runtime['capabilities'] : [];
+        $expected = [
+            'public_views' => false,
+            'search_view' => true,
+            'author_view' => true,
+            'category_view' => true,
+            'tag_view' => true,
+            'date_view' => true,
+            'ads_runtime' => false,
+            'ads_auto_insert' => false,
+            'newsletter_runtime' => false,
+            'consent_runtime' => false,
+        ];
+        if ($capabilities === $expected) { return; }
+        $profile['runtime'] = [
+            'mode' => 'portable-safe',
+            'capabilities' => $expected,
+        ];
+        M360_Site_Profile::update($profile);
     }
 
     public static function search_form(array $atts = []): string
@@ -157,8 +191,8 @@ final class M360_PEL_Controlled_Deployment
         }
 
         // The Site Profile is the only portable identity written by this add-on.
-        // Runtime capabilities remain off: no public template ownership, Ads,
-        // Newsletter or Consent output is enabled by this operation.
+        // Core owns the public discovery views; Ads, Newsletter and Consent
+        // output remain disabled by this operation.
         $home_takeover = !empty($_POST['home_takeover']);
         $home_widgets = $home_takeover ? self::ensure_home_widgets() : ['pt-BR' => [], 'en-US' => []];
         M360_Site_Profile::update([
@@ -182,6 +216,11 @@ final class M360_PEL_Controlled_Deployment
                 'mode' => 'portable-safe',
                 'capabilities' => [
                     'public_views' => false,
+                    'search_view' => true,
+                    'author_view' => true,
+                    'category_view' => true,
+                    'tag_view' => true,
+                    'date_view' => true,
                     'ads_runtime' => false,
                     'ads_auto_insert' => false,
                     'newsletter_runtime' => false,
@@ -261,14 +300,14 @@ final class M360_PEL_Controlled_Deployment
             <table class="widefat striped"><tbody>
                 <tr><th>Site Profile</th><td><?php echo esc_html(($profile['site_key'] ?? '') === 'portal-energia-limpa' ? 'PEL · pt-BR / en-US' : 'Pendente'); ?></td></tr>
                 <tr><th>Foundation</th><td>Ativo pelo M360 Core.</td></tr>
-                <tr><th>Editorial</th><td>Shortcodes explícitos / Elementor; sem takeover de templates.</td></tr>
+                <tr><th>Editorial</th><td>Home por cutover explícito; busca, autor, categoria, tag e data renderizados pelo Core.</td></tr>
                 <tr><th>Discovery &amp; SEO</th><td>Shadow manual; máximo de 3 links; sem injeção automática.</td></tr>
                 <tr><th>Ads, Newsletter e Consent</th><td><?php echo !empty($runtime['ads_runtime']) || !empty($runtime['newsletter_runtime']) || !empty($runtime['consent_runtime']) ? 'Revisar: capability pública encontrada.' : 'Desligados neste perfil.'; ?></td></tr>
                 <tr><th>Estado</th><td><?php echo !empty($state['applied']) ? 'Perfil aplicado em ' . esc_html((string) $state['applied_at']) : 'Não aplicado'; ?></td></tr>
             </tbody></table>
 
             <h2>Ativação controlada</h2>
-            <p>Por padrão, esta ação grava somente o Site Profile e as configurações de módulos acima. A Home do tema permanece ativa.</p>
+            <p>Esta ação preserva o tema e o Elementor para a Home e para o layout visual, enquanto as rotas de busca, autor, categoria, tag e data passam a usar os templates do Core.</p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="m360_pel_apply_profile">
                 <?php wp_nonce_field('m360_pel_apply_profile'); ?>
