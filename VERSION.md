@@ -3,12 +3,12 @@
 ## Baseline estável
 
 ```text
-0.7.4.0.81
+0.7.4.0.82
 ```
 
 ## Estado operacional
 
-- Candidata para homologação: `v0.7.4.0.81 — Archive Elementor multilíngue para views dinâmicas`.
+- Candidata para homologação: `v0.7.4.0.82 — bloco Archive Results para templates Elementor`.
 - Fonte técnica principal: pacote homologado do Mengão 360 `v0.7.4.0.54`, preservando a extensão portátil de dicionário externo e a resolução de categoria principal do PEL.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
@@ -93,6 +93,8 @@ Uso recomendado em sidebar sem anúncio interno:
 Em um template Elementor de Search Results, use `[m360_search_form variant="compact"]` para o campo e `[m360_search_results]` para a listagem. O shortcode de resultados usa a consulta principal da busca, respeita o idioma ativo e mantém a paginação do Core sem duplicar o formulário.
 
 O mesmo template Elementor Archive pode ser usado pelas rotas de categoria, tag, data e autor. Para pt-BR e en-US, publique templates Archive separados com as condições de idioma correspondentes; o Core entrega o idioma ativo ao Elementor e mantém seus controladores como fallback.
+
+No template Archive, use `[m360_archive_results]` para renderizar os itens da rota atual. O shortcode identifica automaticamente categoria, tag, data, autor ou busca.
 
 ## Componente Post Info
 

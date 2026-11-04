@@ -5,6 +5,7 @@
 - aplica o shell Elementor às rotas de categoria, tag, data e autor;
 - usa Header, Archive e Footer traduzidos conforme o idioma ativo;
 - mantém os renderizadores do Core como fallback quando não houver Archive publicado.
+- disponibiliza `[m360_archive_results]` para renderizar o conteúdo da rota atual dentro do template Archive.
 
 ## [v0.7.4.0.80] — Shell Elementor automático
 

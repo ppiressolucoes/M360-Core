@@ -308,6 +308,28 @@ final class M360_Core_Runtime_034
         }
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
+        add_shortcode('m360_archive_results', [$this, 'render_archive_results_shortcode']);
+    }
+
+    public function render_archive_results_shortcode(array $atts = []): string
+    {
+        if (is_admin()) { return ''; }
+        if (is_search() && class_exists('M360_Search_Controller')) {
+            return M360_Search_Controller::render(false);
+        }
+        if (is_category() && class_exists('M360_Category_Controller')) {
+            return M360_Category_Controller::render();
+        }
+        if (is_tag() && class_exists('M360_Tag_Controller')) {
+            return M360_Tag_Controller::render();
+        }
+        if (is_author() && class_exists('M360_Author_Controller')) {
+            return M360_Author_Controller::render();
+        }
+        if (is_date() && class_exists('M360_Date_Archive_Controller')) {
+            return M360_Date_Archive_Controller::render();
+        }
+        return '';
     }
 
     public function render_status_shortcode(): string
