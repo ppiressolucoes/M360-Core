@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.81] — Archive Elementor multilíngue
+
+- aplica o shell Elementor às rotas de categoria, tag, data e autor;
+- usa Header, Archive e Footer traduzidos conforme o idioma ativo;
+- mantém os renderizadores do Core como fallback quando não houver Archive publicado.
+
 ## [v0.7.4.0.80] — Shell Elementor automático
 
 - usa automaticamente Header, Search Results e Footer do Elementor quando Theme Builder está disponível;

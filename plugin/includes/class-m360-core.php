@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) { exit; }
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
+require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-elementor-dynamic-shell.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-page-preloader.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-sidebar-navigation.php';
