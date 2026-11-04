@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.83] — Widgets laterais configuráveis
+
+- permite selecionar categorias por nome ou slug com `include`;
+- permite definir meses do bloco de arquivos com `months`;
+- mantém `show_counts` para controlar a exibição das quantidades nos dois blocos.
+
 ## [v0.7.4.0.81] — Archive Elementor multilíngue
 
 - aplica o shell Elementor às rotas de categoria, tag, data e autor;
