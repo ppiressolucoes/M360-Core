@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.77] — Rotas dinâmicas do Core no PEL
+
+- incorpora a base de produção `v0.7.4.0.76`, incluindo a correção do Discovery Cron;
+- permite que o perfil controlado do Portal Energia Limpa assuma busca, autor, categoria, tag e data pelos controladores do Core;
+- mantém anúncios, newsletter e consentimento desligados no perfil portable-safe;
+- usa o formulário de busca do Core quando ele está disponível, preservando o formulário PEL como fallback de compatibilidade.
+
 ## [v0.7.4.0.73] — Remoção dos pseudo-separadores do Newsroom
 
 - neutraliza pseudo-elementos de colunas e cards do Newsroom que desenhavam linhas duplicadas;

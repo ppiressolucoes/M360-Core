@@ -135,6 +135,59 @@ final class M360_Discovery_Scheduler
         }
     }
 
+    /**
+     * Run only due Discovery post events from an external CLI cron.
+     *
+     * Do not use the capped dashboard queue as the source of truth: older
+     * scheduled events may no longer be represented there. Unschedule before
+     * the callback, as WP-Cron does, so the callback can schedule a retry.
+     * Restore a failed callback's event for a later attempt.
+     *
+     * @return array{considered:int,processed:int,skipped:int,disabled:bool}
+     */
+    public static function process_queued(int $limit = 1): array
+    {
+        $result = ['considered'=>0, 'processed'=>0, 'skipped'=>0, 'disabled'=>false];
+        if (!self::writer_enabled()) {
+            $result['disabled'] = true;
+            return $result;
+        }
+
+        $limit = max(1, min(5, $limit));
+        foreach (wp_get_ready_cron_jobs() as $timestamp => $hooks) {
+            if (empty($hooks[self::PROCESS_HOOK]) || !is_array($hooks[self::PROCESS_HOOK])) { continue; }
+            foreach ($hooks[self::PROCESS_HOOK] as $event) {
+                if ($result['considered'] >= $limit) { return $result; }
+                $result['considered']++;
+                $args = $event['args'] ?? null;
+                if (!is_array($args) || !isset($args[0]) || !is_numeric($args[0]) || (int) $args[0] <= 0) {
+                    $result['skipped']++;
+                    continue;
+                }
+
+                // Match the exact timestamp and original arguments; never clear
+                // the whole hook or an unrelated WP-Cron event.
+                $removed = wp_unschedule_event((int) $timestamp, self::PROCESS_HOOK, $args, true);
+                if (true !== $removed) {
+                    throw new RuntimeException('Could not unschedule the Discovery event for post ' . (int) $args[0]);
+                }
+
+                $post_id = (int) $args[0];
+                $attempt = isset($args[1]) ? (int) $args[1] : 0;
+                try {
+                    self::process($post_id, $attempt);
+                } catch (Throwable $error) {
+                    if (!wp_next_scheduled(self::PROCESS_HOOK, $args)) {
+                        wp_schedule_single_event(time() + 60, self::PROCESS_HOOK, $args);
+                    }
+                    throw $error;
+                }
+                $result['processed']++;
+            }
+        }
+        return $result;
+    }
+
     public static function start_backfill(): bool
     {
         if (!self::writer_enabled()) { return false; }

@@ -20,10 +20,11 @@
 .m360-ui-breadcrumb a { color: var(--m360-primary) !important; }
 .m360-editorial-newsroom__category,
 .m360-editorial-widget__category,
-.m360-latest-news__category,
 .m360-post-info__category,
-.m360-editorial-ticker__category,
 .m360-ui-card__eyebrow { color: #fff !important; background: var(--m360-primary) !important; }
+.m360-latest-news__category,
+.m360-editorial-ticker__category { color: var(--m360-primary) !important; background: transparent !important; box-shadow: none !important; font-weight: 800 !important; }
+.m360-editorial-ticker .m360-editorial-ticker__item .m360-editorial-ticker__category { color: var(--m360-primary) !important; background: transparent !important; }
 .m360-section-navigation a,
 .m360-latest-news__archive-link,
 .m360-latest-news__more-link { border-color: var(--m360-primary) !important; }
@@ -78,6 +79,8 @@
 .m360-editorial-ticker__controls button { background: var(--m360-secondary) !important; color: #fff !important; }
 .m360-editorial-ticker__controls button:hover,
 .m360-editorial-ticker__controls button:focus-visible { background: var(--m360-primary) !important; color: #fff !important; }
+.m360-latest-news__category,
+.m360-editorial-ticker__category { color: #fff !important; }
 
 /* Keep shortcode output measurable inside Elementor Theme Builder widgets. */
 .elementor-widget-shortcode .m360-navigation-shell,
@@ -103,20 +106,38 @@ body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
 .m360-editorial-widget .m360-editorial-widget__article--lead::after,
 .m360-editorial-widget .m360-editorial-widget__article--mini::before,
 .m360-editorial-widget .m360-editorial-widget__article--mini::after { display: none !important; content: none !important; border: 0 !important; box-shadow: none !important; }
+.m360-editorial-newsroom__cards::before,
+.m360-editorial-newsroom__cards::after,
+.m360-editorial-newsroom__card::before,
+.m360-editorial-newsroom__card::after,
+.m360-editorial-newsroom__card-content::before,
+.m360-editorial-newsroom__card-content::after,
+.m360-editorial-widget__grid::before,
+.m360-editorial-widget__grid::after,
+.m360-editorial-widget__column::before,
+.m360-editorial-widget__column::after,
+.m360-editorial-widget__list::before,
+.m360-editorial-widget__list::after { display: none !important; content: none !important; border: 0 !important; box-shadow: none !important; }
+.m360-editorial-newsroom__cards .m360-editorial-newsroom__card,
+.m360-editorial-newsroom__cards .m360-editorial-newsroom__card *,
+.m360-editorial-widget__grid,
+.m360-editorial-widget__column,
+.m360-editorial-widget__list,
+.m360-editorial-widget__article { border-bottom: 0 !important; }
 .elementor-top-section:has(.m360-navigation-shell.m360-ui-nav),
 .elementor-section:has(.m360-navigation-shell.m360-ui-nav),
 .elementor-container:has(.m360-navigation-shell.m360-ui-nav) { margin-block: 0 !important; padding-block: 0 !important; min-height: 0 !important; }
 .elementor-widget-shortcode:has(.m360-navigation-shell.m360-ui-nav),
 .elementor-element:has(.m360-navigation-shell.m360-ui-nav) { margin-block: 0 !important; padding-block: 0 !important; min-height: 0 !important; }
 .m360-lang-toggle__flag svg,
-.m360-language-navigation__flag svg { display: block !important; width: 21px !important; height: 14px !important; opacity: 1 !important; visibility: visible !important; }
-.m360-language-flag-fallback { position: relative; z-index: 2; }
+.m360-language-navigation__flag svg { display: block !important; flex: 0 0 21px !important; width: 21px !important; min-width: 21px !important; height: 14px !important; min-height: 14px !important; opacity: 1 !important; visibility: visible !important; }
+.m360-language-flag-fallback { display: none !important; }
 @media (min-width: 768px) and (max-width: 1024px) {
-    .m360-header-navigation-bar { width: 100%; max-width: 100%; grid-template-columns: minmax(0, 8fr) minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; }
+    .m360-header-navigation-bar { box-sizing: border-box; width: 100vw !important; max-width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; grid-template-columns: minmax(0, 8fr) minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; }
     .m360-header-navigation-bar__column { min-width: 0; overflow: hidden; }
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button { display: inline-flex !important; }
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-main-navigation { display: none !important; }
-    .m360-header-navigation-bar.m360-core-sticky-target.m360-is-fixed { left: 0 !important; transform: none !important; max-width: 100% !important; }
+    .m360-header-navigation-bar.m360-core-sticky-target.m360-is-fixed { left: 0 !important; right: 0 !important; width: 100vw !important; max-width: 100vw !important; margin-left: 0 !important; margin-right: 0 !important; transform: none !important; }
 }
 @media (max-width: 782px) {
     body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 46px; }
@@ -125,8 +146,11 @@ body.admin-bar .m360-navigation-shell.m360-ui-nav { top: 32px; }
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button { display: inline-flex !important; }
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-main-navigation { display: none !important; }
     .m360-header-navigation-bar .m360-mobile-nav-button { display: inline-flex !important; }
+    .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-toggle:checked ~ .m360-main-navigation { display: block !important; }
+    .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu { display: block !important; }
+    .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu li.m360-submenu-open > .sub-menu { display: block !important; }
 }
-@media (min-width: 768px) {
+@media (min-width: 1025px) {
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-mobile-nav-button { display: none !important; }
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-main-navigation { display: block !important; position: static !important; width: 100% !important; max-width: none !important; max-height: none !important; overflow: visible !important; box-shadow: none !important; }
     .m360-header-navigation-bar .m360-navigation-shell.m360-ui-nav .m360-main-navigation__menu { display: flex !important; width: 100% !important; }

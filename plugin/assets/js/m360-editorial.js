@@ -14,21 +14,20 @@
       if(slides.length<2){return;}
       var previous=Array.prototype.slice.call(carousel.querySelectorAll('[data-m360-editorial-prev]'));
       var next=Array.prototype.slice.call(carousel.querySelectorAll('[data-m360-editorial-next]'));
+      var pause=carousel.querySelector('[data-m360-editorial-pause]');
       var indicators=Array.prototype.slice.call(carousel.querySelectorAll('[data-m360-editorial-indicator]'));
       var current=0;
       var timer=null;
       var interval=Math.max(2500,parseInt(carousel.getAttribute('data-interval')||'6500',10));
-      var autoplay=carousel.getAttribute('data-autoplay')==='true'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var paused=carousel.getAttribute('data-autoplay')!=='true'||(carousel.getAttribute('data-reduced-motion')==='respect'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
       function show(index){slides[current].hidden=true;slides[current].setAttribute('aria-hidden','true');current=(index+slides.length)%slides.length;slides[current].hidden=false;slides[current].setAttribute('aria-hidden','false');indicators.forEach(function(indicator,indicatorIndex){var active=indicatorIndex===current;indicator.setAttribute('aria-current',active?'true':'false');indicator.classList.toggle('is-active',active);});}
       function stop(){if(timer!==null){window.clearInterval(timer);timer=null;}}
-      function start(){stop();if(autoplay){timer=window.setInterval(function(){show(current+1);},interval);}}
+      function start(){stop();if(!paused&&!document.hidden){timer=window.setInterval(function(){show(current+1);},interval);}}
+      function updatePause(){if(!pause){return;}pause.setAttribute('data-state',paused?'paused':'playing');pause.setAttribute('aria-label',pause.getAttribute(paused?'data-play-label':'data-pause-label'));pause.setAttribute('aria-pressed',paused?'true':'false');}
+      if(pause){pause.addEventListener('click',function(){paused=!paused;updatePause();start();});updatePause();}
       previous.forEach(function(button){button.addEventListener('click',function(){show(current-1);start();});});
       next.forEach(function(button){button.addEventListener('click',function(){show(current+1);start();});});
       indicators.forEach(function(indicator,index){indicator.addEventListener('click',function(){show(index);start();});});
-      carousel.addEventListener('mouseenter',stop);
-      carousel.addEventListener('mouseleave',start);
-      carousel.addEventListener('focusin',stop);
-      carousel.addEventListener('focusout',start);
       document.addEventListener('visibilitychange',function(){if(document.hidden){stop();}else{start();}});
       start();
     });

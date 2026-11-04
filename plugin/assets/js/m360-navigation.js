@@ -102,10 +102,46 @@
             window.requestAnimationFrame(updatePosition);
         }
 
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            toggle.checked = !toggle.checked;
+            updatePosition();
+        });
+
+        navigation.querySelectorAll('li.menu-item-has-children > a, li.page_item_has_children > a').forEach(function (link) {
+            var item = link.parentElement;
+            var submenu = item ? item.querySelector(':scope > .sub-menu') : null;
+            if (!item || !submenu) { return; }
+            link.setAttribute('aria-haspopup', 'true');
+            link.setAttribute('aria-expanded', 'false');
+            link.addEventListener('click', function (event) {
+                if (!isMobile()) { return; }
+                var open = link.getAttribute('aria-expanded') === 'true';
+                if (!open) {
+                    event.preventDefault();
+                    navigation.querySelectorAll('li.m360-submenu-open').forEach(function (other) {
+                        if (other === item) { return; }
+                        other.classList.remove('m360-submenu-open');
+                        var otherLink = other.querySelector(':scope > a');
+                        if (otherLink) { otherLink.setAttribute('aria-expanded', 'false'); }
+                    });
+                    item.classList.add('m360-submenu-open');
+                    link.setAttribute('aria-expanded', 'true');
+                } else {
+                    item.classList.remove('m360-submenu-open');
+                    link.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+
         toggle.addEventListener('change', updatePosition);
         window.addEventListener('scroll', requestPositionUpdate, { passive: true });
         window.addEventListener('resize', function () {
-            if (!isMobile()) { toggle.checked = false; }
+            if (!isMobile()) {
+                toggle.checked = false;
+                navigation.querySelectorAll('li.m360-submenu-open').forEach(function (item) { item.classList.remove('m360-submenu-open'); });
+                navigation.querySelectorAll('li.menu-item-has-children > a, li.page_item_has_children > a').forEach(function (link) { link.setAttribute('aria-expanded', 'false'); });
+            }
             requestPositionUpdate();
         });
         document.addEventListener('click', function (event) {

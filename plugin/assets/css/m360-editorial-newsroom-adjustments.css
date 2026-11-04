@@ -17,6 +17,49 @@
     box-shadow: 0 2px 7px rgba(0, 0, 0, .42);
 }
 
+/* Keep the image visible while adding contrast directly behind the card title. */
+.m360-editorial-newsroom__cards .m360-editorial-newsroom__card-content {
+    padding-top: clamp(3rem, 7vw, 5rem);
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .68) 48%, rgba(0, 0, 0, .88));
+}
+
+.m360-editorial-newsroom__carousel .m360-editorial-newsroom__controls {
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 6px;
+    opacity: 1;
+}
+.m360-editorial-newsroom__carousel .m360-editorial-newsroom__controls button {
+    display: grid !important;
+    flex: 0 0 46px;
+    width: 46px !important;
+    min-width: 46px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 !important;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.8) !important;
+    border-radius: 3px !important;
+    background: rgba(12,12,12,.82) !important;
+    line-height: 1 !important;
+}
+.m360-editorial-newsroom__controls svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.m360-editorial-newsroom__controls [data-m360-editorial-play-icon] { fill: currentColor; stroke: none; }
+.m360-editorial-newsroom__controls [data-state="playing"] [data-m360-editorial-play-icon],
+.m360-editorial-newsroom__controls [data-state="paused"] [data-m360-editorial-pause-icon] { display: none; }
+.m360-editorial-newsroom__carousel .m360-editorial-newsroom__controls button:hover,
+.m360-editorial-newsroom__carousel .m360-editorial-newsroom__controls button:focus-visible { background: var(--m360-primary,#d71920) !important; }
+
 @media (max-width: 560px) {
     .m360-editorial-newsroom__featured .m360-editorial-newsroom__category {
         height: 1.65rem;

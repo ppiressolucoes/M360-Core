@@ -36,6 +36,7 @@ final class M360_Language_Switcher
             'locale' => (string) $target['locale'],
             'code' => (string) $target['code'],
             'flag' => (string) $target['flag'],
+            'flagMarkup' => self::flag_markup((string) $target['code']),
             'title' => (string) $target['title'],
             'ariaLabel' => (string) $target['aria_label'],
         ]);
@@ -83,9 +84,9 @@ final class M360_Language_Switcher
     private static function flag_markup(string $code): string
     {
         if (strtoupper($code) === 'EN') {
-            return '<svg viewBox="0 0 21 14" role="presentation" focusable="false"><rect width="21" height="14" fill="#fff"/><path d="M0 1h21M0 3h21M0 5h21M0 7h21M0 9h21M0 11h21M0 13h21" stroke="#c8102e" stroke-width="1"/><rect width="9" height="7.5" fill="#1b3f8b"/><path d="M0 0l9 7.5M9 0L0 7.5" stroke="#fff" stroke-width="1.4"/><path d="M4.5 0v7.5M0 3.75h9" stroke="#c8102e" stroke-width="1"/></svg>';
+            return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 14" role="presentation" focusable="false" aria-hidden="true"><rect width="21" height="14" fill="#fff"/><path d="M0 1h21M0 3h21M0 5h21M0 7h21M0 9h21M0 11h21M0 13h21" stroke="#c8102e" stroke-width="1"/><rect width="9" height="7.5" fill="#1b3f8b"/><path d="M0 0l9 7.5M9 0L0 7.5" stroke="#fff" stroke-width="1.4"/><path d="M4.5 0v7.5M0 3.75h9" stroke="#c8102e" stroke-width="1"/></svg>';
         }
-        return '<svg viewBox="0 0 21 14" role="presentation" focusable="false"><rect width="21" height="14" fill="#009b3a"/><path d="M10.5 1.2L19.7 7l-9.2 5.8L1.3 7z" fill="#ffdf00"/><circle cx="10.5" cy="7" r="3.2" fill="#143d8d"/></svg>';
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 14" role="presentation" focusable="false" aria-hidden="true"><rect width="21" height="14" fill="#009b3a"/><path d="M10.5 1.2L19.7 7l-9.2 5.8L1.3 7z" fill="#ffdf00"/><circle cx="10.5" cy="7" r="3.2" fill="#143d8d"/></svg>';
     }
 
     private static function target(bool $allow_home_fallback = false): array
