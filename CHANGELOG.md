@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.80] — Shell Elementor automático
+
+- usa automaticamente Header, Search Results e Footer do Elementor quando Theme Builder está disponível;
+- remove a chamada prematura ao Header legado antes da seleção do shell;
+- mantém o fallback do Core para instalações sem Elementor.
+
 ## [v0.7.4.0.79] — Shell Elementor sem duplicação
 
 - renderiza Header, Search Results e Footer do Elementor em um único shell no PEL;
