@@ -3,6 +3,17 @@ if (!defined('ABSPATH')) { exit; }
 
 final class M360_Search_Controller
 {
+    public static function register_shortcodes(): void
+    {
+        add_shortcode('m360_search_results', [self::class, 'shortcode']);
+    }
+
+    public static function shortcode(array $atts = []): string
+    {
+        if (!is_search() || is_admin()) { return ''; }
+        return self::render(false);
+    }
+
     public static function restrict_to_language(WP_Query $query): void
     {
         if (is_admin() || !$query->is_main_query() || !$query->is_search() || !function_exists('pll_current_language')) { return; }
@@ -32,7 +43,7 @@ final class M360_Search_Controller
         return is_readable($m360_template) ? $m360_template : $template;
     }
 
-    public static function render(): string
+    public static function render(bool $include_form = true): string
     {
         self::enqueue_assets();
         $query = get_search_query(false);
@@ -46,7 +57,7 @@ final class M360_Search_Controller
         echo do_shortcode('[m360_breadcrumb]');
         $site_name = class_exists('M360_Site_Profile') ? (string) (M360_Site_Profile::get()['site_name'] ?? '') : '';
         if ($site_name === '') { $site_name = (string) get_bloginfo('name'); }
-        echo '<header class="m360-search-view__header"><span class="m360-search-view__eyebrow">' . esc_html($is_en ? $site_name . ' Search' : 'Busca ' . $site_name) . '</span><h1>' . esc_html($title) . '</h1><p>' . esc_html($is_en ? 'Search term:' : 'Termo pesquisado:') . ' <strong>' . esc_html($query) . '</strong></p>' . do_shortcode('[m360_search_form variant="compact" show_intro="false"]') . '</header>';
+        echo '<header class="m360-search-view__header"><span class="m360-search-view__eyebrow">' . esc_html($is_en ? $site_name . ' Search' : 'Busca ' . $site_name) . '</span><h1>' . esc_html($title) . '</h1><p>' . esc_html($is_en ? 'Search term:' : 'Termo pesquisado:') . ' <strong>' . esc_html($query) . '</strong></p>' . ($include_form ? do_shortcode('[m360_search_form variant="compact" show_intro="false"]') : '') . '</header>';
 
         if (have_posts()) {
             echo '<section class="m360-search-results" aria-label="' . esc_attr($title) . '">';

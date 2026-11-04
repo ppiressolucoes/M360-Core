@@ -294,6 +294,7 @@ final class M360_Core_Runtime_034
         M360_Page_Preloader::register_shortcodes();
         M360_Post_Info_Component::register_shortcodes();
         M360_Search_Form_Component::register_shortcodes();
+        M360_Search_Controller::register_shortcodes();
         M360_Header_Orchestrator::register_shortcodes();
         M360_UI_Components::register_shortcodes();
         M360_Latest_News_Component::register_shortcodes();

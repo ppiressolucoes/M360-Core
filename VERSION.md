@@ -3,12 +3,12 @@
 ## Baseline estável
 
 ```text
-0.7.4.0.78
+0.7.4.0.79
 ```
 
 ## Estado operacional
 
-- Candidata para homologação: `v0.7.4.0.78 — Search Results do Elementor integrado ao roteamento do Core`.
+- Candidata para homologação: `v0.7.4.0.79 — shell Elementor sem duplicação de Header/Footer`.
 - Fonte técnica principal: pacote homologado do Mengão 360 `v0.7.4.0.54`, preservando a extensão portátil de dicionário externo e a resolução de categoria principal do PEL.
 - Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
@@ -87,7 +87,10 @@ Uso recomendado em sidebar sem anúncio interno:
 [m360_search_form variant="hero"]
 [m360_search_form variant="header"]
 [m360_search_form variant="compact"]
+[m360_search_results]
 ```
+
+Em um template Elementor de Search Results, use `[m360_search_form variant="compact"]` para o campo e `[m360_search_results]` para a listagem. O shortcode de resultados usa a consulta principal da busca, respeita o idioma ativo e mantém a paginação do Core sem duplicar o formulário.
 
 ## Componente Post Info
 

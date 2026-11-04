@@ -1,5 +1,13 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.79] — Shell Elementor sem duplicação
+
+- renderiza Header, Search Results e Footer do Elementor em um único shell no PEL;
+- evita misturar `get_header()`/`get_footer()` do tema legado com as locations do Elementor;
+- preserva o fallback do renderer do Core quando o template Search Results não estiver disponível.
+- disponibiliza `[m360_search_results]` para inserir o corpo da busca em templates Elementor;
+- mantém `[m360_search_form]` como formulário reutilizável e `[m360_search_toggle]` como controle de abertura.
+
 ## [v0.7.4.0.78] — Search Results do Elementor no roteamento do Core
 
 - permite que o template Search Results/Archive ativo no Elementor forneça o corpo da busca pública;
