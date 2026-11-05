@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.86] — Notícias secundárias empilhadas
+
+- muda as seis notícias secundárias do layout #4 para imagem no topo;
+- posiciona data e autor logo abaixo da imagem;
+- mantém o título abaixo dos metadados e limita o ajuste ao layout #4.
+
 ## [v0.7.4.0.85] — Ajuste do layout editorial #4
 
 - mantém três colunas de destaque com imagem retrato;
