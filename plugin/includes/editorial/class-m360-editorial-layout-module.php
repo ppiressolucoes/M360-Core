@@ -255,13 +255,14 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
             'show_featured_excerpt' => 'true',
             'show_featured_meta' => 'true',
             'show_indicators' => 'true',
-            'show_side_controls' => 'true',
+            'show_side_controls' => 'false',
             'card_categories' => '',
             'international_category' => 'internacional',
             'include_international' => 'true',
             'cards' => 4,
             'interval' => 6500,
             'autoplay' => 'true',
+            'reduced_motion' => 'allow',
             'heading_level' => '',
         ], $atts, 'm360_editorial_newsroom');
 
@@ -270,14 +271,21 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         if ($atts['featured_tag'] !== '') { $featured_query['category'] = ''; }
         $featured = self::posts($featured_query);
         if (count($featured) < $featured_limit) {
-            $featured = array_merge($featured, self::posts(['lang'=>$atts['lang'],'limit'=>$featured_limit-count($featured)]));
+            $seen = array_map('intval', wp_list_pluck($featured, 'ID'));
+            foreach (self::posts(['lang'=>$atts['lang'],'limit'=>$featured_limit]) as $candidate) {
+                if (in_array((int)$candidate->ID, $seen, true)) { continue; }
+                $featured[] = $candidate;
+                $seen[] = (int)$candidate->ID;
+                if (count($featured) >= $featured_limit) { break; }
+            }
         }
         $card_categories = trim((string) $atts['card_categories']);
         if (filter_var($atts['include_international'], FILTER_VALIDATE_BOOLEAN) && $atts['international_category'] !== '') {
             $card_categories = trim($card_categories . ',' . sanitize_title((string) $atts['international_category']), ',');
         }
-        $cards = self::posts(['lang'=>$atts['lang'],'category'=>$card_categories,'limit'=>max(1,min(8,(int)$atts['cards']))]);
-        if (!$cards) { $cards = self::posts(['lang'=>$atts['lang'],'limit'=>max(1,min(8,(int)$atts['cards']))]); }
+        $card_limit = max(1, min(4, (int)$atts['cards']));
+        $cards = self::posts(['lang'=>$atts['lang'],'category'=>$card_categories,'limit'=>$card_limit]);
+        if (!$cards) { $cards = self::posts(['lang'=>$atts['lang'],'limit'=>$card_limit]); }
         if (!$featured && !$cards) { return ''; }
 
         self::assets();
@@ -289,10 +297,10 @@ final class M360_Editorial_Layout_Module implements M360_Module_Interface
         $show_featured_meta = filter_var($atts['show_featured_meta'], FILTER_VALIDATE_BOOLEAN);
         $show_indicators = filter_var($atts['show_indicators'], FILTER_VALIDATE_BOOLEAN);
         $show_side_controls = filter_var($atts['show_side_controls'], FILTER_VALIDATE_BOOLEAN);
-        $html .= '<div class="m360-editorial-newsroom__layout"><div class="m360-editorial-newsroom__carousel" data-m360-editorial-carousel data-interval="' . esc_attr((string)max(2500,(int)$atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '">';
+        $html .= '<div class="m360-editorial-newsroom__layout"><div class="m360-editorial-newsroom__carousel" data-m360-editorial-carousel data-interval="' . esc_attr((string)max(2500,(int)$atts['interval'])) . '" data-autoplay="' . ($autoplay ? 'true' : 'false') . '" data-reduced-motion="' . esc_attr($atts['reduced_motion'] === 'respect' ? 'respect' : 'allow') . '">';
         foreach ($featured as $index => $post) { $html .= self::newsroom_featured($post, min(6,$level+1), $index, $show_featured_excerpt, $show_featured_meta); }
         if (count($featured) > 1) {
-            $html .= '<div class="m360-editorial-newsroom__controls"><button type="button" data-m360-editorial-prev aria-label="' . esc_attr__('Previous story','m360-core') . '">&#8249;</button><button type="button" data-m360-editorial-next aria-label="' . esc_attr__('Next story','m360-core') . '">&#8250;</button></div>';
+            $html .= '<div class="m360-editorial-newsroom__controls"><button type="button" data-m360-editorial-prev aria-label="' . esc_attr__('Previous story','m360-core') . '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg></button><button type="button" data-m360-editorial-pause data-pause-label="' . esc_attr__('Pause slideshow','m360-core') . '" data-play-label="' . esc_attr__('Resume slideshow','m360-core') . '" aria-label="' . esc_attr__('Pause slideshow','m360-core') . '" aria-pressed="false"><svg data-m360-editorial-pause-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg><svg data-m360-editorial-play-icon viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button><button type="button" data-m360-editorial-next aria-label="' . esc_attr__('Next story','m360-core') . '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg></button></div>';
             if ($show_side_controls) {
                 $html .= '<div class="m360-editorial-newsroom__side-controls"><button type="button" class="m360-editorial-newsroom__side-control m360-editorial-newsroom__side-control--previous" data-m360-editorial-prev aria-label="' . esc_attr__('Previous story','m360-core') . '">&#8249;</button><button type="button" class="m360-editorial-newsroom__side-control m360-editorial-newsroom__side-control--next" data-m360-editorial-next aria-label="' . esc_attr__('Next story','m360-core') . '">&#8250;</button></div>';
             }

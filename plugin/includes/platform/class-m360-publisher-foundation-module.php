@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_Publisher_Foundation_Module implements M360_Module_Interface
 {
     public function id(): string { return 'publisher-foundation'; }
-    public function label(): string { return 'Publisher Platform Foundation'; }
+    public function label(): string { return 'M360 - Site Profile e Módulos'; }
     public function version(): string { return M360_CORE_VERSION; }
     public function schema_version(): string { return '1'; }
     public function dependencies(): array { return []; }

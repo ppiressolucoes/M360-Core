@@ -291,8 +291,8 @@ final class M360_Editorial_Widgets
         $html = '<div class="m360-editorial-widget__grid m360-editorial-widget__grid--3">';
         for ($column = 0; $column < 3; $column++) {
             if (!isset($posts[$column])) { continue; }
-            $html .= '<div class="m360-editorial-widget__column">' . self::article($posts[$column], 'portrait', true, $config['excerpt_words']) . '<div class="m360-editorial-widget__list">';
-            foreach ($extras[$column] as $post) { $html .= self::article($post, 'mini', false); }
+            $html .= '<div class="m360-editorial-widget__column">' . self::article($posts[$column], 'portrait-meta', true, $config['excerpt_words']) . '<div class="m360-editorial-widget__list">';
+            foreach ($extras[$column] as $post) { $html .= self::article($post, 'mini-below', false); }
             $html .= '</div></div>';
         }
         return $html . '</div>';
@@ -313,7 +313,10 @@ final class M360_Editorial_Widgets
         $permalink = get_permalink($post);
         $html = '<article class="m360-editorial-widget__article m360-editorial-widget__article--' . esc_attr($variant) . '">';
         if ($image) { $html .= '<a class="m360-editorial-widget__media" href="' . esc_url($permalink) . '"><img src="' . esc_url($image) . '" alt="" loading="lazy"></a>'; }
-        $html .= '<div class="m360-editorial-widget__content">' . self::category($post) . '<h3><a href="' . esc_url($permalink) . '">' . esc_html(get_the_title($post)) . '</a></h3>' . self::meta($post);
+        $html .= '<div class="m360-editorial-widget__content">' . self::category($post);
+        if (in_array($variant, ['portrait-meta', 'mini-below'], true)) { $html .= self::meta($post); }
+        $html .= '<h3><a href="' . esc_url($permalink) . '">' . esc_html(get_the_title($post)) . '</a></h3>';
+        if (!in_array($variant, ['portrait-meta', 'mini-below'], true)) { $html .= self::meta($post); }
         if ($excerpt && $excerpt_words > 0) {
             $source = trim((string) get_the_excerpt($post));
             if ($source === '') { $source = trim(wp_strip_all_tags(strip_shortcodes((string) $post->post_content))); }

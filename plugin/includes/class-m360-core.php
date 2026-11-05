@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) { exit; }
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-registry.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-loader.php';
 require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-view-renderer.php';
+require_once M360_CORE_PATH . 'includes/ViewEngine/class-m360-elementor-dynamic-shell.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-navigation-shortcodes.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-page-preloader.php';
 require_once M360_CORE_PATH . 'includes/navigation/class-m360-sidebar-navigation.php';
@@ -222,6 +223,12 @@ final class M360_Core_Runtime_034
         wp_register_style('m360-core-editorial-sections', M360_CORE_URL . 'assets/css/m360-editorial-sections.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-widgets', M360_CORE_URL . 'assets/css/m360-editorial-widgets.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
         wp_register_style('m360-core-editorial-ticker', M360_CORE_URL . 'assets/css/m360-editorial-ticker.css', ['m360-core-editorial-polish'], M360_CORE_VERSION);
+        wp_register_style('m360-core-site-profile-palette', M360_CORE_URL . 'assets/css/m360-site-profile-palette.css', ['m360-core-foundation'], M360_CORE_VERSION);
+        $appearance = (array) (M360_Site_Profile::get()['appearance'] ?? []);
+        $primary = sanitize_hex_color((string) ($appearance['primary_color'] ?? '')) ?: '#d71920';
+        $secondary = sanitize_hex_color((string) ($appearance['secondary_color'] ?? '')) ?: '#111111';
+        wp_add_inline_style('m360-core-site-profile-palette', ':root{--m360-primary:' . esc_attr($primary) . ';--m360-secondary:' . esc_attr($secondary) . ';--m360-ui-red:' . esc_attr($primary) . ';--m360-ui-red-dark:' . esc_attr($secondary) . ';--m360-red:' . esc_attr($primary) . ';--m360-red-dark:' . esc_attr($secondary) . ';}');
+        wp_enqueue_style('m360-core-site-profile-palette');
         wp_register_style('m360-core-discovery-canary', M360_CORE_URL . 'assets/css/m360-discovery-canary.css', [], M360_CORE_VERSION);
         wp_register_script('m360-core-editorial', M360_CORE_URL . 'assets/js/m360-editorial.js', [], M360_CORE_VERSION, true);
         wp_register_style('m360-core-sidebar-navigation', M360_CORE_URL . 'assets/css/m360-sidebar-navigation.css', ['m360-core-foundation'], M360_CORE_VERSION);
@@ -288,6 +295,7 @@ final class M360_Core_Runtime_034
         M360_Page_Preloader::register_shortcodes();
         M360_Post_Info_Component::register_shortcodes();
         M360_Search_Form_Component::register_shortcodes();
+        M360_Search_Controller::register_shortcodes();
         M360_Header_Orchestrator::register_shortcodes();
         M360_UI_Components::register_shortcodes();
         M360_Latest_News_Component::register_shortcodes();
@@ -300,6 +308,28 @@ final class M360_Core_Runtime_034
         }
         add_shortcode('m360_core_status', [$this, 'render_status_shortcode']);
         add_shortcode('m360_view', [$this, 'render_view_shortcode']);
+        add_shortcode('m360_archive_results', [$this, 'render_archive_results_shortcode']);
+    }
+
+    public function render_archive_results_shortcode(array $atts = []): string
+    {
+        if (is_admin()) { return ''; }
+        if (is_search() && class_exists('M360_Search_Controller')) {
+            return M360_Search_Controller::render(false);
+        }
+        if (is_category() && class_exists('M360_Category_Controller')) {
+            return M360_Category_Controller::render();
+        }
+        if (is_tag() && class_exists('M360_Tag_Controller')) {
+            return M360_Tag_Controller::render();
+        }
+        if (is_author() && class_exists('M360_Author_Controller')) {
+            return M360_Author_Controller::render();
+        }
+        if (is_date() && class_exists('M360_Date_Archive_Controller')) {
+            return M360_Date_Archive_Controller::render();
+        }
+        return '';
     }
 
     public function render_status_shortcode(): string
