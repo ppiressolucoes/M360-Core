@@ -2,7 +2,7 @@
 /**
  * Plugin Name: M360 PEL Controlled Deployment
  * Description: Perfil operacional controlado do M360 Core para o Portal Energia Limpa.
- * Version: 0.1.25
+ * Version: 0.1.26
  * Requires at least: 6.0
  * Requires PHP: 8.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 final class M360_PEL_Controlled_Deployment
 {
     private const OPTION = 'm360_pel_controlled_deployment';
-    private const VERSION = '0.1.25';
+    private const VERSION = '0.1.26';
 
     public static function register(): void
     {
