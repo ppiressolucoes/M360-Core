@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.85] — Ajuste do layout editorial #4
+
+- mantém três colunas de destaque com imagem retrato;
+- posiciona categoria, data e autor imediatamente abaixo da imagem principal;
+- preserva duas notícias secundárias por coluna com miniatura, título e meta compactos.
+
 ## [v0.7.4.0.84] — Baseline transversal Site Profile e Módulos
 
 - absorve a nomenclatura administrativa comum aos portais: `M360 - Site Profile e Módulos`;
