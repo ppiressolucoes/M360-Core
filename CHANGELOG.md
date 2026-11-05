@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.84] — Baseline transversal Site Profile e Módulos
+
+- absorve a nomenclatura administrativa comum aos portais: `M360 - Site Profile e Módulos`;
+- mantém a configuração por Site Profile, módulos, idioma, paleta e capacidades de cada ambiente;
+- prepara a mesma release para Mengão 360, Portal Energia Limpa e futuros portais.
+
 ## [v0.7.4.0.83] — Widgets laterais configuráveis
 
 - permite selecionar categorias por nome ou slug com `include`;
