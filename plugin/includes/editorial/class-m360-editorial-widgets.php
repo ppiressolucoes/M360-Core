@@ -278,7 +278,7 @@ final class M360_Editorial_Widgets
         for ($column = 0; $column < 2; $column++) {
             if (!isset($posts[$column])) { continue; }
             $html .= '<div class="m360-editorial-widget__column">' . self::article($posts[$column], 'lead', true, $config['excerpt_words']) . '<div class="m360-editorial-widget__list">';
-            foreach ($extras[$column] as $post) { $html .= self::article($post, 'mini-below', false); }
+            foreach ($extras[$column] as $post) { $html .= self::article($post, 'mini', false); }
             $html .= '</div></div>';
         }
         return $html . '</div>';
@@ -292,7 +292,7 @@ final class M360_Editorial_Widgets
         for ($column = 0; $column < 3; $column++) {
             if (!isset($posts[$column])) { continue; }
             $html .= '<div class="m360-editorial-widget__column">' . self::article($posts[$column], 'portrait-meta', true, $config['excerpt_words']) . '<div class="m360-editorial-widget__list">';
-            foreach ($extras[$column] as $post) { $html .= self::article($post, 'mini', false); }
+            foreach ($extras[$column] as $post) { $html .= self::article($post, 'mini-below', false); }
             $html .= '</div></div>';
         }
         return $html . '</div>';

@@ -1,5 +1,11 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.87] — Correção de aplicação do layout #4
+
+- restaura o mini layout lateral já homologado no bloco #3;
+- aplica `mini-below` exclusivamente ao bloco #4 `3 destaques + 6 notícias`;
+- remove a borda residual do último item empilhado.
+
 ## [v0.7.4.0.86] — Notícias secundárias empilhadas
 
 - muda as seis notícias secundárias do layout #4 para imagem no topo;
