@@ -45,7 +45,15 @@ final class M360_Sidebar_Navigation
     public static function categories_shortcode(array $atts = []): string
     {
         $atts = self::block_atts($atts, 'm360_categories');
-        $categories = get_categories(['hide_empty' => true, 'number' => $atts['limit'], 'orderby' => 'name', 'order' => 'ASC']);
+        $categories = get_categories(['hide_empty' => true, 'number' => 0, 'orderby' => 'name', 'order' => 'ASC']);
+        $selected = self::term_selector((string) ($atts['include'] ?? ''));
+        if ($selected) {
+            $categories = array_values(array_filter($categories, static function ($category) use ($selected): bool {
+                return in_array(strtolower((string) $category->slug), $selected, true)
+                    || in_array(self::normalize_term_name((string) $category->name), $selected, true);
+            }));
+        }
+        $categories = array_slice($categories, 0, $atts['limit']);
         if (!is_array($categories) || !$categories) { return ''; }
         $items = '';
         foreach ($categories as $category) {
@@ -57,7 +65,7 @@ final class M360_Sidebar_Navigation
     public static function archives_shortcode(array $atts = []): string
     {
         $atts = self::block_atts($atts, 'm360_archives');
-        $archives = wp_get_archives(['type' => 'monthly', 'limit' => $atts['limit'], 'show_post_count' => $atts['show_counts'], 'echo' => false]);
+        $archives = wp_get_archives(['type' => 'monthly', 'limit' => $atts['months'] ?? $atts['limit'], 'show_post_count' => $atts['show_counts'], 'echo' => false]);
         if (!is_string($archives) || trim($archives) === '') { return ''; }
         return self::block('archives', $atts['title'] ?: (self::is_en() ? 'Archives' : 'Arquivos'), wp_kses_post($archives), $atts);
     }
@@ -111,14 +119,29 @@ final class M360_Sidebar_Navigation
 
     private static function block_atts(array $atts, string $shortcode): array
     {
-        $atts = shortcode_atts(['limit' => 12, 'title' => '', 'show_counts' => 'true', 'primary' => '#d71920', 'secondary' => '#b81218'], $atts, $shortcode);
+        $atts = shortcode_atts(['limit' => 12, 'months' => 0, 'include' => '', 'title' => '', 'show_counts' => 'true', 'primary' => '#d71920', 'secondary' => '#b81218'], $atts, $shortcode);
         return [
             'limit' => max(1, min(30, absint($atts['limit']))),
+            'months' => max(1, min(120, absint($atts['months'] ?: $atts['limit']))),
+            'include' => sanitize_text_field((string) $atts['include']),
             'title' => sanitize_text_field((string) $atts['title']),
             'show_counts' => filter_var($atts['show_counts'], FILTER_VALIDATE_BOOLEAN),
             'primary' => self::color((string) $atts['primary'], '#d71920'),
             'secondary' => self::color((string) $atts['secondary'], '#b81218'),
         ];
+    }
+
+    private static function term_selector(string $value): array
+    {
+        $items = preg_split('/\s*,\s*/', trim($value)) ?: [];
+        return array_values(array_filter(array_map(static function (string $item): string {
+            return self::normalize_term_name($item);
+        }, $items)));
+    }
+
+    private static function normalize_term_name(string $value): string
+    {
+        return strtolower(remove_accents(trim($value)));
     }
 
     private static function block(string $type, string $title, string $items, array $atts): string

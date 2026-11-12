@@ -1,5 +1,180 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.88] — Consolidação Core e PEL
+
+- restaura o comportamento aprovado de notícias secundárias no layout #3 e o mantém também no #4;
+- incorpora o histórico dos branches Core e PEL à mesma base;
+- preserva o Core da v0.7.4.0.87 como base funcional na resolução dos conflitos;
+- candidata para homologação: a validação visual e de integração da v0.7.4.0.88 ainda está pendente.
+
+## [v0.7.4.0.87] — Correção de aplicação do layout #4
+
+- restaura o mini layout lateral já homologado no bloco #3;
+- aplica `mini-below` exclusivamente ao bloco #4 `3 destaques + 6 notícias`;
+- remove a borda residual do último item empilhado.
+
+## [v0.7.4.0.86] — Notícias secundárias empilhadas
+
+- muda as seis notícias secundárias do layout #4 para imagem no topo;
+- posiciona data e autor logo abaixo da imagem;
+- mantém o título abaixo dos metadados e limita o ajuste ao layout #4.
+
+## [v0.7.4.0.85] — Ajuste do layout editorial #4
+
+- mantém três colunas de destaque com imagem retrato;
+- posiciona categoria, data e autor imediatamente abaixo da imagem principal;
+- preserva duas notícias secundárias por coluna com miniatura, título e meta compactos.
+
+## [v0.7.4.0.84] — Baseline transversal Site Profile e Módulos
+
+- absorve a nomenclatura administrativa comum aos portais: `M360 - Site Profile e Módulos`;
+- mantém a configuração por Site Profile, módulos, idioma, paleta e capacidades de cada ambiente;
+- prepara a mesma release para Mengão 360, Portal Energia Limpa e futuros portais.
+
+## [v0.7.4.0.83] — Widgets laterais configuráveis
+
+- permite selecionar categorias por nome ou slug com `include`;
+- permite definir meses do bloco de arquivos com `months`;
+- mantém `show_counts` para controlar a exibição das quantidades nos dois blocos.
+
+## [v0.7.4.0.81] — Archive Elementor multilíngue
+
+- aplica o shell Elementor às rotas de categoria, tag, data e autor;
+- usa Header, Archive e Footer traduzidos conforme o idioma ativo;
+- mantém os renderizadores do Core como fallback quando não houver Archive publicado.
+- disponibiliza `[m360_archive_results]` para renderizar o conteúdo da rota atual dentro do template Archive.
+
+## [v0.7.4.0.80] — Shell Elementor automático
+
+- usa automaticamente Header, Search Results e Footer do Elementor quando Theme Builder está disponível;
+- remove a chamada prematura ao Header legado antes da seleção do shell;
+- mantém o fallback do Core para instalações sem Elementor.
+
+## [v0.7.4.0.79] — Shell Elementor sem duplicação
+
+- renderiza Header, Search Results e Footer do Elementor em um único shell no PEL;
+- evita misturar `get_header()`/`get_footer()` do tema legado com as locations do Elementor;
+- preserva o fallback do renderer do Core quando o template Search Results não estiver disponível.
+- disponibiliza `[m360_search_results]` para inserir o corpo da busca em templates Elementor;
+- mantém `[m360_search_form]` como formulário reutilizável e `[m360_search_toggle]` como controle de abertura.
+
+## [v0.7.4.0.78] — Search Results do Elementor no roteamento do Core
+
+- permite que o template Search Results/Archive ativo no Elementor forneça o corpo da busca pública;
+- preserva o renderer de busca do Core como fallback quando não houver template dinâmico do Elementor;
+- mantém o ownership da rota e a filtragem de idioma sob o M360 Core.
+
+## [v0.7.4.0.77] — Rotas dinâmicas do Core no PEL
+
+- incorpora a base de produção `v0.7.4.0.76`, incluindo a correção do Discovery Cron;
+- permite que o perfil controlado do Portal Energia Limpa assuma busca, autor, categoria, tag e data pelos controladores do Core;
+- mantém anúncios, newsletter e consentimento desligados no perfil portable-safe;
+- usa o formulário de busca do Core quando ele está disponível, preservando o formulário PEL como fallback de compatibilidade.
+
+## [v0.7.4.0.73] — Remoção dos pseudo-separadores do Newsroom
+
+- neutraliza pseudo-elementos de colunas e cards do Newsroom que desenhavam linhas duplicadas;
+- preserva o gradiente do artigo principal em destaque.
+
+## [v0.7.4.0.72] — Tablet sem overflow e fallback de bandeira
+
+- limita a barra unificada a 100% da viewport entre 768px e 1024px;
+- impede overflow das três colunas no tablet;
+- mantém o botão mobile na primeira coluna nessa faixa;
+- adiciona fallback textual de bandeira ao botão flutuante e ao seletor da barra.
+
+## [v0.7.4.0.71] — Contêiner interno de 1140px
+
+- centraliza a barra unificada no mesmo limite de 1140px do Theme Builder;
+- mantém a barra centralizada quando fixa durante a rolagem;
+- garante o botão mobile dentro da primeira coluna no carregamento;
+- preserva 100% de largura somente abaixo do breakpoint mobile.
+
+## [v0.7.4.0.70] — Correção de breakpoint e largura do sticky
+
+- esconde o botão mobile no desktop e mantém o menu completo em tablet/desktop;
+- exibe o botão mobile apenas abaixo de 768px;
+- força a barra unificada a ocupar a largura da viewport durante a rolagem;
+- mantém busca e idioma dentro do mesmo wrapper fixo.
+
+## [v0.7.4.0.69] — Barra de navegação unificada
+
+- adiciona `[m360_header_navigation]`, reunindo menu, idioma e busca em uma única estrutura;
+- usa colunas `80% | 10% | 10%` em desktop/tablet e `33% | 33% | 33%` no mobile;
+- aplica sticky ao conjunto completo, evitando perda de alinhamento durante a rolagem;
+- mantém `[m360_main_navigation]`, `[m360_language_navigation]` e `[m360_search_toggle]` disponíveis.
+
+## [v0.7.4.0.68] — Sticky da barra completa
+
+- escolhe a seção Elementor que contém navegação, idioma e busca como alvo do sticky;
+- mantém os três componentes juntos durante a rolagem;
+- reforça o desenho do ícone mobile com três barras independentes;
+- zera espaçamento também na seção Elementor que hospeda o conjunto da barra.
+
+## [v0.7.4.0.67] — Sticky no shell do Theme Builder
+
+- aplica sticky diretamente no `m360-navigation-shell` quando o Theme Builder não emite `m360-header-topbar`;
+- neutraliza margem, padding e altura mínima do widget Elementor que contém a navegação;
+- remove bordas inferiores residuais de artigos/listas do Newsroom;
+- reforça a visibilidade do SVG do seletor flutuante de idioma.
+
+## [v0.7.4.0.66] — Sticky navigation e limpeza visual do newsroom
+
+- fixa o shell de navegação no topo durante a rolagem, incluindo compensação do admin bar;
+- normaliza o ícone de menu mobile com dimensões fixas;
+- remove todos os separadores inferiores dos mini-itens que criavam linhas duplas no newsroom;
+- mantém a bandeira SVG inline para o seletor flutuante e da barra.
+
+## [v0.7.4.0.65] — Correção de alinhamento e renderização visual PEL
+
+- substitui a bandeira baseada em emoji por SVG inline estável para PT/EN;
+- fixa a altura do seletor de idioma em 54px e remove margens verticais do shell de navegação;
+- usa tokens do Site Profile diretamente no CSS do botão de âncora;
+- reforça a remoção da linha inferior redundante do último item mini.
+
+## [v0.7.4.0.64] — Ajustes finais de integração PEL en-US
+
+- permite que `menu_en` seja resolvido também no preview do Theme Builder quando o contexto do editor ainda não informa o idioma;
+- mantém o seletor flutuante de idioma visível com fallback para a Home quando a página não possui tradução singular;
+- corrige altura, margem e proporção da bandeira no seletor da barra de navegação;
+- remove a linha inferior redundante do último item mini dos widgets editoriais;
+- aplica a cor secundária do Site Profile aos controles do ticker.
+
+## [v0.7.4.0.63] — Contraste e preview do Theme Builder
+
+- corrige o contraste das etiquetas de categoria, mantendo texto branco sobre a cor primária;
+- ajusta âncora de topo, seletor de idioma e seletor de navegação para utilizar a cor secundária com estados legíveis;
+- mantém texto branco nos submenus em foco/hover;
+- adiciona fallback visual de bandeiras por CSS quando emojis não são renderizados;
+- enfileira estilos de navegação e paleta no preview/editor do Elementor para permitir ajuste de margens no Theme Builder.
+
+## [v0.7.4.0.62] — Acoplagem progressiva do PEL
+
+- adiciona ponte de paleta do Site Profile para os componentes, blocos e shortcodes M360, usando primária e secundária do portal sem depender das cores fixas do tema;
+- permite que `[m360_main_navigation menu_pt="..."]` resolva o menu configurado também no en-US, com fallback explícito para `EL360 Menu Principal en-US`;
+- prepara o cutover da Home do Portal Energia Limpa por perfil controlado, mantendo a assunção pública opt-in e reversível;
+- preserva a convivência com Cream Magazine e Elementor até a ativação autorizada do takeover.
+
+## [v0.7.4.0.61] — Próxima leva disponível na abertura inicial
+
+- corrige a consulta da primeira leva da página dedicada para buscar `limit + 1` sempre que a navegação por cursor estiver ativa, mesmo antes de existir um cursor na URL;
+- usa o único registro adicional apenas para determinar se o botão “CARREGAR MAIS” deve ser exibido e o remove do HTML da leva atual;
+- mantém blocos-resumo buscando exatamente o limite configurado, sem item adicional, contagem total, offset crescente ou polling.
+
+## [v0.7.4.0.60] — Detecção da página dedicada de Últimas Notícias
+
+- reconhece automaticamente a página dedicada configurada ou localizada por idioma, mesmo quando o shortcode ainda mantém `pagination="false"` por causa da contenção temporária de produção;
+- substitui nessa página o link circular “Ver todas as notícias” por “CARREGAR MAIS”, com cursor assinado no endereço da próxima leva;
+- mantém posts e barra lateral como blocos-resumo apontando para a página dedicada, sem cursor, polling ou recarga automática;
+- preserva a consulta limitada a `limit + 1`, a ordenação estável por data e ID e `no_found_rows=true`, sem contagem total ou deslocamento crescente.
+
+## [v0.7.4.0.59] — Últimas Notícias por cursor
+
+- substitui a paginação numérica do `[m360_latest_news]` por navegação sequencial com cursor assinado quando `pagination="true"` ou `navigation="cursor"` é usado;
+- consulta uma leva mais um item, ordenada de forma estável por data e ID, sem total de páginas, `FOUND_ROWS()` ou deslocamento crescente por `paged`;
+- mantém posts e sidebar sem paginação e adiciona link acessível para a página dedicada, resolvido por URL explícita, configuração por idioma, filtro ou páginas conhecidas;
+- redireciona URLs legadas com `m360_news_page` e cursores inválidos ao URL limpo antes da renderização; páginas por cursor recebem `noindex,follow`;
+- separa a chave de cache por idioma, contexto, cursor e opções de apresentação, preservando o cache de dez minutos e sem criar endpoint ou polling público.
 ## [v0.7.4.0.58] — Contenção de recursos para ambientes sob pressão
 
 - reaplica o circuito de proteção do Content Discovery na atualização: writer assíncrono e backfill ficam em modo manual e os eventos pendentes são removidos;

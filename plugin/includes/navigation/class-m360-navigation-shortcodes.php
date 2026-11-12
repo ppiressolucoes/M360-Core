@@ -9,11 +9,14 @@ final class M360_Navigation_Shortcodes
     public static function register(): void
     {
         add_shortcode('m360_main_navigation', [self::class, 'main_navigation']);
+        add_shortcode('m360_header_navigation', [self::class, 'header_navigation']);
         add_shortcode('m360_breadcrumb', [self::class, 'breadcrumb']);
         add_shortcode('m360_section_navigation', [self::class, 'section_navigation']);
         add_shortcode('m360_back_to_top', [self::class, 'back_to_top']);
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_sticky_header_assets'], 25);
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_back_to_top_assets'], 30);
+        add_action('elementor/preview/enqueue_styles', [self::class, 'enqueue_editor_assets'], 25);
+        add_action('elementor/editor/after_enqueue_styles', [self::class, 'enqueue_editor_assets'], 25);
         add_action('wp_footer', [self::class, 'render_back_to_top'], 10);
     }
 
@@ -47,6 +50,14 @@ final class M360_Navigation_Shortcodes
         if (wp_script_is('m360-core-navigation', 'registered')) { wp_enqueue_script('m360-core-navigation'); }
     }
 
+    public static function enqueue_editor_assets(): void
+    {
+        self::enqueue_assets();
+        if (wp_style_is('m360-core-site-profile-palette', 'registered')) {
+            wp_enqueue_style('m360-core-site-profile-palette');
+        }
+    }
+
     public static function main_navigation(array $atts = []): string
     {
         self::enqueue_assets();
@@ -61,6 +72,31 @@ final class M360_Navigation_Shortcodes
             . '<input class="m360-mobile-nav-toggle" id="' . esc_attr($menu_id) . '" type="checkbox" aria-hidden="true">'
             . '<label class="m360-mobile-nav-button" for="' . esc_attr($menu_id) . '" aria-label="Menu" aria-controls="' . esc_attr($navigation_id) . '" aria-expanded="false"><span></span><span></span><span></span></label>'
             . $html
+            . '</div>';
+    }
+
+    public static function header_navigation(array $atts = []): string
+    {
+        $atts = shortcode_atts([
+            'menu_pt' => '',
+            'menu_en' => '',
+            'menu' => '',
+        ], $atts, 'm360_header_navigation');
+
+        $navigation = self::main_navigation($atts);
+        $language = class_exists('M360_Language_Switcher')
+            ? M360_Language_Switcher::render_navigation()
+            : '';
+        $search = class_exists('M360_Search_Form_Component')
+            ? M360_Search_Form_Component::toggle_shortcode()
+            : '';
+
+        if ($navigation === '' && $language === '' && $search === '') { return ''; }
+        self::enqueue_assets();
+        return '<div class="m360-header-navigation-bar" data-m360-header-navigation>'
+            . '<div class="m360-header-navigation-bar__column m360-header-navigation-bar__column--menu">' . $navigation . '</div>'
+            . '<div class="m360-header-navigation-bar__column m360-header-navigation-bar__column--language">' . $language . '</div>'
+            . '<div class="m360-header-navigation-bar__column m360-header-navigation-bar__column--search">' . $search . '</div>'
             . '</div>';
     }
 
@@ -375,7 +411,9 @@ final class M360_Navigation_Shortcodes
 
     private static function resolve_main_menu(array $atts, bool $is_en): ?WP_Term
     {
-        $candidates = $is_en ? ['primary menu English','Primary Menu English','primary-menu-english','main-menu-en',$atts['menu_en']] : [$atts['menu_pt'],'main-menu-pt','Primary Menu','primary-menu'];
+        $candidates = $is_en
+            ? [$atts['menu_en'], $atts['menu_pt'], 'EL360 Menu Principal en-US', 'primary menu English', 'Primary Menu English', 'primary-menu-english', 'main-menu-en']
+            : [$atts['menu_pt'], $atts['menu_en'], $atts['menu'], 'main-menu-pt', 'Primary Menu', 'primary-menu'];
         if ((string)$atts['menu'] !== '') { array_unshift($candidates, $atts['menu']); }
         foreach (array_unique(array_filter($candidates)) as $candidate) { $menu = wp_get_nav_menu_object($candidate); if ($menu instanceof WP_Term) { return $menu; } }
         return null;

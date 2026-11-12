@@ -12,7 +12,7 @@
     place-items: center !important;
     border: 2px solid rgba(255,255,255,.92) !important;
     border-radius: 10px !important;
-    background: #d71920 !important;
+    background: var(--m360-secondary, #d71920) !important;
     color: #fff !important;
     box-shadow: 0 9px 24px rgba(0,0,0,.28), inset 0 0 0 1px rgba(0,0,0,.06) !important;
     cursor: pointer !important;
@@ -46,7 +46,7 @@
 
 .m360-back-to-top.is-visible:hover,
 .m360-back-to-top.is-visible:focus-visible {
-    background: #b81218 !important;
+    background: var(--m360-primary, #b81218) !important;
     box-shadow: 0 12px 28px rgba(0,0,0,.34), inset 0 0 0 1px rgba(0,0,0,.06) !important;
     transform: translate3d(0,-3px,0) scale(1.02) !important;
 }

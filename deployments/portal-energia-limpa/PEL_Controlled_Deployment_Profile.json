@@ -1,0 +1,49 @@
+{
+  "profile_version": "0.1.27",
+  "target": "portal-energia-limpa",
+  "core_package": {
+    "version": "0.7.4.0.88",
+    "sha256": "B713FE3ED725985C2DFC2444E2061AEABC960C7E525B38408FEF6C4431638FF7"
+  },
+  "site_profile": {
+    "site_key": "portal-energia-limpa",
+    "site_name": "Portal Energia Limpa",
+    "vertical": "clean-energy-publisher",
+    "default_locale": "pt-BR",
+    "supported_locales": ["pt-BR", "en-US"],
+    "appearance": {
+      "primary_color": "#ff3d00",
+      "secondary_color": "#fc893c"
+    }
+  },
+  "runtime": {
+    "mode": "portable-safe",
+    "public_views": false,
+    "search_view": true,
+    "author_view": true,
+    "category_view": true,
+    "tag_view": true,
+    "date_view": true,
+    "ads_runtime": false,
+    "ads_auto_insert": false,
+    "newsletter_runtime": false,
+    "consent_runtime": false
+  },
+  "editorial": {"enabled": true, "mode": "hybrid", "ownership": "explicit-shortcodes-or-authorized-home-cutover"},
+  "home": {
+    "cutover": "explicit-admin-checkbox",
+    "locales": {
+      "pt-BR": {"enabled": false, "menu": "", "widget_ids": ["pel-home-pt-newsroom"]},
+      "en-US": {"enabled": false, "menu": "EL360 Menu Principal en-US", "widget_ids": ["pel-home-en-newsroom"]}
+    }
+  },
+  "discovery": {
+    "enabled": true,
+    "mode": "shadow",
+    "generation_strategy": "manual",
+    "writer_mode": "manual",
+    "public_render_mode": "shortcode",
+    "contextual_links_max": 3,
+    "legacy_read_fallback": false
+  }
+}

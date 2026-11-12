@@ -23,6 +23,19 @@ Newsletter: objetivo inicial concluído; evoluções avançadas permanecem adiad
 8. Piloto progressivo no Portal Energia Limpa — PEL.
 9. CMP certificada para monetização e regiões sujeitas ao IAB TCF.
 
+## Marco evolutivo — piloto de Media Repository Externo
+
+Em 12/08/2026 foi aprovada a POC de repositório externo para Featured Images do Mengão 360. A primeira entrega será um workflow n8n isolado, limitado a duas publicações PT-BR por dia e suas traduções EN-US, sem alteração dos fluxos editoriais já homologados.
+
+- Repositório de produção do piloto: Cloudinary Free.
+- Identidade da mídia: SHA-256 do binário; PT-BR e EN-US reutilizam um único asset externo.
+- Compatibilidade WordPress: attachment virtual compartilhado, sem arquivo equivalente em `wp-content/uploads`.
+- Metadados editoriais: independentes por post/idioma.
+- Proteção operacional: feature flag, homologação, logs, medição de inodes e rollback.
+- Dependência atual: credenciais Cloudinary disponibilizadas exclusivamente nas credenciais seguras do n8n.
+
+Especificação de execução: `docs/01-sprints/Sprint_MVP_External_Media_Repository_Cloudinary_Free.md`.
+
 ## P2 — Evolutivas acumulativas
 
 10. Produto comercial Mega Bolão 360 e sua landing page.

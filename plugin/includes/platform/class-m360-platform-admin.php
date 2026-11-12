@@ -40,8 +40,8 @@ final class M360_Platform_Admin
         );
         add_submenu_page(
             'm360-dashboard',
-            'Plataforma e Site Profile',
-            'Site Profile e módulos',
+            'M360 - Site Profile e Módulos',
+            'Site Profile e Módulos',
             'manage_options',
             'm360-platform',
             [self::class, 'render']
@@ -95,7 +95,7 @@ final class M360_Platform_Admin
             <div class="m360-dashboard__heading">
                 <div>
                     <h1>M360 Core</h1>
-                    <p>Gestão unificada da Publisher Platform, sem dependência de tema ou Elementor.</p>
+                    <p>Configuração transversal do Site Profile e dos módulos M360, sem dependência de tema ou Elementor.</p>
                 </div>
                 <span class="m360-dashboard__version">v<?php echo esc_html(M360_CORE_VERSION); ?></span>
             </div>
@@ -244,8 +244,8 @@ final class M360_Platform_Admin
         }
         ?>
         <div class="wrap">
-            <h1>M360 Publisher Platform</h1>
-            <p>Fundação modular da linha v0.7.x. Editorial incorporado; Content Discovery em shadow mode com storage próprio. Nenhum precursor é desativado automaticamente.</p>
+            <h1>M360 - Site Profile e Módulos</h1>
+            <p>Configuração transversal do perfil do portal e dos módulos M360. Editorial incorporado; Content Discovery em shadow mode com storage próprio. Nenhum precursor é desativado automaticamente.</p>
 
             <h2>Diagnóstico da plataforma</h2>
             <?php $runtime_diagnostics = M360_Runtime_Profile::diagnostics(); ?>
