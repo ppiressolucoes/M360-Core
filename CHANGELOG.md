@@ -1,5 +1,10 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.89] — Breadcrumb e Yoast
+
+- Prioriza o BreadcrumbList do Yoast quando o plugin é detectado, mantendo o breadcrumb visual do Core e os controles `schema` e `m360_breadcrumb_schema_enabled`.
+- Incorpora à base consolidada a correção aplicada no PEL sobre a baseline 0.7.4.0.87. A candidata consolidada ainda exige homologação dos demais componentes nos portais.
+
 ## [v0.7.4.0.88] — Consolidação Core e PEL
 
 - restaura o comportamento aprovado de notícias secundárias no layout #3 e o mantém também no #4;

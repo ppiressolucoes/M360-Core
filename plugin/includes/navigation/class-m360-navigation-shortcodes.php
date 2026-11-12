@@ -195,8 +195,13 @@ final class M360_Navigation_Shortcodes
 
         $items = self::append_paged_item($items, $labels);
         $html = self::render_breadcrumb_items($items, $labels);
+        // Yoast normally owns BreadcrumbList when loaded; this does not guarantee
+        // its schema is enabled. The existing filter can explicitly restore ours.
+        $yoast_loaded = defined('WPSEO_VERSION')
+            || class_exists('WPSEO_Options', false)
+            || class_exists('WPSEO_Frontend', false);
         $schema_enabled = filter_var($atts['schema'], FILTER_VALIDATE_BOOLEAN)
-            && (bool) apply_filters('m360_breadcrumb_schema_enabled', true, $items);
+            && (bool) apply_filters('m360_breadcrumb_schema_enabled', !$yoast_loaded, $items);
 
         if ($schema_enabled && !self::$breadcrumb_schema_rendered) {
             self::$breadcrumb_schema_rendered = true;
