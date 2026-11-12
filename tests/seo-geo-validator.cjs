@@ -1,0 +1,17 @@
+'use strict';
+const assert = require('node:assert/strict');
+const {validate} = require('../tools/seo-geo-validator/validator.cjs');
+const basic = {site_id:'pel',url:'https://example.test/news/',locale:'pt-BR'};
+const missing = validate(basic);
+assert.equal(missing.classification, 'REVIEW_REQUIRED');
+assert.equal(missing.publication_decision, null);
+assert.ok(missing.findings.every(x => x.outcome === 'unknown'));
+const result = validate({...basic, observations:{http_status:200,breadcrumb_list_count:1,h1_count:2,main_count:0,og_image_type:'image/undefined'}});
+assert.deepEqual(result.findings.map(x => x.outcome), ['pass','pass','review','review','review']);
+const healthy = validate({...basic,locale:'en-US',observations:{http_status:200,breadcrumb_list_count:1,h1_count:1,main_count:1,og_image_type:'image/jpeg'}});
+assert.ok(healthy.findings.every(x => x.outcome === 'pass'));
+assert.equal(healthy.classification, 'REVIEW_REQUIRED');
+assert.throws(() => validate({...basic,url:'file:///etc/passwd'}), TypeError);
+assert.throws(() => validate({...basic,url:'https://user:password@example.test/'}), TypeError);
+assert.throws(() => validate({...basic,observations:{h1_count:'1'}}), TypeError);
+console.log('SEO/GEO diagnostic contract: OK');
