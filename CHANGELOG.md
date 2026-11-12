@@ -1,5 +1,12 @@
 # Changelog — M360 Core
 
+## [v0.7.4.0.88] — Consolidação Core e PEL
+
+- restaura o comportamento aprovado de notícias secundárias no layout #3 e o mantém também no #4;
+- incorpora o histórico dos branches Core e PEL à mesma base;
+- preserva o Core da v0.7.4.0.87 como base funcional na resolução dos conflitos;
+- candidata para homologação: a validação visual e de integração da v0.7.4.0.88 ainda está pendente.
+
 ## [v0.7.4.0.87] — Correção de aplicação do layout #4
 
 - restaura o mini layout lateral já homologado no bloco #3;
