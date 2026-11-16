@@ -3,14 +3,14 @@
 ## Candidata consolidada
 
 ```text
-0.7.4.0.89
+0.7.4.0.94
 ```
 
 ## Estado operacional
 
-- Candidata para homologação: `v0.7.4.0.89 — consolidação Core e PEL com compatibilidade de breadcrumb com Yoast`.
-- Fonte técnica principal: pacote homologado do Mengão 360 `v0.7.4.0.54`, preservando a extensão portátil de dicionário externo e a resolução de categoria principal do PEL.
-- Próxima frente: instalação limpa e preflight `portable-safe` no staging do Portal Energia Limpa.
+- Candidata consolidada: `v0.7.4.0.94 — navegação sticky opaca no Elementor`; validação visual aceita no Mengão 360.
+- Baseline do pacote: M360 Core `v0.7.4.0.91`, homologado pelo usuário no PEL; a 0.94 consolida também os ajustes de navegação aprovados no Mengão 360.
+- Registro do aceite: correção visual da navegação sticky 0.94 aprovada; a atualização de produção não está registrada nesta consolidação.
 - Dashboard unificado homologado, com funcionalidades internas acessíveis e um único item M360 no menu administrativo.
 - Content Discovery & SEO homologado com saúde `healthy`, cobertura `100%`, backfill `completed` e ownership `automatic`.
 - Evidência final do backfill: `2.278` publicados, `2.278` cobertos, `0` ausentes, `2.256` gerados e `17` inalterados.

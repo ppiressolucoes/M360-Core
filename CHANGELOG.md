@@ -1,3 +1,10 @@
+## [v0.7.4.0.94] — Navegação sticky opaca no Elementor
+
+- aplica fundo opaco à seção Elementor fixada que reúne os widgets de menu, idioma e busca;
+- aplica o mesmo fundo às colunas dos widgets durante a rolagem, corrigindo translucidez no desktop e transparência no mobile;
+- preserva a navegação móvel e a disposição de submenus já homologadas;
+- registra como baseline a versão 0.7.4.0.91 homologada pelo usuário no PEL e a aceitação visual da 0.94 no Mengão 360.
+
 # Changelog — M360 Core
 
 ## [v0.7.4.0.89] — Breadcrumb e Yoast
