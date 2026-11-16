@@ -161,6 +161,46 @@
         updatePosition();
     }
 
+    function initDesktopSubmenuAlignment(shell) {
+        if (!shell || shell.getAttribute('data-m360-submenu-alignment-managed') === 'true') { return; }
+        shell.setAttribute('data-m360-submenu-alignment-managed', 'true');
+
+        var items = shell.querySelectorAll('.m360-main-navigation__menu > li > .sub-menu');
+        if (!items.length) { return; }
+
+        function align(item, submenu) {
+            if (window.matchMedia('(max-width: 1024px)').matches) {
+                item.classList.remove('m360-submenu-align-end');
+                return;
+            }
+
+            item.classList.remove('m360-submenu-align-end');
+            if (submenu.getBoundingClientRect().right > window.innerWidth - 12) {
+                item.classList.add('m360-submenu-align-end');
+            }
+        }
+
+        items.forEach(function (submenu) {
+            var item = submenu.parentElement;
+            if (!item) { return; }
+            item.addEventListener('mouseenter', function () {
+                window.requestAnimationFrame(function () { align(item, submenu); });
+            });
+            item.addEventListener('focusin', function () {
+                window.requestAnimationFrame(function () { align(item, submenu); });
+            });
+        });
+
+        window.addEventListener('resize', function () {
+            items.forEach(function (submenu) {
+                var item = submenu.parentElement;
+                if (item && (item.matches(':hover') || item.contains(document.activeElement))) {
+                    align(item, submenu);
+                }
+            });
+        });
+    }
+
     function init() {
         document.querySelectorAll('.m360-header-navigation-bar').forEach(initStickyNavigation);
         document.querySelectorAll('.m360-header-topbar').forEach(function (target) {
@@ -175,6 +215,7 @@
             initStickyNavigation(target);
         });
         document.querySelectorAll('.m360-navigation-shell').forEach(initMobileNavigation);
+        document.querySelectorAll('.m360-navigation-shell.m360-ui-nav').forEach(initDesktopSubmenuAlignment);
     }
 
     if (document.readyState === 'loading') {
