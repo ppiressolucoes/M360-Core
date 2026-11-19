@@ -1,3 +1,9 @@
+## [v0.7.4.0.96] — Informações de leitura
+
+- Adiciona contagem de palavras e tempo estimado ao shortcode `[m360_post_info]`, com rótulos em português e inglês.
+- Permite controlar a exibição, a velocidade de leitura e o formato de data por shortcode.
+- Registra a homologação informada pelo usuário no PEL e no Mengão 360.
+
 ## [v0.7.4.0.94] — Navegação sticky opaca no Elementor
 
 - aplica fundo opaco à seção Elementor fixada que reúne os widgets de menu, idioma e busca;

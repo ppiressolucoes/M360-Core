@@ -82,6 +82,9 @@
 
 .m360-post-info__label { white-space: nowrap; }
 
+.m360-post-info__item--word-count,
+.m360-post-info__item--reading-time { white-space: nowrap; }
+
 @media (max-width: 767px) {
     .m360-post-info {
         align-items: flex-start;

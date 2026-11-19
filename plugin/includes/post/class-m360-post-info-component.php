@@ -16,8 +16,12 @@ final class M360_Post_Info_Component
             'author'   => 'true',
             'category' => 'true',
             'date'     => 'true',
+            'date_format' => '',
             'time'     => 'true',
             'updated'  => 'true',
+            'words'    => 'true',
+            'reading_time' => 'true',
+            'wpm'      => 200,
             'class'    => '',
         ], $atts, 'm360_post_info');
 
@@ -59,7 +63,8 @@ final class M360_Post_Info_Component
 
         if (self::enabled($atts['date'])) {
             $published_iso = get_the_date(DATE_W3C, $post_id);
-            $published_date = get_the_date(get_option('date_format'), $post_id);
+            $date_format = trim((string) $atts['date_format']);
+            $published_date = get_the_date($date_format !== '' ? $date_format : get_option('date_format'), $post_id);
             $published_year = (int) get_the_date('Y', $post_id);
             $published_month = (int) get_the_date('m', $post_id);
             $published_day = (int) get_the_date('d', $post_id);
@@ -99,6 +104,28 @@ final class M360_Post_Info_Component
             }
         }
 
+        $show_words = self::enabled($atts['words']);
+        $show_reading_time = self::enabled($atts['reading_time']);
+        $word_count = ($show_words || $show_reading_time) ? self::word_count($post) : 0;
+        if ($word_count > 0 && $show_words) {
+            $items[] = '<span class="m360-post-info__item m360-post-info__item--word-count" aria-label="' . esc_attr($is_en ? $word_count . ' words' : $word_count . ' palavras') . '">'
+                . self::icon('words')
+                . '<span>' . esc_html($word_count . ' ' . ($is_en ? 'words' : 'palavras')) . '</span>'
+                . '</span>';
+        }
+
+        if ($word_count > 0 && $show_reading_time) {
+            $words_per_minute = is_numeric($atts['wpm']) ? max(80, min(1000, (int) $atts['wpm'])) : 200;
+            $minutes = max(1, (int) ceil($word_count / $words_per_minute));
+            $reading_label = $is_en
+                ? $minutes . ' min read'
+                : $minutes . ' min de leitura';
+            $items[] = '<span class="m360-post-info__item m360-post-info__item--reading-time" aria-label="' . esc_attr($reading_label) . '">'
+                . self::icon('reading')
+                . '<span>' . esc_html($reading_label) . '</span>'
+                . '</span>';
+        }
+
         if (empty($items)) { return ''; }
         $custom_class = sanitize_html_class((string) $atts['class']);
         $classes = 'm360-post-info' . ($custom_class !== '' ? ' ' . $custom_class : '');
@@ -112,6 +139,21 @@ final class M360_Post_Info_Component
     private static function enabled(mixed $value): bool
     {
         return !in_array(strtolower(trim((string) $value)), ['0', 'false', 'no', 'off'], true);
+    }
+
+    private static function word_count(WP_Post $post): int
+    {
+        static $counts = [];
+        $raw = (string) $post->post_content;
+        $key = $post->ID . ':' . md5($raw);
+        if (isset($counts[$key])) { return $counts[$key]; }
+
+        $content = wp_strip_all_tags(strip_shortcodes($raw), true);
+        $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $content = trim(preg_replace('/\s+/u', ' ', $content) ?? '');
+        if ($content === '') { return $counts[$key] = 0; }
+
+        return $counts[$key] = (int) preg_match_all('/[\p{L}\p{N}]+(?:[\'’‑-][\p{L}\p{N}]+)*/u', $content);
     }
 
     private static function enqueue_assets(): void
@@ -135,6 +177,8 @@ final class M360_Post_Info_Component
             'calendar' => '<path d="M5 1v2m6-2v2M2.5 6h11M3 2.5h10a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/>',
             'clock'    => '<circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/>',
             'updated'  => '<path d="M13 5V2.5L11.2 4.3A6 6 0 1 0 14 9"/><path d="M13 2.5h-2.5"/>',
+            'words'    => '<path d="M2.5 3.5h11v9h-11z"/><path d="M5 6h6M5 8.5h6M5 11h3.5"/>',
+            'reading'  => '<path d="M2.5 3.5c2.2-.8 4-.5 5.5 1v8c-1.5-1.5-3.3-1.8-5.5-1z"/><path d="M13.5 3.5c-2.2-.8-4-.5-5.5 1v8c1.5-1.5 3.3-1.8 5.5-1z"/>',
         ];
         if (!isset($paths[$name])) { return ''; }
         return '<svg class="m360-post-info__icon" aria-hidden="true" viewBox="0 0 16 16" focusable="false">' . $paths[$name] . '</svg>';

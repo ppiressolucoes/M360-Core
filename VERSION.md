@@ -3,11 +3,13 @@
 ## Candidata consolidada
 
 ```text
-0.7.4.0.94
+0.7.4.0.96
 ```
 
 ## Estado operacional
 
+- Versão 0.7.4.0.96 aplicada e homologada no PEL e no Mengão 360, conforme informado pelo usuário.
+- O shortcode `[m360_post_info]` apresenta palavras e tempo estimado; `date_format` controla a data apenas no componente.
 - Candidata consolidada: `v0.7.4.0.94 — navegação sticky opaca no Elementor`; validação visual aceita no Mengão 360.
 - Baseline do pacote: M360 Core `v0.7.4.0.91`, homologado pelo usuário no PEL; a 0.94 consolida também os ajustes de navegação aprovados no Mengão 360.
 - Registro do aceite: correção visual da navegação sticky 0.94 aprovada; a atualização de produção não está registrada nesta consolidação.
